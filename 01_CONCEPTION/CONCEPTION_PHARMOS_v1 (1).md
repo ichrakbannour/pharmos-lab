@@ -4,8 +4,8 @@
 **Éditeur** : APEX AI DEV
 **Statut** : Conception de référence (Étapes 1 et 2), aucun module développé
 **Date** : 2026-11-03 — v1.1 : intégration de l'extension n° 02 RH & Team Management
-**Documents liés** : [`EXT02_RH_TEAM_MANAGEMENT.md`](EXT02_RH_TEAM_MANAGEMENT.md) (modules M15 RH & équipes, M16 Laboratoire) — intégrée
-· [`EXT03_ORDONNANCES_PRESCRIPTEURS.md`](EXT03_ORDONNANCES_PRESCRIPTEURS.md) (module M17 Ordonnances & prescripteurs) — **proposition en attente de validation**
+**Documents liés** : [`EXT02_RH_TEAM_MANAGEMENT.md`](../02_EXTENSIONS/EXT02_RH_TEAM_MANAGEMENT.md) (modules M15 RH & équipes, M16 Laboratoire) — intégrée
+· [`EXT03_ORDONNANCES_PRESCRIPTEURS.md`](../02_EXTENSIONS/EXT03_ORDONNANCES_PRESCRIPTEURS.md) (module M17 Ordonnances & prescripteurs) — **proposition en attente de validation**
 **Marché cible initial** : officines tunisiennes (FR / AR, RTL/LTR), extensible
 
 > Ce document sert de référence unique. Toute évolution de l'architecture, du modèle de données
