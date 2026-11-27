@@ -8,10 +8,10 @@
 
 Le PO a confirmé explicitement retenir **l'option B** pour INC-06. Le conflit de périmètre entre D6, D37 et D44 est donc arbitré au niveau métier :
 
-- préparation du module complet organismes, conventions et remboursements ;
+- modèle complet organismes/conventions livré, avec périmètre v1 limité au remboursement par l'assuré et aux conventions privées ;
 - aucune convention active par défaut ;
 - remboursement par l'assuré inclus ;
-- tiers payant CNAM désactivé ;
+- tiers payant CNAM et mutuelles exclu du périmètre v1 ;
 - toute activation CNAM ultérieure nécessite la vérification des textes, conventions, avenants et modalités officielles applicables, puis une validation explicite et distincte du PO.
 
 **INC-06 est clos côté arbitrage du périmètre.** Il n'est pas clos sur les preuves réglementaires/conventionnelles ni sur la réalisation technique.
@@ -36,9 +36,9 @@ Compteurs contrôlés : **20 arbitrées, 61 proposées, 3 à réexaminer, 2 cadu
 
 ## 4. Portée fonctionnelle retenue
 
-Le module à préparer couvre les organismes payeurs, les conventions versionnées et suspendables, les règles de prise en charge documentées, les justificatifs et le remboursement par l'assuré. Aucune convention n'est active par défaut.
+Le modèle complet couvre les organismes payeurs, les conventions versionnées et suspendables, les règles de prise en charge documentées et les justificatifs. Le périmètre v1 est limité au remboursement par l'assuré et aux conventions privées. Aucune convention n'est active par défaut.
 
-Le tiers payant CNAM demeure verrouillé. Les deux conditions d'une activation ultérieure sont cumulatives :
+Le tiers payant CNAM et mutuelles est exclu du périmètre v1 ; le tiers payant CNAM demeure verrouillé. Les deux conditions d'une activation ultérieure sont cumulatives :
 1. vérification des documents officiels réellement applicables à la date envisagée ;
 2. validation explicite et distincte du PO après cette vérification.
 
