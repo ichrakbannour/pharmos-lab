@@ -119,6 +119,56 @@ Ces décisions récentes doivent être répercutées dans les documents de stock
 | AUD-014 | Élevée | EXT05 / conception | Les règles récentes DP-1 à DP-6 et P86 sur PERTE, archivage, destruction et confirmation utilisateur ne sont pas répercutées dans les documents audités. | Mettre à jour les workflows, API, permissions, migrations et tests, après cartographie exhaustive des passages concernés. |
 | AUD-015 | Moyenne | `02_EXTENSIONS/README.md` | L'index omettait EXT02 après déplacement. | Corrigé dans le commit `ad9ff844f551188573bd5804d03034db64ee280e`. |
 
+## 5.1 Réconciliation détaillée des statuts Dxx et des exigences réglementaires
+
+### Statuts des décisions documentées
+
+| Extension | Décisions | Statut maître au 04/11/2026 | Conséquence |
+|---|---|---|---|
+| EXT02 | D17–D26 | Proposées | Aucune recommandation ne doit être présentée comme arbitrage PO. |
+| EXT03 | D27–D40 | Proposées, sauf D37 à réexaminer | Accord de principe sur l'extension ≠ validation de ses décisions. |
+| EXT04 | D44–D58 | Proposées | Les recommandations D44–D58 ne sont pas des décisions PO. |
+| EXT05 | D59–D71 | Proposées, sauf D61 et D66 caduques | D61 (15 minutes) est obsolète ; D66 ne constitue pas une règle de délégation approuvée. |
+| EXT06 | D72–D86 | Arbitrées | Appliquer les arbitrages, avec amendements PO ultérieurs explicites (notamment D74, D78, D80). |
+
+La matrice maître indique 16 décisions arbitrées (D3, D72–D86), 63 proposées, 5 à réexaminer (D2, D6, D10, D15, D37) et 2 caduques (D61, D66). Le total est 86. Cette matrice v1.2.1 n'a pas été validée globalement.
+
+### Couverture des exigences réglementaires
+
+Les tableaux formels d'exigences repérés dans les extensions couvrent :
+- EXT03 : R1–R13 ;
+- EXT04 : R23–R33 ;
+- EXT05 : R34–R41 ;
+- EXT06 : R42–R51.
+
+**R14–R22 ne figurent dans aucun des documents actuellement présents dans le dépôt.** EXT04 et EXT05 citent explicitement une version auditée EXT03 v1.1 et/ou un rapport `03_AUDIT_EXT03_v1.1` absent du dépôt ; EXT05 cite notamment R14. Le registre complet R1–R51 est donc incomplet dans GitHub et ne peut pas être déclaré exhaustif tant que la source EXT03 v1.1 et ses exigences R14–R22 n'ont pas été récupérées.
+
+Autres constats :
+- EXT02 ne possède pas de tableau Rxx centralisé, mais comporte des exigences RH et laboratoire marquées [À VALIDER] (droit du travail, repos, heures supplémentaires, congés, présence du pharmacien, conservation RH, protection des données).
+- EXT03 bloque le lot 5b sur R1–R6 et D27–D33.
+- EXT04 bloque le lot 7b sur R23–R27, R29, R31 (sources) et R32, ainsi que sur des décisions D44, D46, D48 et D53 encore proposées dans la matrice.
+- EXT05 bloque le lot 5d sur R34, R37, R38 et R40, ainsi que D59, D63, D70 et D71 encore proposées. La référence D61 a été retirée des prérequis car elle est caduque ; la règle de jour calendaire est portée par D75 dans EXT06.
+- EXT06 maintient R42–R51 en attente de sources/validation ; les arbitrages D72–D86 sont distinctement marqués arbitrés.
+
+### Amendements PO propagés dans EXT06
+
+Les corrections suivantes ont été appliquées au document EXT06 et vérifiées après commit :
+- **D74** : la décision immédiate simplifiée d'un second collaborateur exige une habilitation explicite accordée par le pharmacien-administrateur ; sans ce droit, pas de réintégration.
+- **D78** : données/notification limitées au type d'opération ou service défini par le pharmacien-administrateur, au nom du client et à la date ; aucune liste tunisienne de services n'est imposée par APEX ; pas de mesures ou observations cliniques.
+- **D80** : ajout de l'exigence de mention « Comptabilité à titre indicatif » pour les écrans, états et exports comptables.
+
+Les documents EXT02 à EXT06 ont également reçu un rappel de leur statut PO réel. EXT05 marque D61 et D66 caduques. EXT06 ne présente plus D66 comme une décision arbitrée.
+
+### Écarts additionnels à suivre
+
+| ID | Gravité | Constat | Action |
+|---|---|---|---|
+| AUD-016 | Élevée | La matrice D1–D86 v1.2.1, pourtant désignée par le PO comme document maître, est absente du dépôt GitHub. | Retrouver le fichier source et l'ajouter sans reconstitution ni réécriture. |
+| AUD-017 | Élevée | R14–R22 sont absentes des fichiers du dépôt alors que les extensions suivantes y font référence. | Récupérer EXT03 v1.1 / rapport d'audit et restaurer la traçabilité. |
+| AUD-018 | Élevée | EXT06 présentait D66 comme « tranché » alors que D66 est caduque dans la matrice maître. | Corrigé : le texte signale désormais D66 caduque et la règle de délégation reste à réconcilier. |
+| AUD-019 | Élevée | EXT05 conservait D61 (15 minutes) dans son tableau et ses prérequis malgré son statut caduque et la règle D75. | Corrigé : D61 marqué caduque ; retiré des prérequis du lot 5d. |
+| AUD-020 | Élevée | Plusieurs extensions présentent leurs recommandations comme choix retenus sans refléter le statut maître. | Corrigé dans les en-têtes EXT02–EXT06 ; le détail des décisions reste à consolider. |
+
 ## 6. Blocages transverses avant développement
 
 1. Absence de registre maître PO et de lien de traçabilité décision → règle → table/API/écran/test.
