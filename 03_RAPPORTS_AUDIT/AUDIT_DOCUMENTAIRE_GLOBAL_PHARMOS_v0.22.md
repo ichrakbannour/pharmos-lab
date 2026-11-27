@@ -26,9 +26,11 @@ La correction a été propagée dans G13, W8, les schémas `service_definitions`
 - W8 ne crée aucun dossier patient/clinique, observation médicale, mesure de santé structurée ou autre donnée clinique.
 - Aucun catalogue universel ou modèle de service n'est préchargé ou imposé par APEX.
 - `service_definitions` ne contient plus de champ patient/consentement ni de liste libre de données cliniques ; les champs facultatifs sont limités aux informations opérationnelles non cliniques.
+- La référence d'autorisation est facultative et informative ; l'autorisation réglementaire bloquante, la désactivation automatique à échéance et l'habilitation obligatoire par service ont été retirées conformément à D78 (conception v1.2.1, §7.4, §15.1 et tests SRV-08 à SRV-11).
+- W8 et SV2–SV4 reposent sur le statut actif/inactif géré par l'administrateur et la permission effective `services.perform`, sans gate réglementaire non arbitré.
 - `service_acts` conserve le type de service, le nom du client, l'auteur et la date ; les colonnes d'observations, de mesures et d'identifiant patient ont été retirées.
 - SV3, SV5 et SV6 reflètent désormais cette portée.
-- La permission `services.acts.read` ne parle plus de « données patient » : elle est limitée aux données minimales D78 et aux champs opérationnels non cliniques autorisés.
+- Les permissions `services.acts.read` et `services.perform` ne présument plus de données patient ni d'une habilitation obligatoire par service.
 - La notification est définie comme une liste blanche limitée au type d'opération/service, au nom du client et à la date.
 - Le tableau §11.1 indique maintenant explicitement la consolidation et les preuves à obtenir.
 
@@ -57,6 +59,8 @@ Contrôles textuels effectués sur la version relue depuis `main` :
 - présence de la liste blanche de notification ;
 - présence de champs facultatifs strictement non cliniques ;
 - absence de libellé résiduel « données patient » dans la permission `services.acts.read` ;
+- absence de `habilitation_requise_code` et d'`autorisation_reglementaire` bloquante dans `service_definitions` ;
+- absence de condition d'habilitation obligatoire et de gate réglementaire dans W8/SV2–SV4 ;
 - maintien de la ligne D78 comme décision arbitrée issue de la matrice PO v1.3.3.
 
 ## 5. Éléments restant ouverts
