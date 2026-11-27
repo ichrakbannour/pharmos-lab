@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.16](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.16.md)** — 27/11/2026 ; EXT05/EXT06 : contradiction D74 sur l'attribution par défaut de `stock.return.decide`, propagation D75 et statut documentaire obsolète dans EXT06.
+
 - **[Audit documentaire global v0.15](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.15.md)** — 27/11/2026 ; EXT04 / tiers payant : clarification du conflit D37–D44, INC-06 maintenu ouvert ; AUD-055 précisé et AUD-056 confirmé.
 - [Audit documentaire global v0.14](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.14.md) — 27/11/2026 ; clôture documentaire de la traçabilité de la matrice PO : v1.3.3 publiée au niveau canonique, Git blob SHA identique au miroir ; AUD-058 et AUD-061 clos pour leur périmètre.
 - [Audit documentaire global v0.13](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.13.md) — 27/11/2026 ; distinction GO P0 / GO conditionnel STOCK P88, arrêt P88/P90 et préparation P91.
