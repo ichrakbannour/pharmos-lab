@@ -1,6 +1,8 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.26](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.26.md)** — 27/11/2026 ; revue des sources officielles R23–R33 ; repères R25/R26 et garde-fous INPDP R29 ; aucun statut réglementaire CNAM 2026 confirmé.
+- **[Audit documentaire global v0.27](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.27.md)** — 27/11/2026 ; actualisation GO P0 ; distinction avec STOCK P88 ; AUD-059/AUD-060 clos pour leur périmètre documentaire.
+- [Addendum de suivi GO P0](ADDENDUM_SUIVI_GO_P0_20261127.md) — statut contrôlé au 27/11/2026 : C-01 à C-08 non remplies ; P0 non autorisé.
+- [Audit documentaire global v0.26](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.26.md) — 27/11/2026 ; revue des sources officielles R23–R33 ; repères R25/R26 et garde-fous INPDP R29 ; aucun statut réglementaire CNAM 2026 confirmé.
 - [Audit documentaire global v0.25](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.25.md) — 27/11/2026 ; propagation option B dans EXT02–EXT06 et la conception ; D74/D75 recroisées ; AUD-055/056/063/064 clos dans leur périmètre documentaire.
 - [Audit documentaire global v0.24](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.24.md) — 27/11/2026 ; arbitrage PO de l'option B sur INC-06 : D6, D37, D44 arbitrées ; CNAM/mutuelles exclues de la v1.
 
