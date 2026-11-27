@@ -34,7 +34,7 @@ Les documents suivants sont accessibles dans le miroir des sources originales. I
 
 - [P83 — Addendum des décisions PO STOCK](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P83_ADDENDUM_DECISIONS_PO_STOCK.md) — Q-1 à Q-12, H-1 à H-6 et C-P82-1 à C-P82-3.
 - [P85 — Addendum des arbitrages PO AT1/AT2/AT3](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P85_ADDENDUM_ARBITRAGES_PO_AT1_AT2_AT3.md) — phase 2 suspendue ; autorisations futures bornées.
-- [P87 — Addendum officiel des arbitrages PO P86](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P87_ADDENDUM_DECISIONS_PO_P86.md) — P86-1 à P86-13 et précautions A/B ; ne vaut pas autorisation de réalisation.
+- [P87 — Addendum officiel des arbitrages PO P86](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P87_ADDENDUM_DECISIONS_PO_P86.md) — P86-1 à P86-13 et précautions A/B ; RES-1 et RES-2 restent à résoudre ; ne vaut pas autorisation de réalisation.
 - [P88 — Rapport d'exécution consolidé](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P88_RAPPORT_EXECUTION.md) — préflight bloqué PRQ-3 ; mise à jour P90 intégrée.
 - [P89 — Diagnostic mémoire et tmpfs](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P89_RAPPORT_DIAGNOSTIC_MEMOIRE.md) — diagnostic en lecture seule ; options proposées, aucune action corrective.
 - [P91 — Préparation contrôlée de l'Option B](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P91_RAPPORT_PREPARATION_OPTION_B.md) — préparation uniquement ; aucun palier exécuté.
