@@ -4,8 +4,10 @@ Ce dossier centralise les décisions métier confirmées, les arbitrages en atte
 
 ## Sources actuellement présentes dans le dossier canonique
 
-- [Matrice D1–D86 v1.3.3](MATRICE_DECISIONS_D1_D86_v1.3.3.md) — référence PO courante vérifiée, copie canonique identique au miroir original (Git blob SHA identique).
-- [Matrice D1–D86 v1.2](MATRICE_DECISIONS_D1_D86_v1.2.md) — historique du 03/11/2026 ; ne remplace pas la v1.3.3.
+- **[Matrice D1–D86 v1.3.4](MATRICE_DECISIONS_D1_D86_v1.3.4.md)** — référence PO courante ; arbitrage INC-06 option B (D6, D37, D44) ; 20 arbitrées, 61 proposées, 3 à réexaminer, 2 caduques.
+- [Addendum PO INC-06 — option B](INC-06_ARBITRAGE_PO_OPTION_B_20261127.md) — décision du 27/11/2026 : module organismes/conventions/remboursements à préparer, aucune convention active par défaut, CNAM désactivée jusqu'à vérification officielle et validation PO distincte.
+- [Matrice D1–D86 v1.3.3](MATRICE_DECISIONS_D1_D86_v1.3.3.md) — version antérieure, conservée sans modification.
+- [Matrice D1–D86 v1.2](MATRICE_DECISIONS_D1_D86_v1.2.md) — historique du 03/11/2026 ; ne remplace pas la matrice courante v1.3.4.
 - [P81 — Registre officiel des décisions PO STOCK](P81_REGISTRE_DECISIONS_PO_STOCK.md) — source originale publiée depuis l'archive ; empreinte Git blob identique à l'original (17 719 octets).
 - [P82 — Spécifications finales STOCK](P82_SPECIFICATIONS_FINALES_STOCK.md) — propositions sources, confirmées seulement dans la mesure consignée par P83.
 - [P86 — Arbitrage consolidé des 13 points](P86_ARBITRAGE_CONSOLIDE_13_POINTS.md) — propositions techniques ; la réponse PO est consignée dans P87.
