@@ -136,7 +136,7 @@ Les tableaux formels d'exigences repérés dans les extensions couvrent :
 - EXT05 : R34–R41 ;
 - EXT06 : R42–R51.
 
-**R14–R22 ne figurent dans aucun des documents actuellement présents dans le dépôt.** EXT04 et EXT05 citent explicitement une version auditée EXT03 v1.1 et/ou un rapport `03_AUDIT_EXT03_v1.1` absent du dépôt ; EXT05 cite notamment R14. Le registre complet R1–R51 est donc incomplet dans GitHub et ne peut pas être déclaré exhaustif tant que la source EXT03 v1.1 et ses exigences R14–R22 n'ont pas été récupérées.
+**R14–R22 ne figurent pas dans les documents EXT03 actuellement versionnés dans GitHub.** Leur source a été retrouvée dans le dossier d'audit EXT03 v1.1 récupéré hors dépôt, mais son contenu détaillé n'a pas encore été inspecté ici ni intégré dans GitHub. Le registre R1–R51 reste donc incomplet dans le dépôt tant que cette source n'est pas importée et réconciliée.
 
 Autres constats :
 - EXT02 ne possède pas de tableau Rxx centralisé, mais comporte des exigences RH et laboratoire marquées [À VALIDER] (droit du travail, repos, heures supplémentaires, congés, présence du pharmacien, conservation RH, protection des données).
@@ -159,8 +159,8 @@ Les documents EXT02 à EXT06 ont également reçu un rappel de leur statut PO r�
 
 | ID | Gravité | Constat | Action |
 |---|---|---|---|
-| AUD-016 | Élevée | La matrice D1–D86 v1.2.1, pourtant désignée par le PO comme document maître, est absente du dépôt GitHub. | Retrouver le fichier source et l'ajouter sans reconstitution ni réécriture. |
-| AUD-017 | Élevée | R14–R22 sont absentes des fichiers du dépôt alors que les extensions suivantes y font référence. | Récupérer EXT03 v1.1 / rapport d'audit et restaurer la traçabilité. |
+| AUD-016 | Élevée | La matrice D1–D86 la plus récente, v1.3.3, a été retrouvée hors dépôt ; GitHub ne contient toujours pas le fichier maître. | Intégrer les versions sources pertinentes et conserver l'historique, sans reconstitution ni réécriture. |
+| AUD-017 | Élevée | R14–R22 ne sont pas présentes dans la version EXT03 actuellement déposée ; elles figurent dans le périmètre de la source EXT03 v1.1 récupérée hors dépôt. | Intégrer la source EXT03 v1.1 et son audit, puis contrôler les exigences exactes R14–R22. |
 | AUD-018 | Élevée | EXT06 présentait D66 comme « tranché » alors que D66 est caduque dans la matrice maître. | Corrigé : le texte signale désormais D66 caduque et la règle de délégation reste à réconcilier. |
 | AUD-019 | Élevée | EXT05 conservait D61 (15 minutes) dans son tableau et ses prérequis malgré son statut caduque et la règle D75. | Corrigé : D61 marqué caduque ; retiré des prérequis du lot 5d. |
 | AUD-020 | Élevée | Plusieurs extensions présentent leurs recommandations comme choix retenus sans refléter le statut maître. | Corrigé dans les en-têtes EXT02–EXT06 ; le détail des décisions reste à consolider. |
@@ -204,7 +204,7 @@ Les décisions PO DP-1 à DP-6, confirmées le 25/11/2026, sont plus récentes q
 | DP-3 | Réservations logiques au niveau produit ; FEFO à l'allocation/vente. | Propagée dans le dossier principal et EXT06. |
 | DP-4 | Réservations bloquantes ; dérogation ADMIN tracée ; écarts FEFO tracés. | Propagée dans le dossier principal et EXT06. |
 | DP-5 | Quatre opérations d'entrée autorisées ; les régularisations exigent des justificatifs. | Principe connu, mais les quatre opérations exactes ne sont pas disponibles dans les fichiers du dépôt. Ne pas les reconstituer. |
-| DP-6 | Préparation et essais de la migration 0022 uniquement sur des copies isolées, sous huit conditions. Aucune migration DEMO ni base réelle autorisée. | Aucune migration lancée ; les huit conditions exactes sont absentes du dépôt. Source P81 à récupérer. |
+| DP-6 | Préparation et essais de la migration 0022 uniquement sur des copies isolées, sous huit conditions. Aucune migration DEMO ni base réelle autorisée. | Les huit conditions exactes sont maintenant consultables dans le registre P81 transmis ; elles n'ont pas encore été intégrées au dépôt GitHub. Aucune migration lancée. |
 
 Précisions PO associées :
 - Archivage interdit tant qu'une quantité physique subsiste, y compris en QUARANTAINE ou PERTE.
