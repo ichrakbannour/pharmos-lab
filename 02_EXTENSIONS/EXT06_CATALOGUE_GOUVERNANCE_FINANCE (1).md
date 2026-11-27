@@ -533,7 +533,7 @@ payroll_imports 1─n payroll_import_lines n─1 employees
 | AN1 | Vente non validée : abandon, sans écriture corrective (inchangé) | — |
 | AN2 | Vente validée, produit non sensible : annulation possible par un collaborateur habilité **jusqu'à la fin du jour calendaire de la vente** (minuit, fuseau de l'officine), dans ses plafonds | ancienne proposition D61 (15 minutes, caduque) et §4.3 « auto-correction » |
 | AN3 | Au-delà du jour calendaire, **seul l'administrateur** peut autoriser l'annulation (dérogation W4), quel que soit le rôle du demandeur | EXT05 §4.2 C5 (validation par un pharmacien) |
-| AN4 | Les droits d'annulation (`sale.void.execute`, `sale.void.approve`) ne s'accordent que par l'administrateur (rôle, réglage individuel ou délégation) | EXT05 D66 |
+| AN4 | **Règle proposée, non arbitrée** : les modalités d'attribution des droits `sale.void.execute` et `sale.void.approve` doivent être définies dans le référentiel PO ; D66 est caduque et ne permet pas de conclure que l'administrateur est l'unique délégant ni d'autoriser une délégation par défaut | Ancienne référence EXT05 D66, caduque |
 | AN5 | Produits sensibles (`sensitivity_flags` non vide) ou réglementés : circuit spécifique obligatoire (EXT05 §4.7) ; la règle du jour calendaire ne les rend jamais annulables par un non-pharmacien | — |
 | AN6 | **Aucune annulation n'entraîne une réintégration automatique en stock vendable** : le produit passe en `EN_CONTROLE`, puis la décision suit le workflow D d'EXT05 (récupération physique, intégrité, conservation, péremption, restrictions réglementaires) | EXT05 `DISPONIBLE_DIRECT` (voir D74) |
 | AN7 | Toutes les corrections passent par des mouvements inverses liés à l'opération initiale (`reverses_id`, `correlation_id`) — inchangé | — |
@@ -961,7 +961,7 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 
 ## 11. Décisions arbitrées — registre historique PO
 
-Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 sont marquées ARBITRÉES dans la matrice maître D1–D86 v1.2.1 ; les lignes ci-dessous sont conservées comme historique des choix et ne constituent pas de nouvelles demandes d'arbitrage.
+Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 étaient marquées ARBITRÉES dans la matrice maître D1–D86 v1.2.1. La matrice v1.3.3 (12/11/2026) a été retrouvée, mais son contenu détaillé n'a pas encore été relu ; les statuts ci-dessous sont conservés comme historique de la version v1.2.1 et doivent être revalidés contre v1.3.3 avant toute utilisation comme état courant.
 
 **Réserve de traçabilité D72 :** le tableau EXT06 décrit D72 comme la procédure de secours en cas de perte d'accès du pharmacien administrateur. Les échanges PO identifient également D72 comme l'arbitrage relatif au SUPERADMIN APEX immuable (`apexproib@gmail.com`). Ces deux formulations ne doivent pas être fusionnées ni implémentées sous un même identifiant avant comparaison avec la matrice maître et ses éventuels addenda. La règle de secours APEX reste à rattacher à un identifiant non ambigu.
 
