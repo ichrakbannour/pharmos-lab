@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.22](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.22.md)** — 27/11/2026 ; EXT06 : correction D78 (suppression des données patient/cliniques et mesures structurées, notification en liste blanche) ; contrôle D81–D86 ; preuves applicatives restantes.
+- **[Audit documentaire global v0.23](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.23.md)** — 27/11/2026 ; addendum de réconciliation conception v1.2.1 / matrice PO v1.3.3 : D40 actualisée, compteurs courants et D37/D44 clarifiés ; INC-06 reste ouvert.
+- [Audit documentaire global v0.22](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.22.md) — 27/11/2026 ; EXT06 : correction D78 (suppression des données patient/cliniques et mesures structurées, notification en liste blanche) ; contrôle D81–D86 ; preuves applicatives restantes.
 - [Audit documentaire global v0.21](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.21.md) — 27/11/2026 ; EXT06 : consolidation fonctionnelle D72/D77/D84 et contrôle des garanties D73/D75/D79/D80 ; preuves applicatives restantes explicitement recensées.
 
 - **[Audit documentaire global v0.20](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.20.md)** — 27/11/2026 ; EXT06 v1.0 : réconciliation D72–D86 avec la matrice PO v1.3.3 ; écarts historiques D72, D77 et D84 explicités.
