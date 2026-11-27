@@ -422,7 +422,7 @@ La recherche par facettes les combine tous.
 |---|---|---|---|
 | `lots` (dossier §4.4) | **C** | **date_reception**, **quantite_recue_unites**, **prix_achat_unitaire** (= `cout_unitaire` existant, renommé pour clarté), **supplier_id** (existant), **receipt_line_id** (existant), **numero_serie** (facultatif, dispositifs), statut (`ACTIF`, `BLOQUE`, `PERIME`, `RAPPELE`, `EPUISE`) | La **quantité disponible n'est pas stockée** sur le lot : elle est lue dans `stock_levels` (bucket `DISPONIBLE`) |
 | `stock_levels` (dossier + EXT05) | **C** | clé (produit, lot, **bucket**) ; buckets : `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE` | Le bucket `RESERVE` d'EXT05 est **retiré** (§5.4) |
-| `stock_reservations` (dossier) | inchangée | Engagement sur le stock `DISPONIBLE`, sans mouvement | Disponible vendable = `DISPONIBLE` − réservations actives |
+| `stock_reservations` (dossier) | **C** | réservation logique au niveau produit (`product_id`, quantité, origine, expiration, statut), sans mouvement physique | Réservation bloquante ; allocation FEFO à la vente ; aucune bucket `RESERVE` ; dérogation ADMIN tracée et écarts FEFO tracés (DP-3/DP-4) |
 | `stock_movements` (dossier + EXT05) | inchangée par EXT06 | — | Historique des mouvements du lot = vue filtrée sur `lot_id` |
 
 ### 4.7 Services pharmaceutiques (Partie 4)
@@ -484,7 +484,7 @@ products n─1 ref_products ; products 1─n product_substances n─1 ref_dci ; 
 products 1─n product_units, product_prices, product_classifications n─1 classification_nodes n─1 classification_axes
 products n─1 tax_categories 1─n tax_rates ; products 0..1─n products (variantes) ; products 1─n product_variant_attributes
 substitution_groups 1─n substitution_group_members n─1 products
-products 1─n lots 1─n stock_levels (par bucket), stock_movements ; stock_reservations n─1 lots
+products 1─n lots 1─n stock_levels (par bucket), stock_movements ; products 1─n stock_reservations (réservation logique au niveau produit)
 products(SERVICE) 1─1 service_definitions 1─n service_acts 1─n service_act_consumables ─► stock_movements
 service_acts 0..1─1 sale_lines ; service_acts n─0..1 customers
 supplier_invoices n─1 suppliers ; 0..1─1 expense_categories ; 0..1─1 fixed_assets ; supplier_credit_notes, supplier_advances n─1 suppliers
