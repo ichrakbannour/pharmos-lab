@@ -131,13 +131,29 @@ Constats importants :
 | EXT03-A06 | D40 : clause historique « pharmacien pour réglementés » non traitée par l'arbitrage D40 | Ne pas l'appliquer comme décision confirmée ; soumettre une clarification métier ciblée |
 | EXT03-A07 | Le rapport EXT03 du 03/11/2026 et la grille n'intègrent pas les arbitrages ultérieurs de la matrice v1.3.3 | Conserver ces pièces comme sources historiques ; utiliser la matrice v1.3.3 pour le statut courant |
 
-## 8. Conclusion
+## 8. Coexistence des sources miroir et documents canoniques
+
+La publication des 42 sources dans le miroir a été contrôlée sans réécriture. Cette opération n'a pas remplacé les fichiers métier déjà présents dans les dossiers canoniques. Deux documents portant le même nom présentent donc une différence binaire entre copie canonique et source d'archive :
+
+| Document | Copie canonique | Source miroir | Constat |
+|---|---:|---:|---|
+| `P82_SPECIFICATIONS_FINALES_STOCK.md` | 41 487 octets | 41 488 octets | blobs Git différents ; écart d'un octet |
+| `P86_ARBITRAGE_CONSOLIDE_13_POINTS.md` | 63 461 octets | 63 462 octets | blobs Git différents ; écart d'un octet |
+| `P81_REGISTRE_DECISIONS_PO_STOCK.md` | 17 719 octets | 17 719 octets | même blob Git ; identité exacte |
+
+L'écart d'un octet pour P82 et P86 est constaté, mais sa cause n'est pas établie ici. Il ne faut pas supposer qu'il s'agit d'un simple saut de ligne, ni corriger les copies canoniques automatiquement. Les deux versions doivent rester distinctes jusqu'à comparaison ciblée et décision de la source canonique à retenir. Le miroir conserve l'original de l'archive ; les dossiers métier conservent les fichiers qui y étaient déjà publiés.
+
+La matrice D1–D86 canonique et la matrice source non versionnée de l'archive portent des noms/versionnements différents ; aucune identité entre ces deux fichiers n'est affirmée sur la seule base de leurs tailles.
+
+---
+
+## 9. Conclusion
 
 Le corpus permet de confirmer la qualité et l'étendue de la proposition EXT03 v1.1, mais pas son adoption. Son intégration reste suspendue à la validation des décisions encore proposées, au traitement du conflit D37/D44 et à la confirmation des prérequis réglementaires. D40 est la seule décision D27–D43 arbitrée dans la matrice globale v1.3.3 ; sa formulation PO remplace les valeurs historiques de la grille.
 
 La couverture de tests est détaillée mais aucune preuve d'exécution n'est fournie. Le mécanisme de batch conditionnel, les contrôles de sécurité, les parcours OCR et les réconciliations ne sont donc pas considérés comme réalisés ou vérifiés.
 
-## 9. Limites et interdictions
+## 10. Limites et interdictions
 
 Cette revue est documentaire et en lecture seule. Elle n'autorise :
 - aucune modification de code ou de conception principale ;
