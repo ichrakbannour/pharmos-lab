@@ -4,7 +4,7 @@ Ce dossier centralise les documents suivants :
 - EXT02 : RH et gestion de l'équipe.
 - EXT03 : Ordonnances et prescripteurs.
 - EXT04 : CNAM, conventions et assurances.
-- EXT05 : Annulations, retours et délégations.
+- EXT05 : Annulations, retours et délégations — matrice de droits alignée sur D74 PO v1.3.3 (octroi explicite individuel de `stock.return.decide`, sans valeur par défaut de rôle).
 - EXT06 : Catalogue, gouvernance et finance.
 
 - EXT06 v1.0 : version présente et amendée dans ce dépôt ; reste à réconcilier avec les décisions PO les plus récentes.
