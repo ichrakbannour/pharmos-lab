@@ -31,7 +31,7 @@ Le constat provisoire du rapport v0.29 (FAQ ministérielle à 6 % contre cadrage
 - [JORT n°128 du 25 décembre 2020 — loi n°2020-46 portant loi de finances pour 2021](https://www.jort.tn/view/journal-officiel/fr/2020/128/) : article 25 relatif à l'exclusion des ventes de médicaments et produits pharmaceutiques au stade du gros et du détail et à l'abandon des rappels antérieurs.
 - [Ministère des Finances — secteurs soumis à la TVA](https://www.finances.gov.tn/fr/node/890) : indique actuellement l'exclusion des médicaments et produits pharmaceutiques du commerce de gros et du commerce de détail.
 - [FAQ du Ministère des Finances](https://www.finances.gov.tn/fr/faq?page=7) : conserve une réponse indiquant 6 % depuis 2016 ; cette réponse doit être considérée comme incohérente avec les textes postérieurs tant qu'elle n'est pas mise à jour.
-- [Loi de finances 2018 — article 43](https://www.jort.tn/view/journal-officiel/fr/2017/105/) : modification du taux réduit du tableau B à 7 %.
+- [Loi de finances 2018 — article 43, JORT n°101 du 19/12/2017](https://lake.jort.tn/journal-officiel/fr/2017/101.pdf) : modification du taux réduit du tableau B à 7 %.
 
 Les textes publiés au JORT prévalent sur les FAQ administratives et les commentaires secondaires. La traduction française du JORT est informative lorsque le texte arabe fait foi.
 
