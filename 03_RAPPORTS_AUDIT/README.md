@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.38](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.38.md)** — 27/11/2026 ; matrice de traçabilité P92 RES-1/RES-2 publiée ; aucun test ni travail technique exécuté.
+
 - **[Audit documentaire global v0.37](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.37.md)** — 27/11/2026 ; plan STOCK révisé P92 publié ; R3b avant R4a ; aucune réalisation autorisée.
 
 - **[Audit documentaire global v0.36](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.36.md)** — 27/11/2026 ; P92 : RES-1/RES-2 confirmées, lot R3b avant R4a ; aucune autorisation de réalisation.
