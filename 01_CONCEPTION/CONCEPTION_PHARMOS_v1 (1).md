@@ -327,7 +327,7 @@ et sur M15 (habilitations).
 
 | Table | Colonnes principales |
 |---|---|
-| `lots` | id, tenant_id, product_id, numero_lot, peremption, expiry_precision, cout_unitaire, supplier_id, receipt_line_id, statut (actif / bloqué / périmé / rappelé) | Lot obligatoire pour tout médicament (DP-2).
+| `lots` | id, tenant_id, product_id, numero_lot, peremption, expiry_precision, cout_unitaire, supplier_id, receipt_line_id, statut (actif / bloqué / périmé / rappelé) | Suivi par lot obligatoire pour les médicaments à la création et à l'adoption ; dispositifs médicaux : optionnel, désactivé par défaut ; autres types : optionnel (DP-2).
 | `stock_movements` (**immuable**) | id, tenant_id, product_id, lot_id, site_id, type (`RECEIPT`, `SALE`, `SALE_RETURN`, `SUPPLIER_RETURN`, `ADJUST_PLUS`, `ADJUST_MINUS`, `INVENTORY`, `LOSS`, `DESTRUCTION`, `TRANSFER`, `LAB_CONSUMPTION`, `LAB_OUTPUT`), quantite (signée), cout_unitaire, doc_type, doc_id, doc_line_id, motif, user_id, **employee_id**, **approved_by_employee_id** (v1.1), at |
 | `stock_levels` (projection) | tenant_id, product_id, lot_id, bucket (`DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE`), quantite, maj_at — recalculable exclusivement à partir des mouvements (DP-1) |
 | `stock_reservations` | id, tenant_id, product_id, quantite, origine (vente en attente / reliquat), expire_at, created_by, status | Réservation logique par produit, hors buckets physiques ; allocation FEFO au moment de la vente (DP-3).
@@ -335,6 +335,10 @@ et sur M15 (habilitations).
 | `inventory_counts` | session_id, product_id, lot_id, qte_theorique, qte_comptee, ecart, compteur, at |
 
 **Règles PO de stock (DP-1 à DP-4, confirmées le 25/11/2026).** Les quatre états physiques sont `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE` et `PERTE` ; les quantités de chaque état sont calculées à partir des mouvements immuables, jamais modifiées directement. Les réservations sont logiques et bloquantes ; le FEFO s'applique à l'allocation lors de la vente. Toute dérogation ADMIN est tracée, ainsi que tout écart au FEFO. Aucun bucket physique `RESERVE` n'est créé.
+
+**Précisions PO P81 (DP-2, DP-5, DP1-R7/R9).** Les médicaments existants sans suivi par lot sont signalés « à régulariser » ; aucune conversion automatique de leur historique n'est permise. Les quatre seules opérations d'entrée physique sont : réception, régularisation hors commande avec justificatif et droit distinct, correction positive d'inventaire justifiée et contrôlée, retour/annulation revendable limité aux quantités vendues et aux lots d'origine. Une commande, une adoption catalogue, une réservation ou un changement d'état ne constitue pas une entrée physique. La formule CAT-11 est : `reçu + corrections nettes = disponible + en contrôle + quarantaine + perte + sorties nettes` ; « reçu » couvre les réceptions et régularisations uniquement. Les retours clients et contre-passations sont comptés dans les mouvements nets. Le passage à `PERTE` ne constitue pas la destruction physique : les quantités restent visibles « en attente de destruction », avec quantité et ancienneté, jusqu'à un processus ultérieur autorisé.
+
+**Point non arbitré — `LAB_OUTPUT`.** Le type de mouvement figure dans la liste technique ci-dessus, mais P81 DP-5 ne l'identifie pas comme une cinquième opération d'entrée physique. Sa qualification dans le flux M16 (transformation interne, bilan nul ou autre traitement) reste à clarifier par le PO ; aucune entrée de stock ne doit être déduite de ce seul code.
 
 ### 4.5 Ventes & caisse (M02, M02b)
 
