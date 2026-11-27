@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Les décisions D72–D86 sont arbitrées dans la matrice maître D1–D86 v1.2.1, mais les exigences réglementaires R42–R51 et les amendements PO postérieurs doivent encore être réconciliés. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
+**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. La matrice v1.2.1 marquait D72–D86 comme arbitrées ; la version v1.3.3 (12/11/2026), plus récente, a été retrouvée mais son contenu détaillé n'a pas encore été relu. Les statuts D72–D86 ci-dessous sont donc historiques et ne doivent pas être utilisés comme état courant avant cette vérification. Les exigences réglementaires R42–R51 et les amendements PO postérieurs restent à réconcilier. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), EXT03 v1.1 (dossier d'audit), EXT04 et EXT05 (propositions).
 
 > **Règle de ce document : aucun doublon.** EXT06 crée un seul module nouveau (**M20 Comptabilité**, partie de
