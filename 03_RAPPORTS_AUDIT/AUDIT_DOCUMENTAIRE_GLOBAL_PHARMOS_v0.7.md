@@ -45,7 +45,7 @@ Le document `P87_ADDENDUM_DECISIONS_PO_P86.md` déclare explicitement être la r
 - O-5, O-6, O-9 et O-10 maintenus ouverts ;
 - V-3 maintenu NON APPROUVÉ ;
 - précaution A : aucune opération PERTE directement par API sans parcours utilisateur complet et confirmation liée à l’opération, la quantité et ses conséquences irréversibles ;
-- précaution B : P86-V1 est un lot identifié à traiter avant R4e.
+- précaution B : P86-V1 est à traiter avant R4e ; son lot, sa place exacte et son autorisation restent non fixés (RES-2).
 
 P87 est bien la source à citer pour les décisions PO P86. Cela confirme le choix documentaire décrit dans le rapport d’export ; il n’existe pas de fichier distinct intitulé « réponse PO P86 ».
 
@@ -68,6 +68,16 @@ P89 corrige l’hypothèse P88 : Shmem et le contenu de `/tmp` sont constants su
 
 ### P91
 P91 est une préparation de l’Option B, pas son exécution. Aucun palier n’a été réalisé ; aucune suppression, copie ou libération mémoire n’a été effectuée. Le résidu P90 est examiné au niveau des métadonnées seulement et n’est pas un candidat à la libération mémoire. Toute action sur les archives, le résidu, les services ou la reprise P88 exige une décision PO distincte.
+
+### Réserves de cohérence P87 à ne pas perdre dans la synthèse
+
+La relecture détaillée de P87 fait apparaître deux réserves qui doivent rester explicitement ouvertes :
+
+- **RES-1 — PERTE/API :** la précaution A interdit le passage en PERTE par API tant que le parcours utilisateur complet et sa confirmation explicite ne sont pas disponibles. Le plan P86 prévoit pourtant un passage par service/route HTTP avec confirmation de quantité. P87 indique que la lecture littérale de la précaution A est plus restrictive, que le PO n'a pas précisé la lecture à appliquer, et que P86 §3 n'a pas été révisé. Les scénarios de succès PER-04, PER-05 et R7a-E6 sont concernés. Arbitrage PO requis avant R4b ; aucune des deux lectures ne doit être choisie par déduction.
+
+- **RES-2 — P86-V1 :** le résultat métier (refus explicite, motif, possibilité de correction avant R4e) est décidé, mais le lot, les fichiers, la position exacte par rapport au gel R4a→G6 et l'autorisation technique ne le sont pas. P87 constate qu'aucune autorisation F-1 à F-4 ne couvre clairement cet écran hors R7a ; une mission d'interface distincte ou une révision du plan P86 est évoquée. « Avant R4e » ne vaut donc ni autorisation d'exécution ni définition du lot.
+
+Ces réserves ne sont pas des contradictions entre décisions PO ; P87 les décrit comme des tensions entre les précautions PO et le plan technique. Elles doivent être levées avant les étapes concernées, sans élargir A-T1/A-T2/A-T3.
 
 ## 4. État documentaire des sources dans GitHub
 
