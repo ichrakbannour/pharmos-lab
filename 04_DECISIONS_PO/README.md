@@ -31,6 +31,7 @@ L'archive jointe EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip a été contrôlée :
 ## Addenda PO STOCK — décisions courantes
 
 - **[P92 — Addendum PO de réconciliation technique STOCK](P92_ADDENDUM_RECONCILIATION_TECHNIQUE_STOCK.md)** — RES-1 et RES-2 confirmées ; lot R3b V1/V3 et parcours PERTE positionné avant R4a ; aucune autorisation de réalisation.
+- **[P92 — Plan unique STOCK révisé v2](P92_PLAN_UNIQUE_REALISATION_STOCK_REVISION_v2.md)** — révision contrôlée de P86 ; R3b avant R4a ; P85/P87 et les limites d'autorisation restent applicables.
 
 ## Chaînage STOCK P81–P92 — sources originales
 
