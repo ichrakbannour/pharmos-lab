@@ -815,7 +815,7 @@ le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques dé
 | Catalogue enrichi, classification, fiscalité | Référentiel APEX (dossier §4.3), sources officielles (R42–R44) | M02, M03, M05, M11, M12, EXT03, EXT04 (listes de référence), M20 (TVA), recherche universelle |
 | Substitution unifiée | Catalogue, validation pharmacien | EXT03 (qualification des substitutions), caisse |
 | Lots et états du stock | M03 (réceptions), M05 | FEFO, M10, M11, EXT05, valorisation, M20 |
-| Services | Catalogue (type SERVICE), EXT02 (habilitations), M02 (vente), M05 (consommables), EXT03 (`sensitive_access_log`) | M12, tableaux de bord, M20 |
+| Services | Catalogue (type SERVICE), EXT02 (permissions effectives), M02 (vente), M05 (consommables), EXT03 (`sensitive_access_log`) | M12, tableaux de bord, M20 |
 | Finance étendue | M03, M06, M08, EXT02 (variables RH), EXT04 (créances) | M20, tableaux de bord, IA (agrégats) |
 | M20 Comptabilité | Événements de tous les modules, `posting_rules`, plan de comptes validé (R46) | Exports comptables, tableau de bord financier, contrôles |
 | Tableaux de bord | Couche métriques, `rx_facts`, projections EXT04, `financial_snapshots` | Titulaire, comptable, IA |
@@ -1061,7 +1061,7 @@ fonctions avancées (comptabilité, tableaux de bord) qui viennent plus tard.
 | **5d. Opérations correctives** (EXT05 amendé) | Suppression de `DISPONIBLE_DIRECT` (D74), décision immédiate tracée | — |
 | **7. Finance** (ajout) | Nature des factures, catégories de charges, avoirs et acomptes fournisseurs, charges récurrentes, emprunts, rapprochement bancaire | Dettes et trésorerie fiables |
 | **7c. Comptabilité & paie importée** (nouveau, après 7 et 7b) | M20 : plan de comptes, journaux, règles de passation, écritures, périodes, grand livre, balance, exports ; immobilisations ; import de paie | Dépend de tous les événements financiers ; validation R45, R46, R50 |
-| **9c. Services pharmaceutiques** (nouveau, après 5 et 10b) | Définitions, activation réglementaire, actes, consommables, facturation | Après R47 et les habilitations RH |
+| **9c. Services pharmaceutiques** (nouveau, après 5 et 10b) | Définitions configurées par la pharmacie, activation/désactivation par l'administrateur, actes, consommables, facturation | Après cadrage réglementaire R47 ; droits effectifs `services.perform`, sans habilitation obligatoire par service ni verrou d'activation réglementaire automatique (D78) |
 | **11. Métriques & rapports** (ajout) | Dimensions et mesures §4.10, `financial_snapshots`, tableaux de bord financier (G23) et commercial (G24) | Couche métriques unique |
 | **13. IA** (ajout) | Analyses financières et commerciales sur agrégats | Après 11 |
 
