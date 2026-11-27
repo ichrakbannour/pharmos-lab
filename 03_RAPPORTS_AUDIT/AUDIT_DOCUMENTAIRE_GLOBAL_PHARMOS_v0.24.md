@@ -20,7 +20,8 @@ Le PO a confirmé explicitement retenir **l'option B** pour INC-06. Le conflit d
 
 1. Addendum de décision PO : 04_DECISIONS_PO/INC-06_ARBITRAGE_PO_OPTION_B_20261127.md.
 2. Nouvelle matrice courante : 04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.4.md.
-3. Index des décisions PO, index des rapports et README racine mis à jour pour pointer vers les nouveaux documents.
+3. En-tête de gouvernance d'EXT04 mis à jour pour refléter l'option B arbitrée, sans réécriture de son corps technique de proposition.
+4. Index des décisions PO, index des rapports et README racine mis à jour pour pointer vers les nouveaux documents.
 
 La matrice source v1.3.3 n'est pas écrasée. Le miroir des 42 sources originales n'est pas modifié.
 
@@ -50,7 +51,8 @@ Les annonces du SPOT et les articles de presse ne constituent pas une décision 
 - La règle « aucune convention active par défaut » est maintenue.
 - Le remboursement par l'assuré ne crée pas de créance tiers payant pour la pharmacie.
 - Aucune activation CNAM n'est permise sur la seule base de la présente décision.
-- La matrice v1.3.3, le document EXT04 de proposition et les sources archivées ne sont pas écrasés.
+- La matrice source v1.3.3 et les sources archivées ne sont pas écrasées.
+- Seul l'en-tête de gouvernance d'EXT04 est actualisé ; le corps de la proposition technique reste non validé et non autorisé à la réalisation.
 
 ## 6. Points restant ouverts
 
