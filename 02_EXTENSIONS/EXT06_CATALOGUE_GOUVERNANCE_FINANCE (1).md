@@ -964,6 +964,8 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 
 Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 sont marquées ARBITRÉES dans la matrice maître D1–D86 v1.2.1 ; les lignes ci-dessous sont conservées comme historique des choix et ne constituent pas de nouvelles demandes d'arbitrage.
 
+**Réserve de traçabilité D72 :** le tableau EXT06 décrit D72 comme la procédure de secours en cas de perte d'accès du pharmacien administrateur. Les échanges PO identifient également D72 comme l'arbitrage relatif au SUPERADMIN APEX immuable (`apexproib@gmail.com`). Ces deux formulations ne doivent pas être fusionnées ni implémentées sous un même identifiant avant comparaison avec la matrice maître et ses éventuels addenda. La règle de secours APEX reste à rattacher à un identifiant non ambigu.
+
 | # | Question | Options | Recommandation |
 |---|---|---|---|
 | **D72** | Perte d'accès du pharmacien administrateur | Procédure de secours APEX sur justificatifs · Second administrateur de secours | **Procédure de secours APEX** (double contrôle, sans accès aux données) ; un administrateur suppléant affaiblirait la règle « un seul responsable » |
