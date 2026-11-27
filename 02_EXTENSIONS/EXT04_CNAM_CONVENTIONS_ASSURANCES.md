@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D44–D58 ne sont pas globalement approuvés ; D37 (périmètre tiers payant, référencé par EXT03) reste à réexaminer. Les exigences réglementaires et conventions doivent être sourcées et validées. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1)
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Selon la matrice PO D1–D86 v1.3.3, D37 reste **À RÉEXAMINER** et D44–D58 restent des propositions non globalement approuvées. En conséquence, l'option B de D44 (tiers payant CNAM activable par paramétrage) n'est pas une autorisation de mise en service : aucun flux de tiers payant CNAM ne peut être considéré comme approuvé ou activable tant que D37 n'a pas été réexaminée et arbitrée par le PO. Les exigences réglementaires et conventions doivent être sourcées et validées. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1)
 n'est pas modifié : les changements nécessaires sont listés au §3.4 et ne seront reportés qu'après validation.
 **Module créé** : **M18 Prises en charge & organismes payeurs**
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), **EXT03 v1.1** (dossier d'audit `03_AUDIT_EXT03_v1.1`,
@@ -814,7 +814,7 @@ Numérotation à la suite d'EXT03 v1.1 (D27 à D43).
 
 | # | Question | Options | Recommandation |
 |---|---|---|---|
-| **D44** | Périmètre du module à la mise en service, compte tenu de la suspension du tiers payant CNAM | A. Module complet dès la v1 · B. v1 limitée au remboursement par l'assuré et aux conventions privées, tiers payant CNAM activable par paramétrage · C. Reporter le module | **B** : utile immédiatement (justificatifs), sans dépendre de l'issue du conflit ; le modèle complet est livré mais aucune convention n'est active par défaut |
+| **D44** | Périmètre du module à la mise en service, compte tenu de la suspension du tiers payant CNAM | A. Module complet dès la v1 · B. v1 limitée au remboursement par l'assuré et aux conventions privées, tiers payant CNAM activable par paramétrage · C. Reporter le module | **B — PROPOSITION NON ARBITRÉE**. Ne vaut pas autorisation d'activer le tiers payant CNAM ; toute activation reste bloquée tant que D37 n'est pas arbitrée par le PO. |
 | **D45** | Organismes ciblés en priorité | CNAM · mutuelles · assureurs privés · conventions d'entreprise | Tous génériques ; priorités de paramétrage selon les pharmacies pilotes |
 | **D46** | Niveau de vérification minimal par défaut pour le tiers payant | `JUSTIFIEE` · `VERIFIEE` | **`VERIFIEE`** ; `JUSTIFIEE` seulement si la convention le prévoit expressément |
 | **D47** | Saisie manuelle d'une part organisme hors moteur | Interdite · Autorisée par convention, pharmacien + justificatif | Interdite par défaut, activable par convention |
