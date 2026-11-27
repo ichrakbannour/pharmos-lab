@@ -254,7 +254,7 @@ Check-list obligatoire (paramétrable par catégorie de produit) :
   ☐ conditions de conservation conformes (chaîne du froid : refus par défaut si non garantie)
   ☐ date de péremption ≥ seuil minimal de revente (paramétrable, ex. 90 jours)
   ☐ règles produit : non réglementé, non fractionné, non préparation, non dispositif à usage unique ouvert
-Décision par un collaborateur habilité `stock.return.decide` (≠ celui qui a reçu le retour, au-delà du seuil) :
+Décision par un collaborateur identifié auquel le pharmacien-administrateur a explicitement accordé `stock.return.decide` (D74), distinct de celui qui a reçu le retour au-delà du seuil :
   → RÉINTÉGRÉ   : mouvement EN_CONTROLE → DISPONIBLE (même lot)
   → QUARANTAINE : mouvement EN_CONTROLE → QUARANTAINE (avis pharmacien, retour fournisseur, rappel de lot)
   → PERTE       : uniquement après parcours utilisateur complet avec confirmation explicite de la quantité et des conséquences irréversibles (P86) ; création du loss_record (M10), destruction ultérieure (PV)
@@ -551,7 +551,7 @@ respectivement à `sale.read`, `sale.void.request`, `sale.void.execute`, `sale.v
 | `sale.return.without_receipt` | ✔ | ✔ | — | — | — | — | — |
 | `sale.return.restore_right` | ✔ | ✔ | — | — | — | — | — |
 | `stock.return.decide` | — | — | — | — | — | — | — |
-| `stock.return.decide.controlled`, `correction.controlled.execute` | ✔ | ✔ (si habilité) | — | — | — | — | — |
+| `stock.return.decide.controlled`, `correction.controlled.execute` | ✔ | — (aucun droit par rôle ; habilitation et autorisation explicites du pharmacien-administrateur, quatre yeux) | — | — | — | — | — |
 | `refund.execute` | ✔ | ✔ | ✔ (dans le plafond du retour) | ✔ (exécution d'une opération validée) | — | — | — |
 | `refund.autonomous` | ✔ | ✔ | — | — | — | — | — |
 | `refund.cash_on_card_sale` | ✔ | — | — | — | — | — | — |
