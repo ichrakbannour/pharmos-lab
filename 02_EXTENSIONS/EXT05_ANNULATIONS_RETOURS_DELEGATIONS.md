@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. La matrice PO D1–D86 v1.3.4 confirme notamment D61 et D66 **CADUQUES** ; D59, D60, D62–D65 et D67–D71 restent **PROPOSÉES** dans la matrice et ne sont pas globalement arbitrées. D74 et D75, arbitrées dans EXT06, sont propagées ici comme règles de fonctionnement : octroi individuel explicite pour `stock.return.decide`, sans attribution par rôle, et jour calendaire par défaut avec option GARDES/PERMANENTE soumise aux conditions PO. Cette extension reste une proposition technique non autorisée à l'implémentation. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1)
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. La matrice PO D1–D86 v1.3.5 confirme notamment D61 et D66 **CADUQUES** ; D59, D60, D62–D65 et D67–D71 restent **PROPOSÉES** dans la matrice et ne sont pas globalement arbitrées. D74 et D75, arbitrées dans EXT06, sont propagées ici comme règles de fonctionnement : octroi individuel explicite pour `stock.return.decide`, sans attribution par rôle, et jour calendaire par défaut avec option GARDES/PERMANENTE soumise aux conditions PO. Cette extension reste une proposition technique non autorisée à l'implémentation. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1)
 n'est pas modifié : les changements nécessaires sont listés au §3.6 et ne seront reportés qu'après validation.
 **Module créé** : **M19 Opérations correctives et délégations** (transverse)
 **Base de conception** : dossier principal v1.1 (§5.2 retours, §9.3 audit), **EXT02** (caisses nominatives §7, droits effectifs §1.2),
