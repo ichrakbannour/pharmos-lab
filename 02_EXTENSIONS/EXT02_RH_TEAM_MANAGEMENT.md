@@ -53,19 +53,25 @@ d'audit pour la traçabilité technique (session, appareil).
 ```
 Permission demandée (ex. controlled.dispense)
   │
-  ├─ 1. Le rôle du membre l'accorde-t-il ?                 (role_permissions)
-  ├─ 2. Exige-t-elle une habilitation ?                    (permissions.requires_habilitation)
-  │      └─ habilitation active pour ce collaborateur ?   (employee_habilitations, dates)
-  │           └─ qualifications prérequises valides ?     (employee_qualifications, expiration)
+  ├─ 1. Source du droit :
+  │      rôle (role_permissions), OU octroi individuel explicite (permission_overrides),
+  │      OU délégation temporaire valide selon les règles de l'extension concernée
+  │      [les permissions réservées à un octroi explicite ne sont jamais accordées par rôle]
+  ├─ 2. Conditions obligatoires de la permission :
+  │      habilitation requise ? (permissions.requires_habilitation)
+  │      └─ habilitation active ? (employee_habilitations, dates)
+  │           └─ qualifications prérequises valides ? (employee_qualifications, expiration)
   ├─ 3. Collaborateur au statut actif ? (non suspendu, non sorti)
   ├─ 4. Politique de présence (paramétrable par permission) :
   │      aucune / pointé / en shift planifié / affecté à l'équipe concernée aujourd'hui
-  └─ 5. Portée : soi / équipe gérée / toute la pharmacie ; plafonds (remise max, montant)
+  ├─ 5. Portée, plafonds et séparation des tâches :
+  │      soi / équipe gérée / toute la pharmacie ; plafonds (remise max, montant)
+  └─ 6. Contrôles complémentaires et validations requises par le workflow
        → AUTORISÉ | REFUSÉ (code motif) | AUTORISÉ SOUS VALIDATION (PIN d'un habilité)
 ```
 
-- Évalué **côté serveur** à chaque requête ; résultat mis en cache par session, invalidé par les
-  événements `habilitation.*`, `qualification.expired`, `employee.status_changed`, `attendance.*`.
+- Les octrois individuels et délégations sont gérés selon les extensions qui les définissent ; ils ne sont jamais déduits d'une simple affectation ou d'un rôle. Une permission explicitement réservée à l'octroi individuel ne peut pas être ajoutée par `role_permissions`. Les habilitations, qualifications, présence, plafonds, séparation des tâches et validations obligatoires restent des contrôles cumulatifs : un octroi individuel ne les contourne pas.
+- Évalué **côté serveur** à chaque requête ; résultat mis en cache par session, invalidé par les événements `habilitation.*`, `qualification.expired`, `employee.status_changed`, `attendance.*`, ainsi que par tout changement d'octroi individuel ou de délégation.
 - Le motif de refus est explicite (« habilitation *Dispensation réglementés* expirée le 31/10 »).
 - Exemple réglementaire : la dispensation d'un médicament réglementé et la validation d'une
   préparation exigent l'habilitation correspondante, elle-même conditionnée à la qualification de
@@ -131,8 +137,7 @@ d'audit, pas de suppression physique, historisation par **périodes de validité
 | `employee_habilitations` | id, employee_id, habilitation_id, valid_from, valid_to, accordee_par_employee_id, statut (`ACTIVE`, `SUSPENDUE`, `RETIREE`, `EXPIREE`), motif | INDEX(employee_id, statut) |
 | `permissions` (catalogue) | code (`sales.create`, `controlled.dispense`, `hr.private.read`…), module, sensibilite (1-3), requires_habilitation_code, presence_policy (`NONE`, `CLOCKED_IN`, `ON_SHIFT`, `ASSIGNED_TEAM`) | PK(code) |
 
-`role_permissions` (dossier principal §4.2) reste la source des permissions par rôle ; `permissions`
-devient le **catalogue** décrivant chaque permission et ses conditions supplémentaires.
+`role_permissions` (dossier principal §4.2) reste la source des permissions par rôle ; les octrois et retraits individuels sont portés par le mécanisme `permission_overrides` défini dans les extensions qui l'utilisent (notamment EXT05). Les délégations temporaires restent régies par leur extension. `permissions` demeure le **catalogue** décrivant chaque permission et ses conditions supplémentaires. Une permission réservée à un octroi individuel explicite ne doit pas être activée dans `role_permissions`.
 
 ### 2.3 Planning, temps et présence
 
