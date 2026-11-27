@@ -504,7 +504,7 @@ products n─1 tax_categories 1─n tax_rates ; products 0..1─n products (vari
 substitution_groups 1─n substitution_group_members n─1 products
 products 1─n lots 1─n stock_levels (par bucket), stock_movements ; products 1─n stock_reservations (réservation logique au niveau produit)
 products(SERVICE) 1─1 service_definitions 1─n service_acts 1─n service_act_consumables ─► stock_movements
-service_acts 0..1─1 sale_lines ; service_acts n─0..1 customers
+service_acts 0..1─1 sale_lines ; le nom du client est conservé en texte dans `service_acts` (D78)
 supplier_invoices n─1 suppliers ; 0..1─1 expense_categories ; 0..1─1 fixed_assets ; supplier_credit_notes, supplier_advances n─1 suppliers
 loans 1─n loan_schedule_lines 1─1 due_dates ; bank_statements 1─n bank_statement_lines 1─n bank_reconciliations ─► payments…
 payroll_imports 1─n payroll_import_lines n─1 employees
@@ -946,13 +946,13 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 
 | ID | Scénario | Résultat attendu |
 |---|---|---|
-| SRV-01 | Activation d'un service exigeant une autorisation absente ou expirée | Refus |
-| SRV-02 | Autorisation expirée pendant la période | Service désactivé, non proposé |
-| SRV-03 | Réalisation par un collaborateur non habilité | Refus |
+| SRV-01 | Activation par l'administrateur d'un service sans référence d'autorisation ou avec une référence expirée | Activation non bloquée par l'absence ou l'échéance de la référence informative ; la conformité juridique reste soumise à R47 |
+| SRV-02 | Échéance d'une référence d'autorisation informative | Aucune désactivation automatique ; le statut du service reste celui défini par l'administrateur |
+| SRV-03 | Réalisation par un collaborateur sans permission effective `services.perform` | Refus serveur |
 | SRV-04 | Service facturé avec consommables | Ligne de vente au tarif, sortie de stock des consommables par lot, acte enregistré |
 | SRV-05 | Service gratuit | Acte au registre, aucune ligne de vente |
 | SRV-06 | Annulation d'un acte facturé | Acte d'annulation lié ; correction de la vente selon EXT05 |
-| SRV-07 | Données de santé de l'acte | Chiffrées, consultation journalisée, absentes des charges utiles de l'IA |
+| SRV-07 | Recherche de champs patient, observations médicales ou mesures de santé structurées dans le registre et les écrans | Aucun champ ni collecte clinique ; les champs facultatifs sont strictement opérationnels et non cliniques |
 
 ### 10.5 Finance et comptabilité (S-FIN)
 
