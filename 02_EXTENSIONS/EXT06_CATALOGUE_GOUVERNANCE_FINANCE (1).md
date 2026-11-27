@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. La matrice v1.2.1 marquait D72–D86 comme arbitrées ; la version v1.3.3 (12/11/2026), plus récente, a été retrouvée mais son contenu détaillé n'a pas encore été relu. Les statuts D72–D86 ci-dessous sont donc historiques et ne doivent pas être utilisés comme état courant avant cette vérification. Les exigences réglementaires R42–R51 et les amendements PO postérieurs restent à réconcilier. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
+**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Le registre D72–D86 du §11 conserve l'historique de la proposition du 03/11/2026. La matrice PO D1–D86 v1.3.3 (12/11/2026) a désormais été relue : ses statuts et arbitrages courants sont repris dans le §11.1 de la présente extension. En cas d'écart, la matrice PO v1.3.3 prévaut ; le tableau historique §11 ne vaut pas état courant. Les exigences réglementaires R42–R51 restent à sourcer et valider, indépendamment des arbitrages fonctionnels. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), EXT03 v1.1 (dossier d'audit), EXT04 et EXT05 (propositions).
 
 > **Règle de ce document : aucun doublon.** EXT06 crée un seul module nouveau (**M20 Comptabilité**, partie de
@@ -982,6 +982,39 @@ Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 étaie
 | **D84** | Référentiel de classification thérapeutique | ATC · Référentiel local · Classification APEX | Selon R43 ; à défaut, classification APEX maintenue et sourcée |
 | **D85** | Rapprochement bancaire automatique | Automatique · Proposé puis confirmé | **Proposé puis confirmé** (cohérent avec EXT04 D55) |
 | **D86** | Seuil de validation des charges par l'administrateur | Montant fixe · Toutes les charges | Montant paramétrable |
+
+---
+
+## 11.1 Réconciliation avec la matrice PO v1.3.3 — état courant au 27/11/2026
+
+**Référence normative :** `04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.3.md`. Cette section complète le registre historique §11 sans le réécrire. Les statuts de la matrice PO prévalent.
+
+| Décision | Statut PO v1.3.3 | Confrontation à EXT06 v1.0 | Traitement requis dans une prochaine consolidation |
+|---|---|---|---|
+| D72 | **ARBITRÉE** — SUPERADMIN APEX immuable ; gouvernance globale SaaS/On-Prem ; comptes administrateurs des pharmacies ; isolation et conservation des données ; récupération sécurisée du Super Admin | **Contradiction majeure** : le tableau historique §11 décrit D72 comme une procédure de secours du pharmacien-administrateur et précise qu'elle ne donne pas accès aux données. Ce n'est pas l'arbitrage D72 actuel. | Reprendre D72 depuis la matrice PO. Ne pas fusionner la procédure de secours locale historique avec D72 ; la rattacher à une décision distincte seulement après identification PO. |
+| D73 | **ARBITRÉE** — validation à distance par l'administrateur seul, MFA au moment de la décision, confirmation, motif, opération identifiée, usage unique, journalisation ; réglementés exclus | Le principe de validation à distance existe dans EXT06 ; vérifier que toutes les garanties et l'exclusion des réglementés sont propagées à chaque workflow concerné. | Propager le texte complet D73, pas seulement « validation à distance ». |
+| D74 | **ARBITRÉE** — réintégration corrective par second collaborateur uniquement si droit explicitement accordé par l'administrateur | Le bloc « Application de D74 » §5.2 est aligné sur l'octroi explicite. EXT05 canonique a été corrigée en conséquence (v0.17). | Conserver l'alignement et ne pas réintroduire de valeur par défaut par rôle. |
+| D75 | **ARBITRÉE** — jour calendaire par défaut ; option GARDES/PERMANENTE activée explicitement, motif, MFA, versionnement, non-rétroactivité, journalisation | Le §5.2 décrit l'option mais son paragraphe de transition reste incomplet par rapport aux garanties détaillées de D75. | Conserver toutes les garanties dans le flux et renvoyer au paramétrage versionné et journalisé. |
+| D76 | **ARBITRÉE** — compartiment physique RESERVE supprimé ; réservation logique | Conforme au principe de retrait du bucket RESERVE dans EXT06. | Maintenir la distinction réservation logique / stock physique. |
+| D77 | **ARBITRÉE** — accueil adapté au rôle **et aux permissions effectives** | **Contradiction** : le registre historique §11 indique « selon le rôle », modifiable par l'utilisateur ; il omet les permissions effectives. | Remplacer cette formulation dans la prochaine consolidation par rôle + permissions effectives, sans laisser l'utilisateur dépasser ses droits. |
+| D78 | **ARBITRÉE** — services définis par la pharmacie ; aucun catalogue universel ; notification limitée au type de service/opération, nom du client et date ; pas de dossier clinique ni mesures structurées | Les passages D78 de la proposition reprennent globalement cette portée. | Préserver strictement les limites de données et l'absence de catalogue APEX imposé. |
+| D79 | **ARBITRÉE** — permission dédiée de consultation des marges, y compris G25 | Aligné en substance par `analytics.margin.read`. | Vérifier l'application effective à G25 lors de la consolidation et des tests autorisés. |
+| D80 | **ARBITRÉE** — partie double M20 ; libellé exact « Comptabilité à titre indicatif » ; écritures validées immuables ; corrections par contre-passation et nouvelle écriture | Le libellé et la portée pré-comptable sont présents ; l'immutabilité et le mode de correction doivent rester explicites dans les workflows. | Reprendre les garanties de la matrice et préserver le libellé exact dans les écrans et exports. |
+| D81 | **ARBITRÉE** — import des montants mensuels uniquement ; aucun moteur de paie | Aligné en substance. | Ne pas introduire de calculateur de paie. |
+| D82 | **ARBITRÉE** — réouverture par administrateur avec motif ; interdite après export final | Aligné en substance. | Préserver le verrou après export final. |
+| D83 | **ARBITRÉE** — plan standard initial indicatif, adaptable par l'administrateur, sans validation préalable obligatoire d'un expert-comptable ; cohérence des règles de passation et traçabilité | Le tableau historique §11 correspond globalement ; le modèle de comptes est décrit comme adaptable et indicatif. | Maintenir l'absence de validation préalable obligatoire et le contrôle de cohérence/traçabilité. |
+| D84 | **ARBITRÉE** — classification thérapeutique standard initiale, modifiable par l'administrateur, distincte des données réglementaires officielles | **Propagation incomplète** : le tableau historique §11 renvoie à R43 et à une classification APEX « à défaut », sans énoncer clairement le modèle standard initial modifiable et sa séparation des données réglementaires officielles. | Reprendre le libellé D84 de la matrice ; ne pas confondre classification thérapeutique et référentiel réglementaire officiel. |
+| D85 | **ARBITRÉE** — rapprochement bancaire proposé puis confirmé par un humain | Aligné en substance. | Maintenir une confirmation humaine ; aucun lettrage silencieux. |
+| D86 | **ARBITRÉE** — seuil de validation des charges paramétrable | Aligné en substance. | Maintenir le paramétrage par l'administrateur et la traçabilité. |
+
+### 11.1.1 Réserves et portée
+
+- Les statuts ci-dessus proviennent de la matrice PO v1.3.3 ; aucune décision n'est créée ou réouverte par cette extension.
+- D72, D77 et D84 présentent des écarts de contenu explicites entre le registre historique EXT06 et la matrice PO actuelle.
+- D73, D75, D79 et D80 nécessitent une vérification de propagation des garanties complètes, même lorsque le principe général est présent.
+- Les autres décisions indiquées « alignées en substance » ne sont pas déclarées conformes dans le code ni validées par des tests.
+- Les validations réglementaires R42–R51 restent indépendantes et ouvertes selon leur propre statut.
+- Cette réconciliation documentaire n'autorise aucune implémentation, migration, déploiement ou modification de l'environnement DEMO.
 
 ---
 
