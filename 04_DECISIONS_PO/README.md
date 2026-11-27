@@ -4,6 +4,8 @@ Ce dossier centralise les décisions métier confirmées, les arbitrages en atte
 
 ## Sources actuellement présentes dans le dossier canonique
 
+- **[Clarification PO TVA du 27/11/2026](CLARIFICATION_PO_TVA_20261127.md)** — champ TVA présent dès l'origine ; 7 % prérempli ; taux modifiable par produit par l'ADMIN-PHARMACIEN titulaire, y compris 0 % ; historisation et taux figé sur chaque vente. Clarification sans création de D87 ; R44 réglementaire reste à confirmer.
+
 - **[Matrice D1–D86 v1.3.4](MATRICE_DECISIONS_D1_D86_v1.3.4.md)** — référence PO courante ; arbitrage INC-06 option B (D6, D37, D44) ; 20 arbitrées, 61 proposées, 3 à réexaminer, 2 caduques.
 - [Addendum PO INC-06 — option B](INC-06_ARBITRAGE_PO_OPTION_B_20261127.md) — décision du 27/11/2026 : modèle complet ; périmètre v1 limité au remboursement par l'assuré et aux conventions privées ; aucune convention active par défaut ; tiers payant CNAM/mutuelles exclu de la v1 ; activation CNAM ultérieure sous vérification officielle et validation PO distincte.
 - [Matrice D1–D86 v1.3.3](MATRICE_DECISIONS_D1_D86_v1.3.3.md) — version antérieure, conservée sans modification.
