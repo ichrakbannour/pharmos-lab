@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.9](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.9.md)** — 27/11/2026 ; réconciliation EXT06 v1.1 avec les arbitrages PO D72–D86, écarts D72/D74/D77/D78/D83 et statut des prototypes/tests. 
+- **[Audit documentaire global v0.10](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.10.md)** — 27/11/2026 ; EXT05/EXT06 : contradiction D74 sur les droits par défaut, propagation D75 ; EXT04 : INC-06 D37/D44 maintenu ouvert.
+- **[Audit documentaire global v0.9](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.9.md)** — 27/11/2026 ; réconciliation EXT06 v1.1 avec les arbitrages PO D72–D86, écarts D72/D74/D77/D78/D83 et statut des prototypes/tests.
 - [Audit documentaire global v0.8](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.8.md) — 27/11/2026 ; revue approfondie EXT03 v1.1, réconciliation D27–D43, prérequis réglementaires R1–R22 et statut des tests (spécification sans preuve d’exécution).
 - [Audit documentaire global v0.7](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.7.md) — 27/11/2026 ; contrôle direct de l’archive et approfondissement des réserves P87-RES-1/RES-2, de P90 intégré à P88 et des limites P91.
 - [Audit documentaire global v0.6](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.6.md) — 27/11/2026 ; différentiel des 14 versions D1–D86, revue EXT03 v1.1 et consolidation P81–P91.
