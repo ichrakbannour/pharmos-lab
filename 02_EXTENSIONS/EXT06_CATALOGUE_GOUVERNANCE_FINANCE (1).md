@@ -593,14 +593,13 @@ Règles :
 | **Disponible vendable** | Disponible − réservations actives | — | Calculé |
 | **En contrôle** | Bucket `EN_CONTROLE` (retours, annulations, réceptions à contrôler si activé) | Non | `stock_levels` |
 | **Quarantaine** | Bucket `QUARANTAINE` (rappel, suspicion, réglementé retourné) | Non | `stock_levels` |
-| **Perte** | Bucket `PERTE` jusqu'à destruction | Non | `stock_levels` + `loss_records` |
+| **Perte** | Bucket `PERTE` non vendable, visible avec quantité et ancienneté « en attente de destruction » ; la destruction physique est une opération distincte, différée et tracée | Non | `stock_levels` + `loss_records` |
 
 - **Correction d'EXT05** : le bucket `RESERVE` est retiré. Une réservation n'est pas un mouvement physique, et la modéliser
   comme un bucket créerait deux sources pour la même information (D76).
 - **FEFO** : l'allocation à la vente choisit le lot `ACTIF` du bucket `DISPONIBLE` à la péremption la plus proche, non
   périmé, non bloqué, en déduisant les réservations. Un lot `RAPPELE` ou `BLOQUE` n'est jamais alloué.
-- **Quantité reçue / disponible** : la quantité reçue est figée sur le lot à la réception ; la quantité disponible est
-  toujours lue dans `stock_levels`. Contrôle permanent : reçue = disponible + en contrôle + quarantaine + perte + Σ sorties nettes.
+- **Rapprochement CAT-11 (P81, DP1-R9)** : `reçu + corrections nettes = disponible + en contrôle + quarantaine + perte + sorties nettes`. « Reçu » désigne uniquement les réceptions physiques et les régularisations hors commande. Les retours clients et les contre-passations de réception sont comptabilisés dans les mouvements nets, et non dans « reçu ». La quantité disponible est lue dans `stock_levels`, jamais déduite d'une quantité disponible stockée sur le lot.
 - Le **prix d'achat applicable** est celui du lot (coût réel de réception, remises et gratuités réparties). Le CUMP du produit
   reste calculé pour la valorisation (dossier §4.3).
 
@@ -911,7 +910,7 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 | CAT-08 | Équivalent informatif (même DCI, autre dosage) | Affiché, jamais proposé comme substitution |
 | CAT-09 | Doublon de code-barres | Refus |
 | CAT-10 | FEFO avec un lot `EN_CONTROLE`, un lot `RAPPELE` et une réservation | Seul le lot disponible et non réservé le plus proche de la péremption est alloué |
-| CAT-11 | Contrôle reçue = disponible + contrôle + quarantaine + perte + sorties nettes | Égalité sur un jeu de référence |
+| CAT-11 | Contrôle `reçu + corrections nettes = disponible + en contrôle + quarantaine + perte + sorties nettes` ; « reçu » = réceptions et régularisations seulement, retours clients et contre-passations inclus dans les mouvements nets | Égalité sur un jeu de référence, selon DP1-R9 (P81) |
 | CAT-12 | Produit `ARRETE` avec stock | Vendable sur stock, exclu des propositions de commande |
 | CAT-13 | Recherche universelle : nom en arabe, DCI avec faute, code-barres, laboratoire | Résultats pertinents < 150 ms ; aucun médecin renvoyé à un utilisateur sans droit |
 
