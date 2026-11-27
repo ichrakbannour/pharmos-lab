@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION SOUMISE À VALIDATION**. Aucun code. Le dossier principal (`CONCEPTION_PHARMOS_v1.md` v1.1)
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D44–D58 ne sont pas globalement approuvés ; D37 (périmètre tiers payant, référencé par EXT03) reste à réexaminer. Les exigences réglementaires et conventions doivent être sourcées et validées. Le dossier principal (`CONCEPTION_PHARMOS_v1.md` v1.1)
 n'est pas modifié : les changements nécessaires sont listés au §3.4 et ne seront reportés qu'après validation.
 **Module créé** : **M18 Prises en charge & organismes payeurs**
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), **EXT03 v1.1** (dossier d'audit `03_AUDIT_EXT03_v1.1`,
