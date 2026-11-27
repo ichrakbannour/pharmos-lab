@@ -30,7 +30,8 @@ La correction a été propagée dans G13, W8, les schémas `service_definitions`
 - W8 et SV2–SV4 reposent sur le statut actif/inactif géré par l'administrateur et la permission effective `services.perform`, sans gate réglementaire non arbitré.
 - Les dépendances et le plan de lot 9c ne présentent plus les habilitations RH comme condition obligatoire par service ni l'activation réglementaire comme verrou technique ; R47 reste un cadrage réglementaire externe.
 - La relation `service_acts`–`customers` a été retirée : le nom du client est conservé en texte conformément à D78.
-- Les tests de conception SRV-01, SRV-02, SRV-03 et SRV-07 ont été réécrits pour ne plus attendre un blocage d'autorisation, une désactivation automatique ou une habilitation obligatoire ; ils vérifient les références informatives, les permissions effectives et l'absence de données cliniques.
+- Les tests de conception SRV-01, SRV-02, SRV-03 et SRV-07 ont été réécrits pour ne plus attendre un blocage d'autorisation, une désactivation automatique ou une habilitation obligatoire ; ils vérifient les références informatives, les permissions effectives et l'absence de données cliniques. Les tests SRV-08 à SRV-12 ont été ajoutés pour couvrir l'installation sans catalogue, la création réservée à l'administrateur, l'enregistrement minimal, l'absence de champs cliniques et la lecture journalisée.
+- Le type de service pouvant révéler une information de santé, la lecture du registre reste limitée aux permissions effectives et journalisée dans `sensitive_access_log` ; les actes nominatifs sont exclus de l'IA.
 - `service_acts` conserve le type de service, le nom du client, l'auteur et la date ; les colonnes d'observations, de mesures et d'identifiant patient ont été retirées.
 - SV3, SV5 et SV6 reflètent désormais cette portée.
 - Les permissions `services.acts.read` et `services.perform` ne présument plus de données patient ni d'une habilitation obligatoire par service.
@@ -66,7 +67,8 @@ Contrôles textuels effectués sur la version relue depuis `main` :
 - absence de condition d'habilitation obligatoire et de gate réglementaire dans W8/SV2–SV4 ;
 - absence de renvoi résiduel aux habilitations RH ou à un verrou réglementaire dans la dépendance et la feuille de route du lot 9c ;
 - relation de client en texte, sans relation `service_acts` vers `customers` ;
-- tests SRV-01/02/03/07 conformes au modèle D78 ;
+- tests SRV-01/02/03/07/08–12 conformes au modèle D78 ;
+- lecture du registre limitée et journalisée, actes nominatifs exclus de l'IA ;
 - maintien de la ligne D78 comme décision arbitrée issue de la matrice PO v1.3.3.
 
 ## 5. Éléments restant ouverts
