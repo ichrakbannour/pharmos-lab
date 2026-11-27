@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D27–D39 ne sont pas globalement approuvés ; exception : D37 est **ARBITRÉE** dans INC-06 (option B) selon la matrice maître D1–D86 v1.3.4. Le modèle complet est prévu, mais le périmètre v1 est limité au remboursement par l'assuré et aux conventions privées ; aucune convention n'est active par défaut. Le tiers payant CNAM/mutuelles est exclu de la v1 ; toute activation CNAM ultérieure exige vérification officielle et validation PO distincte. D40 est **ARBITRÉE** : réservation sans avance, durée par défaut de deux jours comptables, configurable par l'administrateur ; les règles détaillées de D40 dans la matrice v1.3.4 prévalent sur toute formulation antérieure de cette proposition. Les exigences réglementaires restent à valider. Les modules existants ne sont pas modifiés :
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D27–D39 ne sont pas globalement approuvés ; exception : D37 est **ARBITRÉE** dans INC-06 (option B) selon la matrice maître D1–D86 v1.3.5. Le modèle complet est prévu, mais le périmètre v1 est limité au remboursement par l'assuré et aux conventions privées ; aucune convention n'est active par défaut. Le tiers payant CNAM/mutuelles est exclu de la v1 ; toute activation CNAM ultérieure exige vérification officielle et validation PO distincte. D40 est **ARBITRÉE** : réservation sans avance, durée par défaut de deux jours comptables, configurable par l'administrateur ; les règles détaillées de D40 dans la matrice v1.3.5 prévalent sur toute formulation antérieure de cette proposition. Les exigences réglementaires restent à valider. Les modules existants ne sont pas modifiés :
 les changements qu'ils nécessitent sont listés au §3 et ne seront reportés dans le dossier principal
 qu'après validation des arbitrages du §13.
 **Module créé** : **M17 Ordonnances & prescripteurs**
@@ -485,7 +485,7 @@ d'un patient exige `rx.read.nominative` et est journalisée avec un motif.
 ### 6.3 Finance (M08)
 
 - Aucun nouveau flux financier en v1 : les ordonnances ne changent ni les prix ni les modes de paiement.
-- **Tiers payant (CNAM, mutuelles, conventions)** : D37 est **ARBITRÉE — option B** dans la matrice PO v1.3.4. Le modèle complet est livré dans le périmètre de l'option B : v1 limitée au remboursement par l'assuré et aux conventions privées ; aucune convention active par défaut. Le tiers payant CNAM/mutuelles est exclu de la v1. Toute activation CNAM ultérieure exige la vérification des documents officiels applicables puis une validation PO explicite et distincte. Cette décision ne vaut ni autorisation de mise en service ni validation globale des règles D45–D58 :
+- **Tiers payant (CNAM, mutuelles, conventions)** : D37 est **ARBITRÉE — option B** dans la matrice PO v1.3.5. Le modèle complet est livré dans le périmètre de l'option B : v1 limitée au remboursement par l'assuré et aux conventions privées ; aucune convention active par défaut. Le tiers payant CNAM/mutuelles est exclu de la v1. Toute activation CNAM ultérieure exige la vérification des documents officiels applicables puis une validation PO explicite et distincte. Cette décision ne vaut ni autorisation de mise en service ni validation globale des règles D45–D58 :
   `patient_profiles.organisme` / `identifiant_assure`, lien ligne à ligne vente ↔ ordonnance, qui permettront une
   future part « patient » / part « organisme » et une créance sur l'organisme dans `party_ledger`.
 
@@ -729,7 +729,7 @@ Pré-requis bloquants avant le lot 5b : validation des exigences R1 à R6 (au mi
 | **D37** | Tiers payant (CNAM, mutuelles) | Option B arbitrée : remboursement par l'assuré et conventions privées en v1 ; tiers payant CNAM/mutuelles hors v1 | Modèle complet ; périmètre v1 limité au remboursement par l'assuré et aux conventions privées ; aucune convention active par défaut ; tiers payant CNAM/mutuelles hors v1 |
 | **D38** | Posologie | Non saisie · Facultative · Obligatoire | Facultative, non utilisée par l'IA ni par les rapports |
 | **D39** | Ventes sur ordonnance hors ligne | Interdites · Ordonnances simples uniquement | Ordonnances simples uniquement, synchronisées et contrôlées au retour du réseau |
-| **D40** | Réservation de stock pour les reliquats `PATIENT_REVIENDRA` | Décision PO du 10/11/2026 : aucune avance ; réservation par défaut de deux jours comptables, configurable par l'administrateur ; échéance notifiée ; aucune annulation ou confiscation silencieuse. La règle PO complète de la matrice v1.3.4 prévaut. | **ARBITRÉE — ne pas reprendre la recommandation historique « réservation courte paramétrable » comme règle suffisante.** |
+| **D40** | Réservation de stock pour les reliquats `PATIENT_REVIENDRA` | Décision PO du 10/11/2026 : aucune avance ; réservation par défaut de deux jours comptables, configurable par l'administrateur ; échéance notifiée ; aucune annulation ou confiscation silencieuse. La règle PO complète de la matrice v1.3.5 prévaut. | **ARBITRÉE — ne pas reprendre la recommandation historique « réservation courte paramétrable » comme règle suffisante.** |
 
 ### 13.2 Exigences réglementaires
 
