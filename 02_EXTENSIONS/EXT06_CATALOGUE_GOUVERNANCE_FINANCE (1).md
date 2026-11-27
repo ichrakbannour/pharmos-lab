@@ -234,7 +234,9 @@ Absence de l'administrateur : aucune dérogation possible ; l'opération attend 
 Vente non validée                               → abandon (aucune écriture corrective) — inchangé
 Vente validée, produit non remis :
   ├─ produit non sensible, même jour calendaire (fuseau de l'officine), dans les droits et plafonds
-  │      → annulation par le collaborateur habilité ; produit en EN_CONTROLE (sauf exception D74)
+   │      → annulation par le collaborateur habilité ; produit en EN_CONTROLE
+   │      → décision immédiate simplifiée par un second collaborateur uniquement si le pharmacien-administrateur
+   │        lui a explicitement accordé le droit de réintégration corrective (D74)
   ├─ produit non sensible, jour suivant ou plus  → dérogation de l'ADMINISTRATEUR obligatoire (W4)
   └─ produit sensible ou réglementé              → circuit spécifique EXT05 §4.7 (quatre yeux, registre) ;
                                                    jamais de réintégration directe
@@ -275,7 +277,9 @@ Collaborateur ouvre le catalogue des services (G12) ou ajoute une prestation au 
   → contrôles : service ACTIF (autorisation réglementaire valide à la date), collaborateur habilité
     (habilitation liée au service, EXT02), présence pointée si exigée
   → saisie : date et heure (horodatage serveur par défaut), patient facultatif ou obligatoire selon le service,
-    consentement si exigé, observations non médicales ou cliniques selon le service [ARBITRAGE D78]
+   → saisie/notification minimale : type d'opération ou service défini par le pharmacien-administrateur,
+     nom du client et date ; aucune liste de services tunisienne n'est imposée par APEX ;
+     aucune mesure ni observation clinique
   → produits consommés éventuels (seringue, coton, pansement) : sortie de stock liée à la prestation
   → facturation : prestation gratuite (registre seul) ou ligne de vente au tarif (même caisse nominative)
   → enregistrement dans `service_acts` (immuable ; correction par acte d'annulation lié)
@@ -332,7 +336,8 @@ Contrôles automatiques : sessions de caisse clôturées et validées, bordereau
   écritures en attente, réconciliations (stock, créances, dettes, caisse) sans écart
   → génération des écritures manquantes → balance de contrôle (débit = crédit)
   → validation de la période par l'administrateur (ou comptable habilité) → période VERROUILLEE
-  → export vers le logiciel comptable
+   → export vers le logiciel comptable ; tous les écrans, états et exports comptables portent la mention
+     « Comptabilité à titre indicatif »
   → correction après verrouillage : écriture de régularisation dans la période ouverte suivante ;
     réouverture exceptionnelle par l'administrateur avec motif, interdite après export définitif [ARBITRAGE D82]
 ```
