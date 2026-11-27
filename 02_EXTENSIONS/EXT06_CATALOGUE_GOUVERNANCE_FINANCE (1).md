@@ -276,9 +276,10 @@ Collaborateur ouvre le catalogue des services (G12) ou ajoute une prestation au 
   → contrôles : service ACTIF (autorisation réglementaire valide à la date), collaborateur habilité
     (habilitation liée au service, EXT02), présence pointée si exigée
   → saisie : date et heure (horodatage serveur par défaut), patient facultatif ou obligatoire selon le service,
-   → saisie/notification minimale : type d'opération ou service défini par le pharmacien-administrateur,
-     nom du client et date ; aucune liste de services tunisienne n'est imposée par APEX ;
-     aucune mesure ni observation clinique
+   → type de service et champs éventuels définis/configurés par le pharmacien-administrateur ; aucune liste de services
+     tunisienne n'est imposée par APEX ; les données éventuellement collectées restent limitées au service configuré,
+     soumises à R47 et protégées selon leur sensibilité
+   → notification : uniquement type d'opération/service, nom du client et date
   → produits consommés éventuels (seringue, coton, pansement) : sortie de stock liée à la prestation
   → facturation : prestation gratuite (registre seul) ou ligne de vente au tarif (même caisse nominative)
   → enregistrement dans `service_acts` (immuable ; correction par acte d'annulation lié)
@@ -971,7 +972,7 @@ Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 sont m
 | **D75** | Définition du « jour » d'annulation | Jour calendaire (minuit) · Jour d'exploitation (heure de bascule paramétrable, ex. 6 h) | Jour calendaire par défaut ; jour d'exploitation en option pour les officines de nuit |
 | **D76** | Bucket `RESERVE` d'EXT05 | Conserver · Retirer (réservation = engagement) | **Retirer** |
 | **D77** | Page affichée après connexion | Accueil · Tableau de bord · Selon le rôle | **Selon le rôle**, modifiable par l'utilisateur dans les limites de ses droits |
-| **D78** | Données et notifications liées aux services | Mesures/observations structurées · Données minimales | Notification limitée au type d'opération/service défini par le pharmacien-administrateur, au nom du client et à la date ; aucune liste de services prédéfinie imposée par APEX |
+| **D78** | Configuration des services et contenu des notifications | Catalogue prédéfini · Types configurés par la pharmacie | Types de service et champs éventuels configurés par le pharmacien-administrateur, sans catalogue tunisien imposé par APEX ; notification limitée au type d'opération/service, au nom du client et à la date ; toute donnée de service reste soumise à R47 et aux contrôles de confidentialité |
 | **D79** | Visibilité des marges | Tous les rôles du module · Permission dédiée | **Permission dédiée** `analytics.margin.read` |
 | **D80** | Profondeur du module comptable | A. Exports seulement (journaux) · B. Pré-comptabilité en partie double (M20) · C. Comptabilité générale complète | **B** : écritures générées et exportées ; le comptable tient les comptes officiels ; affichage et exports portent explicitement la mention « Comptabilité à titre indicatif » |
 | **D81** | Moteur de paie | Import des montants · Moteur intégré | **Import des montants** (sans moteur) tant que les règles ne sont pas validées |
