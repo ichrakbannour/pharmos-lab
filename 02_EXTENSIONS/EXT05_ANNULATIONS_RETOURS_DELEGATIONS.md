@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D59–D71 ne sont pas globalement approuvés ; D61 et D66 sont caduques selon la matrice maître D1–D86 v1.2.1. Les autres décisions de cette extension restent proposées. Le dossier principal (`CONCEPTION_PHARMOS_v1.md` v1.1)
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D59–D71 ne sont pas globalement approuvés ; D61 et D66 sont caduques selon la matrice maître D1–D86 v1.2.1. Les autres décisions de cette extension restent proposées. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1)
 n'est pas modifié : les changements nécessaires sont listés au §3.6 et ne seront reportés qu'après validation.
 **Module créé** : **M19 Opérations correctives et délégations** (transverse)
 **Base de conception** : dossier principal v1.1 (§5.2 retours, §9.3 audit), **EXT02** (caisses nominatives §7, droits effectifs §1.2),
