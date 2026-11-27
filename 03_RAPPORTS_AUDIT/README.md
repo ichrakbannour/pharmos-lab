@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.11](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.11.md)** — 27/11/2026 ; contrôle croisé de la conception v1.2.1 : cible D74/D75 déjà consolidée, propagation incomplète vers EXT05/EXT06 et contradiction interne sur le statut INC-06.
+- **[Audit documentaire global v0.12](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.12.md)** — 27/11/2026 ; fraîcheur de la matrice PO : D40 arbitrée après conception v1.2.1, compteurs 16/63 devenus 17/62, traçabilité de la matrice v1.3.3.
+- [Audit documentaire global v0.11](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.11.md) — 27/11/2026 ; contrôle croisé de la conception v1.2.1 : cible D74/D75 déjà consolidée, propagation incomplète vers EXT05/EXT06 et contradiction interne sur le statut INC-06.
 - [Audit documentaire global v0.10](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.10.md) — 27/11/2026 ; EXT05/EXT06 : contradiction D74 sur les droits par défaut, propagation D75 ; EXT04 : INC-06 D37/D44 maintenu ouvert.
 - [Audit documentaire global v0.9](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.9.md) — 27/11/2026 ; réconciliation EXT06 v1.1 avec les arbitrages PO D72–D86, écarts D72/D74/D77/D78/D83 et statut des prototypes/tests.
 - [Audit documentaire global v0.8](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.8.md) — 27/11/2026 ; revue approfondie EXT03 v1.1, réconciliation D27–D43, prérequis réglementaires R1–R22 et statut des tests (spécification sans preuve d’exécution).
