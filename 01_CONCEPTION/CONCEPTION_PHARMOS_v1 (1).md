@@ -327,12 +327,14 @@ et sur M15 (habilitations).
 
 | Table | Colonnes principales |
 |---|---|
-| `lots` | id, tenant_id, product_id, numero_lot, peremption, expiry_precision, cout_unitaire, supplier_id, receipt_line_id, statut (actif / bloqué / périmé / rappelé) |
+| `lots` | id, tenant_id, product_id, numero_lot, peremption, expiry_precision, cout_unitaire, supplier_id, receipt_line_id, statut (actif / bloqué / périmé / rappelé) | Lot obligatoire pour tout médicament (DP-2).
 | `stock_movements` (**immuable**) | id, tenant_id, product_id, lot_id, site_id, type (`RECEIPT`, `SALE`, `SALE_RETURN`, `SUPPLIER_RETURN`, `ADJUST_PLUS`, `ADJUST_MINUS`, `INVENTORY`, `LOSS`, `DESTRUCTION`, `TRANSFER`, `LAB_CONSUMPTION`, `LAB_OUTPUT`), quantite (signée), cout_unitaire, doc_type, doc_id, doc_line_id, motif, user_id, **employee_id**, **approved_by_employee_id** (v1.1), at |
-| `stock_levels` (projection) | tenant_id, product_id, lot_id, quantite, reservee, maj_at — recalculable à partir des mouvements |
-| `stock_reservations` | id, tenant_id, lot_id, quantite, origine (vente en attente), expire_at |
+| `stock_levels` (projection) | tenant_id, product_id, lot_id, bucket (`DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE`), quantite, maj_at — recalculable exclusivement à partir des mouvements (DP-1) |
+| `stock_reservations` | id, tenant_id, product_id, quantite, origine (vente en attente / reliquat), expire_at, created_by, status | Réservation logique par produit, hors buckets physiques ; allocation FEFO au moment de la vente (DP-3).
 | `inventory_sessions` | id, tenant_id, type (complet / tournant / zone), statut (ouverte / comptage / validation / clôturée), periméter (JSON), ouverte_par, validee_par |
 | `inventory_counts` | session_id, product_id, lot_id, qte_theorique, qte_comptee, ecart, compteur, at |
+
+**Règles PO de stock (DP-1 à DP-4, confirmées le 25/11/2026).** Les quatre états physiques sont `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE` et `PERTE` ; les quantités de chaque état sont calculées à partir des mouvements immuables, jamais modifiées directement. Les réservations sont logiques et bloquantes ; le FEFO s'applique à l'allocation lors de la vente. Toute dérogation ADMIN est tracée, ainsi que tout écart au FEFO. Aucun bucket physique `RESERVE` n'est créé.
 
 ### 4.5 Ventes & caisse (M02, M02b)
 
@@ -785,6 +787,7 @@ Permissions granulaires sous la forme `module.action[:portée]` (ex. `sales.disc
 - Chaînage par hachage (`hash = H(hash_prev + contenu)`) : toute altération est détectable.
 - **Pas de suppression** des documents validés : annulation / avoir / contre-écriture / rectification motivée.
 - Suppression d'un référentiel (produit, tiers) = archivage ; impossible s'il existe des mouvements.
+- **Règle PO d'archivage stock** : aucun produit/lot ne peut être archivé tant qu'une quantité physique subsiste dans l'un des états `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE` ou `PERTE` ; l'état `PERTE` reste visible avec quantité et ancienneté en attente de destruction, sans destruction automatique.
 - Double validation (« quatre yeux ») paramétrable : ajustements au-delà d'un seuil, écarts de caisse, rectifications réglementées.
 
 ### 9.4 Données personnelles et médicales
