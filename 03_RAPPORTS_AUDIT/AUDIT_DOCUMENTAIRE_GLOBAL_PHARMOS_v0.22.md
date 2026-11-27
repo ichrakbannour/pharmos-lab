@@ -28,6 +28,7 @@ La correction a été propagée dans G13, W8, les schémas `service_definitions`
 - `service_definitions` ne contient plus de champ patient/consentement ni de liste libre de données cliniques ; les champs facultatifs sont limités aux informations opérationnelles non cliniques.
 - `service_acts` conserve le type de service, le nom du client, l'auteur et la date ; les colonnes d'observations, de mesures et d'identifiant patient ont été retirées.
 - SV3, SV5 et SV6 reflètent désormais cette portée.
+- La permission `services.acts.read` ne parle plus de « données patient » : elle est limitée aux données minimales D78 et aux champs opérationnels non cliniques autorisés.
 - La notification est définie comme une liste blanche limitée au type d'opération/service, au nom du client et à la date.
 - Le tableau §11.1 indique maintenant explicitement la consolidation et les preuves à obtenir.
 
@@ -55,6 +56,7 @@ Contrôles textuels effectués sur la version relue depuis `main` :
 - présence de la saisie minimale type de service/opération, nom du client et date/heure ;
 - présence de la liste blanche de notification ;
 - présence de champs facultatifs strictement non cliniques ;
+- absence de libellé résiduel « données patient » dans la permission `services.acts.read` ;
 - maintien de la ligne D78 comme décision arbitrée issue de la matrice PO v1.3.3.
 
 ## 5. Éléments restant ouverts
