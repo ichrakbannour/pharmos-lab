@@ -448,7 +448,7 @@ La recherche par facettes les combine tous.
 | Table | N/C/R | Colonnes principales | Contraintes / index |
 |---|---|---|---|
 | `service_definitions` | **N** | product_id (PK, `product_type = SERVICE`), description, tarif_par_defaut (via `product_prices`), gratuit (bool), champs_operationnels_facultatifs (JSON, configurés par l'administrateur et limités à des informations non cliniques), consommables_par_defaut (JSON), reference_autorisation (facultative, informative), **actif** | Aucun catalogue universel préchargé ; aucune autorisation réglementaire bloquante ni habilitation obligatoire par service n'est imposée par D78 ; R47 reste à valider séparément |
-| `service_acts` | **N** (immuable) | id, tenant_id, numero (`SRV-…`), product_id (type de service/opération), customer_name (nom du client), performed_by_employee_id, performed_at, champs_operationnels (JSON facultatif, non clinique), sale_line_id (si facturé), statut (`REALISE`, `ANNULE`), reverses_id | INDEX(tenant_id, performed_at) ; INDEX(product_id) ; le registre ne contient ni dossier patient/clinique, ni observations médicales, ni mesures de santé structurées |
+| `service_acts` | **N** (immuable) | id, tenant_id, numero (`SRV-…`), product_id (type de service/opération), customer_name (nom du client), performed_by_employee_id, performed_at, champs_operationnels (JSON facultatif, non clinique), sale_line_id (si facturé), statut (`REALISE`, `ANNULE`), reverses_id | INDEX(tenant_id, performed_at) ; INDEX(product_id) ; aucun dossier patient/clinique, observation médicale ou mesure structurée ; lecture réservée selon permissions effectives et journalisée dans `sensitive_access_log` ; acte nominatif exclu de l'IA |
 | `service_act_consumables` | **N** | act_id, product_id, lot_id, quantite, stock_movement_id | Sortie de stock des consommables |
 
 ### 4.8 Finance (Partie 7 A–D) — M08 complété
@@ -635,7 +635,7 @@ Règles :
 | SV3 | Aucun catalogue universel ni modèle de service préchargé n'est imposé par APEX ; chaque pharmacie définit ses propres services. L'activation par l'administrateur ne vaut pas validation réglementaire ni preuve de conformité ; R47 reste ouvert |
 | SV4 | La réalisation exige la permission effective `services.perform` ; aucune habilitation réglementaire obligatoire attachée à chaque service n'est imposée par le modèle D78 |
 | SV5 | Un acte est enregistré de façon simple et immuable avec le type de service/opération, le nom du client et la date ; seuls des champs opérationnels facultatifs non cliniques configurés par l'administrateur peuvent s'y ajouter ; une erreur se corrige par un acte d'annulation lié |
-| SV6 | Aucun dossier clinique, observation médicale ou mesure de santé structurée n'est collecté dans le registre des prestations ; les champs facultatifs configurables restent strictement non cliniques |
+| SV6 | Aucun dossier clinique, observation médicale ou mesure de santé structurée n'est collecté dans le registre des prestations ; les champs facultatifs configurables restent strictement non cliniques. Le type de service peut néanmoins révéler une information de santé : la lecture est réservée selon les permissions effectives et journalisée dans `sensitive_access_log` ; aucun acte nominatif n'est transmis à l'IA |
 | SV7 | Les consommables (seringue, coton, pansement) sortent du stock par lot, liés à l'acte |
 | SV8 | Un service gratuit est enregistré au registre sans ligne de vente ; un service facturé crée une ligne de vente au tarif en vigueur (TVA selon sa catégorie fiscale, **[À VALIDER R44]**) |
 | SV9 | Les annulations de services facturés suivent EXT05 (sans mouvement de stock pour le service, mouvement inverse pour les consommables non utilisés) |
@@ -953,6 +953,11 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 | SRV-05 | Service gratuit | Acte au registre, aucune ligne de vente |
 | SRV-06 | Annulation d'un acte facturé | Acte d'annulation lié ; correction de la vente selon EXT05 |
 | SRV-07 | Recherche de champs patient, observations médicales ou mesures de santé structurées dans le registre et les écrans | Aucun champ ni collecte clinique ; les champs facultatifs sont strictement opérationnels et non cliniques |
+| SRV-08 | Installation neuve | Aucun service prédéfini ; page de gestion vide |
+| SRV-09 | Création d'un service par l'administrateur ; tentative par un autre collaborateur | Créé par l'administrateur ; refus pour l'autre collaborateur |
+| SRV-10 | Enregistrement d'un acte : type, nom du client, date | Enregistré sans autre champ obligatoire ; aucune autorisation réglementaire bloquante |
+| SRV-11 | Recherche d'un champ de mesure clinique ou d'observation dans le modèle et les écrans | Absent |
+| SRV-12 | Consultation du registre par un collaborateur non autorisé ; envoi à l'IA | Refus et journalisation ; aucun acte nominatif transmis à l'IA |
 
 ### 10.5 Finance et comptabilité (S-FIN)
 
