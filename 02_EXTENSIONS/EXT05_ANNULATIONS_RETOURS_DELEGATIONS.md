@@ -776,12 +776,12 @@ Numérotation à la suite d'EXT04 (D44 à D58).
 |---|---|---|---|
 | **D59** | Moyens de restitution au patient | Même moyen que le paiement d'origine · espèces libres · avoir · crédit | **Même moyen par défaut** ; espèces pour une vente par carte interdites sauf titulaire ; avoir nominatif proposé, avoir au porteur désactivé |
 | **D60** | Remboursement par carte | Intégration au terminal · confirmation manuelle | **Confirmation manuelle** en v1 (référence du terminal), intégration ultérieure |
-| **D61** | Fenêtre d'auto-annulation avant remise (réintégration directe) | 0 (toujours contrôle) · 15 min · 30 min | **15 min**, même session, produits non sensibles |
+| **D61** | Fenêtre d'auto-annulation avant remise (réintégration directe) | 0 (toujours contrôle) · 15 min · 30 min | **CADUQUE** — remplacée par la règle du jour calendaire portée par D75 (EXT06) |
 | **D62** | Retours sans ticket | Interdits · Autorisés avec droit spécifique | Autorisés avec droit spécifique, interdits pour les réglementés |
 | **D63** | Annulation sans retour physique | Interdite · Exceptionnelle (titulaire) | Exceptionnelle, titulaire, motif détaillé ; interdite pour les réglementés |
 | **D64** | Opérations correctives hors ligne | Autorisées · Demande locale seulement | **Demande locale seulement** |
 | **D65** | Plafonds par défaut par rôle | Valeurs proposées au §4.3 | À fixer avec les pharmacies pilotes |
-| **D66** | Qui peut gérer les délégations | Titulaire seul · titulaire + adjoint désigné | **Titulaire seul** ; un délégant désigné possible pour les absences longues |
+| **D66** | Qui peut gérer les délégations | Titulaire seul · titulaire + adjoint désigné | **CADUQUE** — ne pas utiliser cette recommandation comme règle PO ; règle de gouvernance à réconcilier avec les décisions et permissions ultérieures |
 | **D67** | Durée maximale d'une délégation | 7 j · 30 j · 90 j | **30 jours**, renouvelable par nouvelle délégation |
 | **D68** | Délai de décision d'un produit `EN_CONTROLE` | 24 h · 48 h · 7 j | **48 h**, puis alerte |
 | **D69** | Avoirs : durée de validité | Selon R39 | À fixer après validation juridique |
@@ -803,7 +803,7 @@ Numérotation à la suite d'EXT04 (D44 à D58).
 | **11. Rapports** (ajout) | CA net par date d'opération, taux d'annulation et de retour, rapport des délégations | Couche métriques unique |
 | **13. IA** (ajout) | Analyseur antifraude §4.8 | Après 11 |
 
-Prérequis bloquants avant le lot 5d : R34, R37, R38, R40 ; décisions D59, D61, D63, D70, D71.
+Prérequis bloquants avant le lot 5d : R34, R37, R38, R40 ; décisions D59, D63, D70, D71. D61 est caduque et ne constitue plus un prérequis ; la règle de jour calendaire relève de D75 (EXT06).
 
 ---
 
