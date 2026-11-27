@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Le registre D72–D86 du §11 conserve l'historique de la proposition du 03/11/2026. La matrice PO D1–D86 v1.3.4 (12/11/2026) a désormais été relue : ses statuts et arbitrages courants sont repris dans le §11.1 de la présente extension. En cas d'écart, la matrice PO v1.3.4 prévaut ; le tableau historique §11 ne vaut pas état courant. Les exigences réglementaires R42–R51 restent à sourcer et valider, indépendamment des arbitrages fonctionnels. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
+**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Le registre D72–D86 du §11 conserve l'historique de la proposition du 03/11/2026. La matrice PO D1–D86 v1.3.4 (12/11/2026) a désormais été relue : ses statuts et arbitrages courants sont repris dans le §11.1 de la présente extension. En cas d'écart, la matrice PO v1.3.4 prévaut ; le tableau historique §11 ne vaut pas état courant. Les exigences réglementaires R42–R51 sont partiellement documentées par les sources listées au §9, mais restent à confirmer et valider juridiquement/comptablement, indépendamment des arbitrages fonctionnels. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), EXT03 v1.1 (dossier d'audit), EXT04 et EXT05 (propositions).
 
 > **Règle de ce document : aucun doublon.** EXT06 crée un seul module nouveau (**M20 Comptabilité**, partie de
