@@ -5,8 +5,8 @@ Dépôt documentaire de référence du projet PHARM'OS.
 ## Navigation
 - [Conception](01_CONCEPTION/README.md)
 - [Extensions](02_EXTENSIONS/README.md)
-- [Rapports d'audit](03_RAPPORTS_AUDIT/README.md) — dernier rapport : [audit global v0.37](03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.37.md)
-- [Décisions PO](04_DECISIONS_PO/README.md) — matrice courante : [D1–D86 v1.3.5](04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.5.md) ; addendum STOCK courant : [P92](04_DECISIONS_PO/P92_ADDENDUM_RECONCILIATION_TECHNIQUE_STOCK.md), [plan révisé v2](04_DECISIONS_PO/P92_PLAN_UNIQUE_REALISATION_STOCK_REVISION_v2.md)
+- [Rapports d'audit](03_RAPPORTS_AUDIT/README.md) — dernier rapport : [audit global v0.38](03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.38.md)
+- [Décisions PO](04_DECISIONS_PO/README.md) — matrice courante : [D1–D86 v1.3.5](04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.5.md) ; addendum STOCK courant : [P92](04_DECISIONS_PO/P92_ADDENDUM_RECONCILIATION_TECHNIQUE_STOCK.md), [plan révisé v2](04_DECISIONS_PO/P92_PLAN_UNIQUE_REALISATION_STOCK_REVISION_v2.md), [matrice RES-1/RES-2](04_DECISIONS_PO/P92_MATRICE_TRACABILITE_RES1_RES2_STOCK.md)
 - [Architecture](05_ARCHITECTURE/README.md)
 - [Prompts Genspark](06_PROMPTS_GENSPARK/README.md)
 - [Sources originales — archive vérifiée (42 fichiers)](07_SOURCES_ORIGINALES/README.md)
