@@ -998,3 +998,493 @@ Règles :
 | CP5 | **Changement de version de règle** : une nouvelle version ne s'applique qu'aux événements dont la date est postérieure à son `valid_from`. Reprendre un événement déjà comptabilisé avec la nouvelle version exige une décision explicite (exception W14, voie 3) : contre-passation de l'écriture d'origine, puis reprise ; jamais deux écritures actives pour le même événement | Contrôle à la génération : refus si une écriture `ORIGINALE` non contre-passée existe déjà pour l'événement, quelle que soit la version |
 | CP6 | **Idempotence des traitements** : le générateur consomme l'outbox (`domain_events`) ; avant d'écrire, il calcule `generation_key` ; si une écriture existe déjà avec cette clé, il marque l'événement traité **sans rien écrire** (résultat identique). Les validations manuelles portent l'en-tête `Idempotency-Key` du dossier (§6) | Rejouer N fois un même événement, en parallèle ou en séquence, produit exactement une écriture (tests ACC-05, ACC-06) |
 | CP7 | **Relance technique sans doublon** : un échec après l'écriture mais avant le marquage de l'événement (coupure, délai dépassé) est absorbé par CP4 et CP6 ; deux traitements concurrents du même événement : le second échoue sur la contrainte d'unicité, ce qui est traité comme « déjà fait » et non comme une erreur | Test ACC-06 (concurrence), ACC-07 (reprise après coupure) |
+| CP8 | **Contrôle débit = crédit avant validation définitive, sur l'ensemble des lignes, dans une transaction atomique.** Un seul `D1 batch` contient : (1) garde de période ouverte ; (2) garde de comptes actifs ; (3) réservation du numéro (UPDATE conditionnel de la séquence) ; (4) insertion de toutes les lignes ; (5) insertion de l'en-tête **en dernier**, par `INSERT … SELECT` qui recalcule Σ débit, Σ crédit, nombre de lignes et empreinte **depuis les lignes insérées**, avec la condition `HAVING Σ débit = Σ crédit AND Σ débit > 0 AND nombre = nombre attendu` ; (6) contrôle final : la clé étrangère des lignes vers l'en-tête est **différée** (vérifiée à la fin de la transaction) ; si l'en-tête n'a pas été inséré parce que la condition n'est pas remplie, la transaction échoue et **tout** est annulé | Aucune ligne « orpheline » sans en-tête ne peut subsister ; le scellement de l'en-tête interdit toute ligne ajoutée ensuite (CP9) ; tests ACC-02, ACC-03. **À prototyper au Lot 0** : comportement de D1 avec les contraintes différées dans un `batch` ; repli si elles ne sont pas prises en charge : instruction de garde finale déclenchant `RAISE(ABORT)` lorsque l'en-tête est absent |
+| CP9 | **Scellement** : une fois l'en-tête inséré, toute insertion de ligne supplémentaire sur cette écriture est refusée (déclencheur : refus si un en-tête existe pour `entry_id`). Les vues de grand livre et de balance ne lisent que les lignes dont l'en-tête existe | Test ACC-08 |
+| CP10 | **Aucune écriture déséquilibrée ne peut être validée ni exportée** : CHECK(total_debit = total_credit) sur l'en-tête ; à l'export, recalcul depuis les lignes, comparaison avec l'en-tête (`total_*`, `line_count`, `lines_hash`) ; un seul écart → export refusé et exception `INTEGRITE_ECRITURE` (BLOQUANTE) | Tests ACC-09, ACC-10 |
+| CP11 | **Numérotation** : séquence continue par journal et exercice, attribuée dans le batch de validation (CP8) ; un batch annulé ne consomme pas de numéro (la réservation fait partie du batch) ; aucune réutilisation | UNIQUE(tenant_id, journal_id, exercice, numero) ; contrôle de continuité à la clôture |
+| CP12 | **Périodes** : aucune écriture dans une période `VERROUILLEE` ou `EXPORTEE` ; une correction se date dans la première période ouverte | Déclencheur sur `journal_entries` |
+| CP13 | **Contrôles d'export** : toutes les écritures de la période sont équilibrées et intègres (CP10) ; aucune exception BLOQUANTE ouverte ; nombre d'écritures et totaux de l'export = ceux de la base ; le fichier est haché (`sha256`) et conservé (R2) | `accounting_exports.entry_count`, `total_debit`, `total_credit` |
+
+### 5.14 M20 — Gestion des exceptions comptables **[v1.1]**
+
+| # | Règle |
+|---|---|
+| EX1 | **Toute anomalie comptable est enregistrée** dans `accounting_exceptions` (le type `ECART_CAISSE` désigne une **discordance entre la caisse (M08) et le compte de caisse de M20** ; l'écart de comptage d'une session reste traité par EXT02 — `quality_events` `ECART_CAISSE` et décision humaine — et produit seulement une écriture d'écart via `cash_session.closed` : aucun doublon) : échec de génération (règle absente, compte inactif, période fermée, expression invalide), déséquilibre détecté, écart de rapprochement bancaire, écart tiers (`party_ledger` ↔ M20), écart de caisse ou de valorisation du stock avec la comptabilité, écart métriques ↔ journal, refus de validation d'un brouillon, défaut d'intégrité, refus d'export |
+| EX2 | **Identifiable par son origine** : chaque exception porte l'événement métier d'origine (`source_event_type`, `source_id`, `source_event_id`, `correlation_id`) et la période ; depuis G26, un lien ouvre l'opération d'origine (vente, facture, règlement, relevé) en lecture |
+| EX3 | **Associée à un montant** : `montant_concerne_millimes` (montant de l'opération ou de la ligne) et `montant_ecart_millimes` (écart constaté, 0 si sans objet) ; le tableau de bord financier affiche le nombre et le montant total des exceptions ouvertes par gravité |
+| EX4 | **Affectée à un responsable** dès sa création (règle d'affectation paramétrable : comptable habilité, sinon administrateur), avec une échéance fonction de la gravité (paramétrable) ; réaffectation tracée ; échéance dépassée → escalade à l'administrateur |
+| EX5 | **Suivie jusqu'à résolution** : statuts `OUVERTE` → `EN_ANALYSE` → `RESOLUE` → `CLOSE`, avec `REOUVERTE` si l'anomalie est de nouveau détectée ; jamais supprimée ; la clôture des gravités BLOQUANTE et MAJEURE exige une seconde personne |
+| EX6 | **Une erreur comptable ne fait jamais disparaître une opération métier validée** : la génération comptable s'exécute **après** la validation métier, dans un traitement distinct (outbox) ; son échec ne peut ni annuler, ni modifier, ni masquer la vente, la facture ou le règlement. L'événement reste en file, l'exception le rend visible, la clôture de période est bloquée tant qu'il n'est pas traité (W13) |
+| EX7 | **Déduplication** : une même anomalie (même `detection_key`) ne crée qu'une exception ouverte, dont le compteur d'occurrences augmente ; une nouvelle version de règle produit une nouvelle clé |
+| EX8 | **Reprise** (voie REGENERATION) : après correction du paramétrage, le retraitement de l'événement est idempotent (CP6) ; il crée au plus une écriture, liée à l'exception (`accounting_exception_id`) |
+| EX9 | **Régularisation** (voie ECRITURE_REGULARISATION ou CONTRE_PASSATION_ET_REPRISE) : toujours par brouillon validé à quatre yeux (W15) ou contre-passation (CP2) ; jamais par modification d'une écriture |
+| EX10 | **Contrôle** : rapport mensuel des exceptions (ouvertes, résolues, délai moyen, montants) joint au dossier de clôture ; les exceptions `ECART_JUSTIFIE` sont listées avec leur justification pour l'expert-comptable |
+| EX11 | Les exceptions ne contiennent aucune donnée de santé ni de paie individuelle dans `details` (références seulement) ; elles ne sont pas transmises à l'IA externe (agrégats seulement) |
+
+---
+
+## 6. Permissions
+
+### 6.1 Matrice modules × actions (structure)
+
+Chaque module de `app_modules` expose les actions génériques ci-dessous. Une case n'existe que si l'action a un sens pour
+le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques déjà définies (EXT02 à EXT05) restent attachées
+à leur module avec l'action `SPECIFIC`.
+
+| Action | Signification | Exemple (module CATALOG) | Contrôle serveur |
+|---|---|---|---|
+| `ACCESS` | Ouvrir le module (menu, écrans) | Voir l'explorateur | Prérequis de toutes les autres actions |
+| `READ` | Consulter les données (portée : soi / équipe / tous) | Voir une fiche produit | Filtrage des requêtes |
+| `CREATE` | Créer un objet | Créer un produit local | — |
+| `UPDATE` | Modifier un objet non validé ou modifiable | Modifier un prix de vente | Versionnement, motif si sensible |
+| `VALIDATE` | Valider (changement d'état vers un état engageant) | Valider les données réglementaires d'un médicament | Séparation des tâches |
+| `CANCEL` | Annuler par une opération inverse | — (catalogue) ; annulation d'une vente (POS) | Jamais de suppression |
+| `EXPORT` | Exporter (PDF, Excel, CSV) | Exporter le catalogue | Journalisé ; données nominatives soumises au workflow W6 d'EXT03 |
+| `ARCHIVE` | Suppression logique, si autorisée pour le type d'objet | Archiver un produit sans mouvement | Liste blanche (GV11) |
+| `SPECIFIC` | Permission métier spécifique | `catalog.substitution.validate` | Selon la permission |
+
+### 6.2 Permissions nouvelles d'EXT06
+
+| Permission | Module / action | Délégable | Défaut |
+|---|---|---|---|
+| `governance.admin.transfer` | SETTINGS / SPECIFIC | **Non** | Administrateur |
+| `governance.permissions.manage` (matrice, réglages individuels, coupure de module) | SETTINGS / SPECIFIC | **Non** | Administrateur |
+| `governance.delegations.manage` | SETTINGS / SPECIFIC | **Non** | Administrateur (remplace `delegation.manage` d'EXT05) |
+| `governance.exceptions.grant` (dépassements, dérogations de délai, **[v1.1]** y compris à distance) | SETTINGS / SPECIFIC | **Non** — ni délégable, ni accordable par réglage individuel, ni attribuable à un rôle | Administrateur actif **uniquement** (attaché à `tenant_administrators`, pas à un rôle) |
+| `governance.exceptions.request` **[v1.1]** | SETTINGS / SPECIFIC | Oui | Tous les collaborateurs ayant un plafond |
+| `governance.reference_day.manage` **[v1.1]** (option « jour d'exploitation ») | SETTINGS / SPECIFIC | **Non** | Administrateur uniquement, MFA |
+| `catalog.product.create` / `.update` / `.archive` | CATALOG | Oui | Adjoint, responsable achats |
+| `catalog.regulatory.validate` (classe, prescription, réglementaire) | CATALOG / VALIDATE | Pharmacien uniquement | Titulaire, adjoint |
+| `catalog.substitution.validate` | CATALOG / SPECIFIC | Pharmacien uniquement | Titulaire, adjoint |
+| `catalog.price.update` | CATALOG / UPDATE | Oui (plafond d'écart en %) | Titulaire, adjoint |
+| `catalog.classification.manage` | CATALOG / SPECIFIC | Oui | Titulaire, adjoint |
+| `tax.manage` (catégories, taux) | SETTINGS / SPECIFIC | **Non** | Administrateur (quatre yeux avec le comptable si présent) |
+| `services.manage` (définitions, activation) | SERVICES / UPDATE, VALIDATE | **Non** pour l'activation | Administrateur |
+| `services.perform` | SERVICES / CREATE | Selon l'habilitation du service | Collaborateurs habilités |
+| `services.acts.read` (avec données patient) | SERVICES / READ | Non | Titulaire, adjoint, auteur de l'acte |
+| `finance.charges.create` / `.validate` | FINANCE | Oui (plafond) | Comptable, administrateur |
+| `finance.payments.execute` | FINANCE / SPECIFIC | Oui (plafond) | Comptable, administrateur |
+| `finance.loans.manage`, `finance.assets.manage` | FINANCE | Non | Administrateur, comptable |
+| `finance.bank.reconcile` | FINANCE / VALIDATE | Oui | Comptable |
+| `finance.payroll.import` / `.validate` | FINANCE | **Non** | Administrateur (validation), comptable (import) |
+| `accounting.setup` (plan, journaux, règles de passation) | ACCOUNTING / SPECIFIC | **Non** | Administrateur + comptable (quatre yeux) |
+| `accounting.read`, `accounting.export` | ACCOUNTING | Oui | Comptable, administrateur, auditeur (lecture) |
+| `accounting.period.close` / `.reopen` | ACCOUNTING / VALIDATE | **Non** | Administrateur (réouverture : administrateur seul, motif) |
+| `accounting.drafts.create` **[v1.1]** (brouillons d'opérations diverses) | ACCOUNTING / CREATE | Oui | Comptable, administrateur |
+| `accounting.drafts.post` **[v1.1]** (comptabiliser un brouillon d'autrui) | ACCOUNTING / VALIDATE | Oui (plafond) | Comptable, administrateur ; jamais l'auteur du brouillon |
+| `accounting.reverse` **[v1.1]** (contre-passation manuelle) | ACCOUNTING / CANCEL | **Non** | Administrateur, comptable habilité ; motif obligatoire |
+| `accounting.exceptions.read` / `.resolve` / `.close` **[v1.1]** | ACCOUNTING / READ, UPDATE, VALIDATE | Oui (sauf clôture des BLOQUANTES) | Comptable, administrateur ; clôture BLOQUANTE / MAJEURE par une autre personne que celle qui a résolu |
+| `accounting.posting_rules.activate` **[v1.1]** | ACCOUNTING / VALIDATE | **Non** | Quatre yeux : auteur ≠ valideur (administrateur ou comptable) |
+| `analytics.finance.read` | ANALYTICS / READ | Oui | Administrateur, comptable |
+| `analytics.sales.read` | ANALYTICS / READ | Oui | Administrateur, adjoint, responsable achats |
+| `analytics.margin.read` | ANALYTICS / SPECIFIC | Oui | Administrateur, adjoint, comptable |
+| `analytics.profitability.read` **[v1.1]** (G25) | ANALYTICS / READ | Oui | Administrateur, adjoint, responsable achats (marges selon `analytics.margin.read`) |
+| `consolidated.read` **[v1.1 — réservé, non créé]** | — | — | Vue consolidée future (MO7) ; aucune attribution possible dans EXT06 |
+
+### 6.3 Matrice par défaut des modules (accès et actions principales)
+
+| Module | Administrateur | Adjoint | Préparateur | Caissier | Achats / stock | Comptable | Auditeur |
+|---|---|---|---|---|---|---|---|
+| POS (caisse) | Tout | Tout | Vente, demande d'annulation | Vente, encaissement, demande d'annulation | — | — | Lecture |
+| CATALOG | Tout | Tout sauf fiscalité | Lecture | Lecture | Créer, modifier (sans validation réglementaire) | Lecture des prix | Lecture |
+| STOCK | Tout | Tout | Lecture, comptage | Lecture | Tout sauf décisions réglementées | Valorisation | Lecture |
+| SERVICES | Tout | Réaliser, lire | Réaliser (si habilité) | — | — | Lecture facturation | Lecture agrégée |
+| PRESCRIPTIONS (M17) | Tout | Tout | Selon EXT03 §5.2 | Contexte de vente | — | — | Journal |
+| PAYERS (M18) | Tout | Selon EXT04 §5.2 | Couvertures (vente) | Lecture en vente | — | Créances, règlements | Lecture |
+| FINANCE | Tout | Lecture | — | — | Factures marchandises | Tout sauf paie individuelle et validations réservées | Lecture |
+| ACCOUNTING | Tout | — | — | — | — | Tout sauf réouverture | Lecture |
+| ANALYTICS | Tout | Commercial | — | — | Commercial (sans marges, D79) | Financier | Lecture |
+| SETTINGS / gouvernance | **Seul** | — | — | — | — | — | Lecture du journal |
+
+« Tout » ne lève jamais les contrôles réglementaires ni la séparation des tâches.
+**[v1.1]** Les permissions de gouvernance (`governance.*` marquées « administrateur uniquement ») ne sont pas des permissions
+de rôle : elles sont évaluées à partir de `tenant_administrators` à l'instant de la requête. Un transfert d'administrateur
+les retire immédiatement à l'ancien titulaire.
+
+---
+
+## 7. Dépendances
+
+| Élément d'EXT06 | Dépend de | Est utilisé par |
+|---|---|---|
+| Gouvernance (administrateur, matrice, dérogations) | EXT02 (droits effectifs, qualifications), EXT05 (délégations, overrides) | Tous les modules (contrôle des droits) |
+| Annulations amendées | EXT05 (moteur M19), M05 (buckets), gouvernance (dérogations) | M02, M08, EXT03, EXT04 |
+| Catalogue enrichi, classification, fiscalité | Référentiel APEX (dossier §4.3), sources officielles (R42–R44) | M02, M03, M05, M11, M12, EXT03, EXT04 (listes de référence), M20 (TVA), recherche universelle |
+| Substitution unifiée | Catalogue, validation pharmacien | EXT03 (qualification des substitutions), caisse |
+| Lots et états du stock | M03 (réceptions), M05 | FEFO, M10, M11, EXT05, valorisation, M20 |
+| Services | Catalogue (type SERVICE), EXT02 (habilitations), M02 (vente), M05 (consommables), EXT03 (`sensitive_access_log`) | M12, tableaux de bord, M20 |
+| Finance étendue | M03, M06, M08, EXT02 (variables RH), EXT04 (créances) | M20, tableaux de bord, IA (agrégats) |
+| M20 Comptabilité | Événements de tous les modules, `posting_rules`, plan de comptes validé (R46) | Exports comptables, tableau de bord financier, contrôles |
+| Tableaux de bord | Couche métriques, `rx_facts`, projections EXT04, `financial_snapshots` | Titulaire, comptable, IA |
+| Accueil et recherche universelle | Catalogue, index FTS, matrice des droits, M17, M18 | Tous les utilisateurs |
+| **[v1.1]** Validation à distance (W4-D) | `tenant_administrators`, MFA (`users.mfa_secret`, dossier Lot 1), `notifications`, `devices` (appareil enrôlé), `audit_log` | W4, annulations (W5), plafonds de toutes les opérations |
+| **[v1.1]** Option « jour d'exploitation » | `settings` (dossier), `duty_periods` (EXT02), gouvernance | M19 (annulations), écran d'annulation |
+| **[v1.1]** Écritures M20 (immutabilité, idempotence) | Outbox `domain_events` (dossier §3.2), `document_sequences`, `posting_rules` versionnées, `accounting_periods`, déclencheurs SQLite, `D1 batch` | Grand livre, balance, exports, exceptions |
+| **[v1.1]** Exceptions comptables | Générateur M20, rapprochement bancaire, réconciliations (tiers, caisse, stock, métriques), `notifications` | Clôture (W13), tableau de bord financier, contrôle de l'expert-comptable |
+| **[v1.1]** Couche métriques technique | `metric_definitions`, outbox, registres sources (ventes, corrections EXT05, paiements, stock, pièces), `tenants.fuseau` | M01, G23, G24, G25, M12, IA, `financial_snapshots`, contrôles MT10 |
+| **[v1.1]** Analyse de rentabilité | Couche métriques, `lots`, `stock_levels`, `product_demand_stats`, classification (nœud principal), `brands`, `ref_laboratories` | G25, IA (recommandations) |
+| **[v1.1]** Compatibilité multi-officines | `tenants`, `memberships`, `sessions` (dossier), filtrage `tenant_id` | Vue consolidée future (hors EXT06) |
+
+**Dépendances techniques à confirmer** : disponibilité de FTS5 dans D1 pour l'index de recherche (à prototyper au Lot 0,
+avec une solution de repli par tables de trigrammes si nécessaire) ; volume des écritures comptables (une à plusieurs
+écritures par vente : à mesurer avec la volumétrie cible du dossier §2.3).
+**[v1.1]** À prototyper également au Lot 0 : (1) l'insertion d'en-tête « scellée » par `INSERT … SELECT … HAVING` et l'échec
+contrôlé du batch par déclencheur `RAISE(ABORT)` dans D1 (CP8) ; (2) les déclencheurs de refus d'UPDATE / DELETE et de
+transitions contrôlées ; (3) le recalcul complet d'un jour de métriques dans la limite de temps CPU d'un Worker (sinon,
+découpage par dimension). Ces trois points conditionnent l'architecture de M20 et de la couche métriques.
+
+---
+
+## 8. Impacts sur les modules existants
+
+Toutes les modifications ci-dessous sont **proposées et non appliquées**.
+
+### 8.1 Dossier principal (CONCEPTION_PHARMOS_v1.md v1.1)
+
+| Section | Impact |
+|---|---|
+| §2.2 M04 Catalogue | Classification multi-axes, fiscalité par catégorie, substitution unifiée, variantes, types étendus, services |
+| §2.2 M08 | Devient « PHARM'OS FINANCE » : charges, emprunts, banque, immobilisations, paie importée |
+| §2.2 (nouveau) M20 | Comptabilité (pré-comptabilité, journaux, grand livre, balance, périodes, exports) |
+| §3.2 Cartographie | Ajout de M20 et de l'accueil opérationnel ; liens catalogue → recherche universelle |
+| §3.3 Arborescence | `/home`, `/services`, `/finance/*`, `/accounting/*`, `/analytics/finance`, `/analytics/sales`, `/settings/governance`, `/settings/permissions` |
+| §4.2 | `tenant_administrators`, `app_modules`, `permission_exceptions` |
+| §4.3 | `categories` remplacée ; `products` et `ref_products` complétés ; `product_prices_history` remplacée par `product_prices` ; nouvelles tables §4.2–4.5 d'EXT06 |
+| §4.4 | `lots` complété ; `stock_levels` avec buckets (sans `RESERVE`) |
+| §4.6–4.8 | `supplier_invoices` complété ; `expenses` restreint ; nouvelles tables financières §4.8 |
+| §4.11 | `metrics_daily` étendu ; `financial_snapshots` ; **[v1.1]** `metrics_daily.cle` remplacée par `metric_code` + `metric_version` + `dimension_type` / `dimension_id`, clé unique ; `metric_definitions` |
+| §4.2 **[v1.1]** | `settings` : clés `cancellation.reference_day`, `remote_approval_ttl` (aucune table) ; `sites` réservé aux dépôts et annexes d'une officine (précision de D15) |
+| §3.2 **[v1.1]** | Outbox : le générateur M20 et le projecteur de métriques sont des consommateurs idempotents |
+| §6 **[v1.1]** | Contrôle automatique en CI du filtre `tenant_id` sur les requêtes métier (MO10) |
+| §7 IA | Les analyseurs financiers n'utilisent que des agrégats ; aucune donnée de paie individuelle |
+| §9.1 Rôles | Notion de pharmacien administrateur ; matrice modules × actions |
+| §10 Plan | Voir §12 |
+
+### 8.2 Extensions
+
+| Extension | Impact d'EXT06 |
+|---|---|
+| **EXT02** (intégrée) | Catalogue `permissions` complété (`module_code`, `action`) ; le titulaire devient « pharmacien administrateur » unique ; **[v1.1]** `duty_periods` lue (sans modification) par l'option « jour d'exploitation » ; aucune autre modification |
+| **EXT03 v1.1** | `products.substitution_group_id` et `ref_products.generic_group_code` remplacés par `substitution_groups` ; liste initiale des spécialités ; accès direct depuis l'accueil ; **[v1.1]** dimensions `prescriber`, `specialty`, `sale_mode` reprises comme `dimension_type` de `metrics_daily` ; `rx_facts` reste la source des indicateurs d'ordonnances (MT11) ; tests MOF complètent SEC-TEN-01 |
+| **EXT04** | Accès direct depuis l'accueil ; listes de référence (`reference_list_items`) rapprochées du catalogue enrichi ; écritures de créances générées par M20 ; **[v1.1]** les dimensions `payer`, `payer_mode` et les mesures `ca_part_organismes`, `encours_organismes` deviennent des entrées de `metric_definitions` (`dimension_type` `PAYER`, `PAYER_MODE`) ; le règlement d'organisme alimente le CA encaissé, jamais le CA ; aucune table modifiée |
+| **EXT05** | **Amendements** : **[v1.1]** `corrective_operations` complétée (`reference_day_rule`, `reference_day_setting_version`, AN13) ; D61 (15 min) remplacé par la règle du jour calendaire (**[v1.1]** avec option « jour d'exploitation » activable par l'administrateur, D75) ; les validations `approval_method = DEMANDE_A_DISTANCE` d'EXT05 reprennent les **garanties techniques** de W4-D (MFA au moment de la décision, confirmation explicite, motif, empreinte de l'opération, usage unique) ; le **décideur** reste celui prévu par EXT05 (pharmacien valideur), sauf pour les dérogations de plafond et de délai, réservées à l'administrateur ; `DISPONIBLE_DIRECT` supprimé ou remplacé (D74) ; bucket `RESERVE` retiré ; `delegation.manage` remplacé par `governance.delegations.manage` (administrateur seul, D66 tranché) ; `delegations.valid_from` obligatoire ; liste d'opérations structurée |
+
+### 8.3 Points de compatibilité
+
+- La règle du jour calendaire (EXT06) et la neutralisation du droit à délivrance au retour (EXT03 D42) sont indépendantes :
+  la première détermine **qui** peut annuler, la seconde **l'effet** sur l'ordonnance.
+- Le tiers payant (EXT04) ne change pas les définitions de CA et de marge : le CA inclut la part organisme, la créance est
+  suivie à part (§5.6).
+- Les écritures comptables M20 ne remplacent ni `party_ledger` (grand livre des tiers), ni les registres métier : elles en
+  sont **dérivées**. En cas d'écart, ce sont les registres métier qui font foi. **[v1.1]** La v1.0 indiquait que
+  « l'écriture est régénérée » : c'est corrigé. Une écriture validée n'est jamais régénérée ni remplacée ; l'écart ouvre une
+  exception comptable, résolue par contre-passation et nouvelle écriture (CP2, W14).
+- **[v1.1]** Le jour de référence des annulations (calendaire ou exploitation) n'a aucun effet sur le rattachement des
+  métriques et des écritures, qui suivent la date de l'opération (MT1, MT6).
+
+---
+
+## 9. Exigences réglementaires
+
+Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confirmé, la valeur la plus prudente s'applique.
+
+| # | Sujet | Hypothèse de conception | Question précise | Interlocuteurs | Échéance |
+|---|---|---|---|---|---|
+| R42 | Catégories réglementaires de produits | Types `MEDICAMENT`, `DISPOSITIF_MEDICAL`, `ACCESSOIRE`, `PARAPHARMACIE`, `COSMETIQUE`, `COMPLEMENT_ALIMENTAIRE`… | Quelles catégories ont des obligations distinctes (traçabilité des dispositifs, matériovigilance, numéros de série, cosmétovigilance) ? | DPM, ministère de la Santé | Avant le lot 2 |
+| R43 | Référentiel de classification thérapeutique et statut de commercialisation | Axe paramétrable ; ATC si licence et source compatibles | Existe-t-il un référentiel officiel tunisien (classes thérapeutiques, statuts AMM, arrêts de commercialisation) exploitable ? Licence d'utilisation de l'ATC ? | DPM, PCT | Avant le lot 2 |
+| R44 | TVA et fiscalité des produits et des services | Catégories fiscales historisées, aucun taux par défaut | Taux applicables par catégorie (médicaments, dispositifs, parapharmacie, prestations) ; droit de timbre ; facture électronique | Expert-comptable, administration fiscale | Avant le lot 2 |
+| R45 | Immobilisations et amortissements | Registre ; durées et méthodes paramétrables | Durées et méthodes admises ; seuil d'immobilisation | Expert-comptable | Avant le lot 7c |
+| R46 | Pré-comptabilité et plan de comptes | Écritures générées, validées et exportées ; résultats indicatifs ; **[v1.1]** écritures immuables, corrections par contre-passation, numérotation continue par journal | Plan de comptes applicable (système comptable des entreprises), mentions des journaux, conditions d'acceptation d'une pré-comptabilité tenue par un logiciel, conservation des pièces ; **[v1.1]** exigences d'inaltérabilité et de continuité de numérotation ; acceptabilité des notions de gestion « marge réalisée » et « résultat de gestion » ; durée de conservation des exceptions comptables | Expert-comptable, Ordre des experts-comptables | Avant le lot 7c |
+| R47 | Services pharmaceutiques autorisés en officine | Aucun service actif par défaut ; activation par l'administrateur | Quelles prestations (mesure de tension, injections, premiers soins, dépistages, conseils) sont autorisées en officine, par quel personnel, avec quelles traces et quelles tarifications ? | Ordre des pharmaciens, ministère de la Santé | Avant le lot 9c |
+| R48 | Responsabilité du pharmacien administrateur et délégation | Administrateur unique, qualification de pharmacien ; **[v1.1]** validation à distance avec MFA, exclue pour les réglementés | Le responsable légal (titulaire) peut-il désigner un autre pharmacien comme administrateur du système ? Limites de la délégation d'actes administratifs et financiers ; **[v1.1]** une autorisation donnée à distance (hors de l'officine) est-elle admise pour une opération de caisse ou de stock, et avec quelle preuve ? | Ordre, juriste | Avant le lot 1 |
+| R49 | Délai d'annulation d'une vente | Jour calendaire pour les produits non sensibles ; **[v1.1]** option « jour d'exploitation » pour les gardes, activée par l'administrateur | Existe-t-il des règles fiscales sur l'annulation d'un ticket ou d'une facture (délai, mention, numérotation, caisse enregistreuse) ? **[v1.1]** Une annulation après minuit pendant une garde de nuit, rattachée au jour d'exploitation, est-elle admise ? Obligations de clôture journalière de caisse | Administration fiscale, expert-comptable | Avant le lot 5 |
+| R50 | Données de paie et données personnelles | Import des montants, accès restreint N4 ; **[v1.1]** vue consolidée future sans données nominatives | Conditions de traitement et de conservation des données de paie ; déclaration INPDP ; **[v1.1]** conditions d'une consultation consolidée d'agrégats de plusieurs officines par leur propriétaire | INPDP, juriste | Avant le lot 7c |
+| R51 | Prix réglementés et marges | Prix public réglementé importé et non modifiable pour les médicaments concernés | Source officielle des prix, règles de marge, affichage des prix | PCT, ministère du Commerce | Avant le lot 2 |
+
+---
+
+## 10. Matrice de tests
+
+### 10.1 Gouvernance (S-GOV)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| GOV-01 | Deux administrateurs actifs pour une même officine | Refus (unicité) |
+| GOV-02 | Désignation d'un administrateur sans qualification de pharmacien vérifiée | Refus |
+| GOV-03 | Transfert d'administrateur : sortant initie, entrant accepte avec MFA | Effet à la date ; ancien administrateur sans droits de gouvernance ; délégations existantes conservées et révocables |
+| GOV-04 | Un adjoint tente de créer une délégation (interface et API directe) | 403 ; tentative journalisée |
+| GOV-05 | Délégation sans date de début | Refus |
+| GOV-06 | Délégation d'une opération réglementée ou de la gestion des droits | Refus |
+| GOV-07 | Redélégation par un délégataire | Refus |
+| GOV-08 | Révocation pendant qu'une opération du délégataire est en cours | L'opération est recontrôlée dans la transaction et échoue ; les opérations antérieures restent valides |
+| GOV-09 | Accès au module sans action `CREATE` : appel API de création | 403 |
+| GOV-10 | Module coupé pour un collaborateur ayant une délégation sur ce module | Toutes les actions refusées |
+| GOV-11 | Dépassement de plafond : demande, dérogation accordée, exécution | Dérogation `CONSOMMEE` ; une seconde opération identique exige une nouvelle dérogation |
+| GOV-12 | Dérogation accordée par un non-administrateur | Refus |
+| GOV-13 | `ARCHIVE` sur un produit ayant des mouvements, ou sur une vente | Refus (liste blanche) |
+| GOV-14 | Historique : toutes les créations, modifications, révocations et utilisations d'une délégation | Présentes dans l'audit, chaîne de hachage intacte |
+| GOV-15 | Explication du droit effectif dans la matrice (G3) | Raison affichée identique à la décision du serveur |
+| GOV-16 **[v1.1]** | Validation à distance sans MFA (session déjà ouverte seulement) | Refus ; demande restée `DEMANDEE` |
+| GOV-17 | Validation à distance sans motif de décision | Refus |
+| GOV-18 | Validation à distance sans confirmation explicite (case non cochée, appel API sans champ) | Refus |
+| GOV-19 | Autorisation utilisée deux fois (rejeu, double clic, deux postes) | Une seule exécution ; la seconde est rejetée et journalisée |
+| GOV-20 | Autorisation expirée | Exécution refusée ; statut `EXPIREE` |
+| GOV-21 | Opération modifiée (montant, ligne) après la demande | Empreinte différente : exécution refusée, nouvelle demande exigée |
+| GOV-22 | Décision par un adjoint titulaire d'une délégation ou d'un réglage individuel | Refus (permission non attribuable) |
+| GOV-23 | Administrateur demandeur et décideur de sa propre dérogation | Refus |
+| GOV-24 | Transfert d'administrateur entre la décision et l'exécution | Autorisation `REVOQUEE`, exécution refusée |
+| GOV-25 | Validation à distance pour un produit réglementé | Non proposée ; circuit EXT05 §4.7 obligatoire |
+| GOV-26 | Journal d'audit d'une validation à distance | Demande, consultation, décision, MFA, consommation présents ; aucun secret journalisé ; chaîne intacte |
+
+### 10.2 Annulations amendées (S-ANN)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| ANN-01 | Vente non validée abandonnée | Aucune écriture corrective, journalisé |
+| ANN-02 | Produit non sensible, annulation le jour même à 22 h par un collaborateur habilité | Exécutée dans ses plafonds ; produit en `EN_CONTROLE` |
+| ANN-03 | Même vente, annulation le lendemain à 8 h | Bloquée ; dérogation de l'administrateur obligatoire |
+| ANN-04 | Vente validée à 23 h 58, annulation à 00 h 02 | Hors jour calendaire → dérogation (sauf option D75) |
+| ANN-05 | Horloge du poste décalée de 3 h | Le jour est déterminé par l'horodatage serveur et le fuseau de l'officine |
+| ANN-06 | Produit sensible (chaîne du froid) annulé le jour même par un préparateur | Circuit spécifique ; pas de réintégration directe |
+| ANN-07 | Produit réglementé | Séquence EXT05 §4.7 (quatre yeux, registre) |
+| ANN-08 | Annulation puis décision de contrôle | Réintégration, quarantaine ou perte ; jamais automatique |
+| ANN-09 | Droits d'annulation accordés par un adjoint | Refus (administrateur seul) |
+| ANN-10 **[v1.1]** | Officine nouvellement créée | Jour calendaire actif par défaut |
+| ANN-11 | Activation de l'option « jour d'exploitation » par un adjoint, par import ou par mise à jour du référentiel | Refus ; paramètre inchangé |
+| ANN-12 | Activation par l'administrateur avec effet rétroactif | Refus ; date d'effet au prochain jour de référence au plus tôt |
+| ANN-13 | Variante GARDES : vente à 23 h 30 pendant une garde (fin 8 h), annulation à 2 h | Autorisée sans dérogation, dans les plafonds ; règle appliquée enregistrée avec l'opération |
+| ANN-14 | Variante GARDES : même cas hors période de garde | Jour calendaire : dérogation exigée |
+| ANN-15 | Option active, produit sensible ou réglementé | Circuit spécifique inchangé ; aucune réintégration automatique |
+| ANN-16 | Changement du paramètre | Audit avant / après, notification aux collaborateurs concernés, bandeau dans les paramètres |
+| ANN-17 | Annulation à 2 h pendant une garde | Métriques et écritures rattachées au jour réel de l'exécution (MT1) |
+
+### 10.3 Catalogue et stock (S-CAT)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| CAT-01 | Création d'un médicament local sans DCI, dosage ou forme | Refus (champs obligatoires par type) |
+| CAT-02 | Médicament créé, non validé par un pharmacien | Non vendable (`A_VALIDER`) |
+| CAT-03 | Association de deux molécules | Deux lignes `product_substances` ; recherche par chacune des DCI |
+| CAT-04 | Produit classé dans trois familles commerciales et une famille thérapeutique | Recherche par facettes correcte ; un seul nœud principal par axe |
+| CAT-05 | Changement de taux de TVA au 1er du mois | Ventes antérieures inchangées ; nouvelles ventes au nouveau taux figé |
+| CAT-06 | Variantes de chaussures orthopédiques (pointures 38 à 44) | Un produit par variante, stock et code-barres propres, regroupés sous le modèle |
+| CAT-07 | Groupe de substitution non validé | Non utilisé par la caisse ni par EXT03 |
+| CAT-08 | Équivalent informatif (même DCI, autre dosage) | Affiché, jamais proposé comme substitution |
+| CAT-09 | Doublon de code-barres | Refus |
+| CAT-10 | FEFO avec un lot `EN_CONTROLE`, un lot `RAPPELE` et une réservation | Seul le lot disponible et non réservé le plus proche de la péremption est alloué |
+| CAT-11 | Contrôle reçue = disponible + contrôle + quarantaine + perte + sorties nettes | Égalité sur un jeu de référence |
+| CAT-12 | Produit `ARRETE` avec stock | Vendable sur stock, exclu des propositions de commande |
+| CAT-13 | Recherche universelle : nom en arabe, DCI avec faute, code-barres, laboratoire | Résultats pertinents < 150 ms ; aucun médecin renvoyé à un utilisateur sans droit |
+
+### 10.4 Services (S-SRV)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| SRV-01 | Activation d'un service exigeant une autorisation absente ou expirée | Refus |
+| SRV-02 | Autorisation expirée pendant la période | Service désactivé, non proposé |
+| SRV-03 | Réalisation par un collaborateur non habilité | Refus |
+| SRV-04 | Service facturé avec consommables | Ligne de vente au tarif, sortie de stock des consommables par lot, acte enregistré |
+| SRV-05 | Service gratuit | Acte au registre, aucune ligne de vente |
+| SRV-06 | Annulation d'un acte facturé | Acte d'annulation lié ; correction de la vente selon EXT05 |
+| SRV-07 | Données de santé de l'acte | Chiffrées, consultation journalisée, absentes des charges utiles de l'IA |
+
+### 10.5 Finance et comptabilité (S-FIN)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| FIN-01 | Facture de charge sans pièce justificative | Refus de validation |
+| FIN-02 | Facture de marchandises rapprochée d'une réception | Dette fournisseur et coût du stock cohérents |
+| FIN-03 | Avoir fournisseur imputé sur une facture | Solde fournisseur exact |
+| FIN-04 | Acompte versé puis imputé | Solde de l'acompte et de la facture exacts |
+| FIN-05 | Charges récurrentes | Brouillons générés, aucune charge validée automatiquement |
+| FIN-06 | Échéance d'emprunt payée | Capital en diminution de dette, intérêts en charge financière |
+| FIN-07 | Rapprochement bancaire d'un règlement d'organisme | Lettrage de la créance (EXT04) ; aucune vente créée |
+| FIN-08 | Import de paie avec un collaborateur inconnu | Écart signalé, import non validable |
+| FIN-09 | Définitions : CA, marge, créances, dettes, encaissements, décaissements, trésorerie | Valeurs identiques au jeu calculé à la main |
+| FIN-10 | Règlement CNAM de 70 sur une vente tiers payant | CA inchangé ; encaissement +70 ; créance −70 |
+| FIN-11 | Écritures générées pour une vente, une annulation, un retour, une facture, un règlement | Débit = crédit ; comptes conformes aux règles de passation ; contre-passation pour les corrections |
+| FIN-12 | Période verrouillée : nouvelle correction | Écriture datée dans la période ouverte suivante |
+| FIN-13 | Réouverture d'une période exportée | Refus |
+| FIN-14 | Balance et grand livre recalculés | Égalité avec Σ des écritures ; tiers M20 = `party_ledger` |
+| FIN-15 | CA tableau de bord commercial = financier = journal des ventes | Égalité quotidienne et mensuelle |
+| FIN-16 | Période close : tableau de bord | Affiche le cliché figé, identique à la clôture |
+| FIN-17 | Comptable : accès aux montants de paie individuels | Refusé (agrégats seulement) |
+
+**Compléments S-FIN [v1.1]** :
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| FIN-18 | Tableau de bord financier : CA, CA encaissé, marge commerciale, marge réalisée, résultat de gestion sur un même mois | Cinq valeurs distinctes, conformes au §5.6.1 et au jeu calculé à la main |
+| FIN-19 | Clôture mensuelle avec un événement de la période sans écriture ni exception | Clôture refusée ; événement listé |
+| FIN-20 | Écart `party_ledger` ↔ comptes de tiers M20 | Exception `ECART_TIERS` ; aucune écriture modifiée ni régénérée |
+### 10.6 Accueil et navigation (S-NAV)
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| NAV-01 | Tuiles affichées pour un caissier | Seulement les modules autorisés |
+| NAV-02 | Utilisation tactile et scanner sans souris | Toutes les actions de l'accueil sont accessibles |
+| NAV-03 | Accueil en arabe (RTL) | Disposition inversée, libellés traduits |
+| NAV-04 | Accès direct Médecins / Organismes | Ouvre les écrans d'EXT03 / EXT04, filtrés ; aucune donnée dupliquée |
+
+---
+
+### 10.7 M20 — Immutabilité, idempotence et atomicité (S-ACC) **[v1.1]**
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| ACC-01 | Modification ou suppression d'une écriture validée (API, puis requête SQL directe) | Refus par déclencheur ; aucune route d'API ; tentative journalisée |
+| ACC-02 | Écriture manuelle déséquilibrée d'un millime | Batch entièrement annulé : aucune ligne, aucun en-tête, aucun numéro consommé |
+| ACC-03 | Échec au milieu du batch (compte inactif sur la 3e ligne) | Rien n'est écrit ; brouillon resté `SOUMIS` ; message explicite |
+| ACC-04 | Même événement, même version de règle, génération demandée deux fois | Une seule écriture (`generation_key` unique) |
+| ACC-05 | Rejeu du même événement 10 fois | Une seule écriture ; événement marqué traité |
+| ACC-06 | Deux traitements concurrents du même événement | Une seule écriture ; le second constate « déjà fait », sans erreur ni exception |
+| ACC-07 | Coupure après l'écriture et avant le marquage de l'événement, puis relance | Aucun doublon |
+| ACC-08 | Ajout d'une ligne à une écriture déjà scellée | Refus par déclencheur |
+| ACC-09 | Export avec une ligne dont l'empreinte ne correspond plus (intégrité simulée en test) | Export refusé ; exception `INTEGRITE_ECRITURE` BLOQUANTE |
+| ACC-10 | Export dont les totaux ou le nombre d'écritures diffèrent de la base | Export refusé |
+| ACC-11 | Correction d'une écriture | Contre-passation exacte + nouvelle écriture, même `correlation_id` ; l'écriture d'origine reste visible et inchangée |
+| ACC-12 | Deuxième contre-passation de la même écriture | Refus (UNIQUE `reverses_id`) |
+| ACC-13 | Contre-passation d'une contre-passation | Refus |
+| ACC-14 | Modification d'un brouillon `SOUMIS`, puis d'un brouillon `EN_COURS` avec une version périmée | Refus ; conflit de version |
+| ACC-15 | Brouillon validé par son auteur | Refus (valideur ≠ auteur) |
+| ACC-16 | Brouillons dans le grand livre, la balance, les exports et les métriques | Absents |
+| ACC-17 | Nouvelle version d'une règle de passation | Événements antérieurs à `valid_from` inchangés ; reprise d'un événement déjà comptabilisé seulement par contre-passation puis reprise ; jamais deux écritures actives pour un même événement |
+| ACC-18 | Batch annulé puis écriture suivante | Numérotation continue, sans trou ni réutilisation |
+| ACC-19 | Écriture datée dans une période `VERROUILLEE` | Refus ; correction datée dans la première période ouverte |
+
+### 10.8 M20 — Exceptions comptables (S-EXC) **[v1.1]**
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| EXC-01 | Vente validée dont l'événement n'a pas de règle de passation active | Vente validée et inchangée ; exception `REGLE_ABSENTE` avec événement d'origine, montant, responsable, échéance |
+| EXC-02 | Même anomalie détectée trois fois | Une seule exception ouverte, 3 occurrences |
+| EXC-03 | Résolution par correction du paramétrage puis régénération | Exactement une écriture, liée à l'exception |
+| EXC-04 | Résolution par écriture de régularisation | Brouillon validé à quatre yeux, lié à l'exception |
+| EXC-05 | Clôture d'une exception BLOQUANTE par la personne qui l'a résolue | Refus |
+| EXC-06 | Clôture de période avec une exception BLOQUANTE ouverte | Refus, liste des exceptions affichée |
+| EXC-07 | Échéance dépassée | Escalade à l'administrateur, notification |
+| EXC-08 | Écart de rapprochement bancaire de 12,500 TND | Exception `ECART_RAPPROCHEMENT_BANCAIRE`, montant d'écart 12 500 millimes |
+| EXC-09 | `ECART_JUSTIFIE` sans justification | Refus |
+| EXC-10 | Tentative de suppression ; nouvelle détection après clôture | Suppression impossible ; exception `REOUVERTE` |
+| EXC-11 | Contenu de `details` pour un acte de service ou une ligne de paie | Références uniquement, aucune donnée de santé ni montant individuel de paie |
+
+### 10.9 Couche métriques (S-MET) **[v1.1]**
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| MET-01 | Double écriture d'une même clé | Une seule ligne (UPSERT sur la clé unique) |
+| MET-02 | Rejeu d'un événement | Valeurs identiques (recalcul complet du jour) |
+| MET-03 | Vente du 10, annulée le 11 | CA du 10 inchangé ; CA du 11 diminué ; `ca_annulations_ht` du 11 alimenté ; concordance jour par jour avec le journal des ventes |
+| MET-04 | Σ des dimensions additives | = `TOTAL` ; `CLASSIFICATION_NODE` signalée non additive ; `CLASSIFICATION_PRINCIPAL` additive |
+| MET-05 | Vente tiers payant le 28 mars, règlement CNAM le 15 avril | CA en mars ; CA encaissé de la part organisme en avril ; aucune vente en avril |
+| MET-06 | Marge réalisée | = marge commerciale − démarque − pertes sur créances + ristournes non affectées (jeu calculé à la main) |
+| MET-07 | Service facturé | Compté une seule fois dans le CA (pas de double comptage dans le résultat de gestion) |
+| MET-08 | Recalcul d'une période verrouillée | Cliché inchangé ; écart éventuel → exception `ECART_METRIQUES_JOURNAL` |
+| MET-09 | Nouvelle version de définition | Calculée en parallèle ; ancienne version consultable ; clichés inchangés |
+| MET-10 | Taux de marge mensuel | = Σ marge / Σ CA HT, jamais la moyenne des taux journaliers |
+| MET-11 | Même indicateur sur G23, G24, G25, M12 et dans un export | Valeurs identiques (même code, même version) |
+| MET-12 | Valeur du stock sur un mois | Lue à une date, jamais additionnée sur les jours |
+
+### 10.10 Multi-officines et isolation (S-MOF) **[v1.1]**
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| MOF-01 | Utilisateur de l'officine B avec des identifiants de l'officine A (écritures, exceptions, dérogations, brouillons, métriques, actes de service) | 404, aucune fuite (complète SEC-TEN-01 d'EXT03 v1.1) |
+| MOF-02 | Personne membre des officines A et B | Une seule officine par session ; changement = nouvelle session ; aucun droit hérité |
+| MOF-03 | Administrateur de A tentant une décision à distance pour B | Refus |
+| MOF-04 | Délégation ou dérogation référençant un collaborateur d'une autre officine | Refus |
+| MOF-05 | Séquences de documents et d'écritures | Indépendantes par officine |
+| MOF-06 | `metric_definitions` (partagé) et `metrics_daily` (par officine) | Lecture seule du référentiel ; valeurs isolées |
+| MOF-07 | Requête métier sans filtre `tenant_id` | Détectée par le contrôle automatique de la CI ; build en échec |
+
+### 10.11 Rentabilité commerciale (S-RNT) **[v1.1]**
+
+| ID | Scénario | Résultat attendu |
+|---|---|---|
+| RNT-01 | Produits à forte et à faible marge selon les seuils de l'officine | Classement conforme au jeu de référence |
+| RNT-02 | Médicament à prix réglementé à faible marge | Signalé « prix réglementé », jamais proposé comme levier de prix |
+| RNT-03 | Rotation et jours de couverture | Conformes au calcul manuel |
+| RNT-04 | Capital immobilisé | = valeur au coût des stocks disponible, en contrôle et en quarantaine à la date |
+| RNT-05 | Risque de péremption à 60 jours | Valeur des lots expirant dans 60 jours, diminuée de la consommation prévisible |
+| RNT-06 | Rentabilité par famille | Nœud principal ; Σ des familles = total |
+| RNT-07 | Performance par laboratoire et par marque | Inclut démarque, avoirs et ristournes |
+| RNT-08 | Utilisateur sans `analytics.margin.read` | Montants de marge masqués (interface et API) |
+| RNT-09 | Valeurs affichées par G25 | Identiques à la couche métriques ; aucun calcul propre |
+
+---
+
+## 11. Décisions à arbitrer
+
+Numérotation à la suite d'EXT05 (D59 à D71). **[v1.1]** Colonne « Statut » ajoutée : **RETENUE** = tranchée par la revue
+du 2026-11-03 ; **PROPOSÉE** = recommandation en attente d'arbitrage. Aucun numéro n'a été ajouté ni réattribué.
+
+| # | Question | Options | Recommandation | Statut |
+|---|---|---|---|---|
+| **D72** | Perte d'accès du pharmacien administrateur | Procédure de secours APEX sur justificatifs · Second administrateur de secours | **Procédure de secours APEX** (double contrôle, sans accès aux données) ; un administrateur suppléant affaiblirait la règle « un seul responsable » | PROPOSÉE |
+| **D73** | Dérogations en l'absence de l'administrateur | Aucune · Validation à distance (smartphone, MFA) | **Validation à distance par l'administrateur, et par lui seul** : MFA au moment de la décision, confirmation explicite, motif obligatoire, opération identifiée par empreinte, autorisation à usage unique et expirante, journalisation complète, aucune substitution possible ; exclue pour les produits réglementés (W4-D, GV13) | **RETENUE [v1.1]** (R48 à confirmer pour la preuve à distance) |
+| **D74** | Réintégration directe d'EXT05 (`DISPONIBLE_DIRECT`) | Supprimer · Remplacer par une décision immédiate par un second collaborateur | **Remplacer** par une décision immédiate tracée, avec check-list réduite | PROPOSÉE |
+| **D75** | Définition du « jour » d'annulation | Jour calendaire (minuit) · Jour d'exploitation (heure de bascule paramétrable) | **Jour calendaire comme règle générale** ; option « jour d'exploitation » (variantes GARDES ou PERMANENTE) activée explicitement par l'administrateur, documentée et versionnée dans les paramètres de l'officine, jamais modifiée silencieusement ; exigences sur les produits sensibles et réglementés et absence de réintégration automatique inchangées (AN9 à AN13, W16) | **RETENUE [v1.1]** (R49 à confirmer) |
+| **D76** | Bucket `RESERVE` d'EXT05 | Conserver · Retirer (réservation = engagement) | **Retirer** | PROPOSÉE |
+| **D77** | Page affichée après connexion | Accueil · Tableau de bord · Selon le rôle | **Selon le rôle**, modifiable par l'utilisateur dans les limites de ses droits | PROPOSÉE |
+| **D78** | Données saisies lors des services (mesures, observations) | Aucune · Mesures structurées chiffrées | Mesures structurées et facultatives, chiffrées, selon le service et après R47 | PROPOSÉE (après R47) |
+| **D79** | Visibilité des marges | Tous les rôles du module · Permission dédiée | **Permission dédiée** `analytics.margin.read` | PROPOSÉE |
+| **D80** | Profondeur du module comptable | A. Exports seulement (journaux) · B. Pré-comptabilité en partie double (M20) · C. Comptabilité générale complète | **B** : écritures générées et exportées, le comptable tient les comptes officiels | PROPOSÉE — **[v1.1]** l'option B est précisée par §5.13 et §5.14 |
+| **D81** | Moteur de paie | Import des montants · Moteur intégré | **Import des montants** (sans moteur) tant que les règles ne sont pas validées | PROPOSÉE |
+| **D82** | Réouverture d'une période comptable | Interdite · Administrateur avant export définitif | Administrateur avec motif, **interdite après export définitif** | PROPOSÉE |
+| **D83** | Plan de comptes livré | Aucun · Modèle indicatif à valider | Modèle indicatif, **inactif tant que l'expert-comptable ne l'a pas validé** | PROPOSÉE |
+| **D84** | Référentiel de classification thérapeutique | ATC · Référentiel local · Classification APEX | Selon R43 ; à défaut, classification APEX maintenue et sourcée | PROPOSÉE (après R43) |
+| **D85** | Rapprochement bancaire automatique | Automatique · Proposé puis confirmé | **Proposé puis confirmé** (cohérent avec EXT04 D55) | PROPOSÉE |
+| **D86** | Seuil de validation des charges par l'administrateur | Montant fixe · Toutes les charges | Montant paramétrable | PROPOSÉE |
+
+**Points tranchés par la revue sans nouveau numéro de décision** (exigences du propriétaire, intégrées comme règles) :
+immutabilité des écritures et cycle de vie des brouillons (CP1 à CP13) ; exceptions comptables (EX1 à EX11) ; définition
+technique de la couche métriques (MT1 à MT11) ; compatibilité multi-officines (MO1 à MO10) ; analyse de rentabilité
+commerciale (§5.12). Les seuils (rentabilité, échéances des exceptions, durée de validité d'une autorisation à distance)
+sont des **paramètres de l'officine**, sans valeur réglementaire présumée.
+
+---
+
+## 12. Positionnement dans le plan de développement
+
+EXT06 touche des fondations (droits, catalogue, stock) qui doivent être correctes **dès les premiers lots**, et des
+fonctions avancées (comptabilité, tableaux de bord) qui viennent plus tard.
+
+| Lot | Contenu EXT06 | Justification |
+|---|---|---|
+| **0. Socle** (ajout) | Prototype de l'index de recherche (FTS5 ou repli) ; règle de date serveur et fuseau ; **[v1.1]** prototypes D1 : en-tête scellé et échec contrôlé du batch, déclencheurs d'immutabilité et de transitions, recalcul d'un jour de métriques ; contrôle CI du filtre `tenant_id` ; jeu de tests d'isolation à deux officines | Risques techniques à lever tôt |
+| **1. Plateforme** (ajout) | `tenant_administrators`, `app_modules`, catalogue `permissions` complété (module × action), coupure de module, `permission_exceptions`, matrice des droits (G3), désignation et transfert de l'administrateur ; **[v1.1]** MFA step-up, appareil enrôlé de l'administrateur, validation à distance (W4-D, G28), paramètre `cancellation.reference_day` (W16) | Le contrôle des droits conditionne tous les autres lots |
+| **2. Catalogue** (ajout) | Types de produits, substances multiples, marques, unités de vente, variantes, classification multi-axes, catégories fiscales et taux, prix historisés, groupes de substitution, explorateur, recherche universelle, nœuds initiaux des familles | Remplacer `categories` et `tva_bp` avant toute donnée réelle |
+| **3. Stock & lots** (ajout) | Lots complétés, buckets sans `RESERVE`, FEFO avec réservations | Structure de stock définitive |
+| **5. Caisse & ventes** (ajout) | Règle du jour calendaire et **[v1.1]** option « jour d'exploitation » (lecture de `duty_periods`, disponible dès que le Lot 10b fournit les gardes ; sinon variante PERMANENTE seule), dérogation administrateur (présente ou à distance) pour les annulations ; **accueil opérationnel** (G1) | Exploitation quotidienne |
+| **5d. Opérations correctives** (EXT05 amendé) | Suppression de `DISPONIBLE_DIRECT` (D74), décision immédiate tracée | — |
+| **7. Finance** (ajout) | Nature des factures, catégories de charges, avoirs et acomptes fournisseurs, charges récurrentes, emprunts, rapprochement bancaire | Dettes et trésorerie fiables |
+| **7c. Comptabilité & paie importée** (nouveau, après 7 et 7b) | M20 : plan de comptes, journaux, règles de passation **versionnées**, écritures **immuables** (CP1–CP13), **brouillons** (W15, G27), **exceptions comptables** (W14, G26), périodes et clôture complétée (W13), grand livre, balance, exports contrôlés ; immobilisations ; import de paie | Dépend de tous les événements financiers ; validation R45, R46, R50 ; **[v1.1]** prototypes du Lot 0 concluants |
+| **9c. Services pharmaceutiques** (nouveau, après 5 et 10b) | Définitions, activation réglementaire, actes, consommables, facturation | Après R47 et les habilitations RH |
+| **11. Métriques & rapports** (ajout) | `metric_definitions`, `metrics_daily` (clé unique, MT1–MT11), `financial_snapshots`, tableaux de bord financier (G23) et commercial (G24), **[v1.1]** analyse de rentabilité (G25) et contrôles de cohérence quotidiens | Couche métriques unique |
+| **Hors plan [v1.1]** | Vue consolidée multi-officines : **non planifiée** ; nécessitera une extension dédiée (tables réservées MO9, R50) | Compatibilité préparée, aucun développement |
+| **13. IA** (ajout) | Analyses financières et commerciales sur agrégats | Après 11 |
+
+**Prérequis bloquants** :
+- avant le lot 0 **[v1.1]** : aucune décision ; prototypes techniques (CP8, MT7) ;
+- avant le lot 1 : R48 ; décision D72 (D73 retenue) ;
+- avant le lot 2 : R42, R43, R44, R51 ; décisions D76, D84 ;
+- avant le lot 5 : R49 ; décisions D74, D77 (D75 retenue) ;
+- avant le lot 7c : R45, R46, R50 ; décisions D80, D81, D82, D83, D85, D86 ;
+- avant le lot 9c : R47 ; décision D78 ;
+- avant le lot 11 **[v1.1]** : D79 ; validation des définitions du §5.6.1 par l'expert-comptable (R46).
+
+### Récapitulatif des tables EXT06
+
+| Catégorie | Tables |
+|---|---|
+| Nouvelles — gouvernance, catalogue, fiscalité (17) | `tenant_administrators`, `app_modules`, `permission_exceptions`, `ref_product_substances`, `product_substances`, `brands`, `product_units`, `product_variant_attributes`, `product_type_fields`, `product_prices`, `substitution_groups`, `substitution_group_members`, `classification_axes`, `classification_nodes`, `product_classifications`, `tax_categories`, `tax_rates` |
+| Nouvelles — services (3) | `service_definitions`, `service_acts`, `service_act_consumables` |
+| Nouvelles — finance (12) | `supplier_credit_notes`, `supplier_advances`, `expense_categories`, `recurring_charge_templates`, `loans`, `loan_schedule_lines`, `fixed_assets`, `bank_statements`, `bank_statement_lines`, `bank_reconciliations`, `payroll_imports`, `payroll_import_lines` |
+| Nouvelles — comptabilité M20 (9) | `chart_of_accounts`, `journals`, `posting_rules`, `accounting_periods`, **`journal_entry_drafts`** [v1.1], `journal_entries`, `journal_entry_lines`, **`accounting_exceptions`** [v1.1], `accounting_exports` |
+| Nouvelles — métriques (2) | **`metric_definitions`** [v1.1], `financial_snapshots` |
+| Complétées | `permissions`, `permission_overrides`, `delegations`, `ref_products`, `products`, `ref_laboratories`, `lots`, `stock_levels`, `supplier_invoices`, `expenses` (restreinte), `metrics_daily` (**[v1.1]** clé et dimensions redéfinies), **`corrective_operations`** (EXT05, **[v1.1]** règle de jour appliquée, AN13) |
+| Utilisées sans modification de structure **[v1.1]** | `settings` (nouvelles clés), `duty_periods` (EXT02), `domain_events`, `document_sequences`, `notifications`, `devices`, `sessions`, `memberships`, `tenants`, `party_ledger` |
+| Réservées, non créées **[v1.1]** | `organizations`, `organization_tenants`, `organization_access_grants` (MO9) — hors décompte |
+| **Total des tables nouvelles** | **43** (v1.0 : 40) |
+| Remplacées | `categories` (→ classification multi-axes), `product_prices_history` (→ `product_prices`), `products.tva_bp` (→ catégories fiscales), `products.substitution_group_id` et `ref_products.generic_group_code` d'EXT03 (→ `substitution_groups`), bucket `RESERVE` d'EXT05 |
+| Doublons créés | **Aucun** |
