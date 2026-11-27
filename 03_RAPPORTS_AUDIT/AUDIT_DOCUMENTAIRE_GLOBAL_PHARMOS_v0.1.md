@@ -235,6 +235,7 @@ Ces modifications sont documentaires uniquement. Aucune migration, aucun code ap
 | ID | Gravité | Constat | Action |
 |---|---|---|---|
 | AUD-028 | Critique | Le registre source `docs/P81_REGISTRE_DECISIONS_PO_STOCK.md` manque dans GitHub ; les quatre entrées DP-5 et les huit conditions DP-6 ne sont donc pas vérifiables mot pour mot. | Récupérer le document source avant de déclarer le registre stock complet ou de préparer la migration 0022. |
+| AUD-029 | Faible | Les liens Markdown internes des six documents de référence ont été contrôlés après déplacement et correction des chemins ; aucun lien local cassé n'a été détecté dans les liens cliquables examinés. | Contrôle effectué ; à rejouer après toute réorganisation ultérieure. |
 
 ## 6. Blocages transverses avant développement
 
