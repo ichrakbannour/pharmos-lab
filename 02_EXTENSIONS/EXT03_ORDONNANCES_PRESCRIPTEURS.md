@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D27–D40 ne sont pas globalement approuvés ; D37 est à réexaminer selon la matrice maître D1–D86 v1.2.1. Les exigences réglementaires restent à valider. Les modules existants ne sont pas modifiés :
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D27–D39 ne sont pas globalement approuvés ; D37 reste « À RÉEXAMINER » selon la matrice maître D1–D86 v1.3.3. D40 est désormais **ARBITRÉE** : réservation sans avance, durée par défaut de deux jours comptables, configurable par l'administrateur ; les règles détaillées de D40 dans la matrice v1.3.3 prévalent sur toute formulation antérieure de cette proposition. Les exigences réglementaires restent à valider. Les modules existants ne sont pas modifiés :
 les changements qu'ils nécessitent sont listés au §3 et ne seront reportés dans le dossier principal
 qu'après validation des arbitrages du §13.
 **Module créé** : **M17 Ordonnances & prescripteurs**
@@ -485,7 +485,7 @@ d'un patient exige `rx.read.nominative` et est journalisée avec un motif.
 ### 6.3 Finance (M08)
 
 - Aucun nouveau flux financier en v1 : les ordonnances ne changent ni les prix ni les modes de paiement.
-- **Tiers payant (CNAM, mutuelles, conventions)** : hors périmètre v1 **[ARBITRAGE D37]**, mais le modèle le prépare :
+- **Tiers payant (CNAM, mutuelles, conventions)** : aucune activation en v1 ne doit être déduite de cette proposition. D37 reste **À RÉEXAMINER** dans la matrice PO v1.3.3 ; le modèle peut préserver des points d'extension futurs, sans activer de flux de tiers payant CNAM, mutuelle ou convention tant que le périmètre n'est pas arbitré :
   `patient_profiles.organisme` / `identifiant_assure`, lien ligne à ligne vente ↔ ordonnance, qui permettront une
   future part « patient » / part « organisme » et une créance sur l'organisme dans `party_ledger`.
 
@@ -729,7 +729,7 @@ Pré-requis bloquants avant le lot 5b : validation des exigences R1 à R6 (au mi
 | **D37** | Tiers payant (CNAM, mutuelles) | v1 · Ultérieur | Ultérieur, modèle préparé |
 | **D38** | Posologie | Non saisie · Facultative · Obligatoire | Facultative, non utilisée par l'IA ni par les rapports |
 | **D39** | Ventes sur ordonnance hors ligne | Interdites · Ordonnances simples uniquement | Ordonnances simples uniquement, synchronisées et contrôlées au retour du réseau |
-| **D40** | Réservation de stock pour les reliquats `PATIENT_REVIENDRA` | Aucune · Réservation courte (ex. 48 h) | Réservation courte paramétrable |
+| **D40** | Réservation de stock pour les reliquats `PATIENT_REVIENDRA` | Décision PO du 10/11/2026 : aucune avance ; réservation par défaut de deux jours comptables, configurable par l'administrateur ; échéance notifiée ; aucune annulation ou confiscation silencieuse. La règle PO complète de la matrice v1.3.3 prévaut. | **ARBITRÉE — ne pas reprendre la recommandation historique « réservation courte paramétrable » comme règle suffisante.** |
 
 ### 13.2 Exigences réglementaires
 
