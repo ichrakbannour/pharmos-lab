@@ -34,6 +34,14 @@ Le contrôle croisé confirme :
 
 Les documents sont cohérents sur la restriction opérationnelle actuelle, mais le conflit de périmètre entre D37 et D44 demeure non tranché. **INC-06 reste ouvert.** Aucune option n'est choisie à la place du PO et aucune activation n'est autorisée.
 
+### Contrôle des sources publiques sur la suspension annoncée
+
+La recherche publique complémentaire du 27/11/2026 retrouve :
+- une dépêche TAP du 30/10/2026 rapportant l'annonce du SPOT d'une suspension à compter du 01/11/2026 ([TAP](https://www.tap.info.tn/fr/Portail-Titres-de-l-actualit%C3%A9/20749684-le-syndicat-des)) ;
+- un compte rendu du 06/11/2026 relayant une nouvelle déclaration du SPOT sur les engagements de paiement et le maintien de la suspension ([DirectInfo](https://directinfo.webmanagercenter.com/2026/11/06/les-institutions-de-letat-sont-tenues-de-respecter-leurs-engagements-et-de-payer-les-pharmaciens/)).
+
+Ces sources rapportent la position du syndicat. Elles ne constituent pas une décision officielle de la CNAM, ne valident pas les nouvelles modalités de remboursement et ne prouvent pas une reprise ou une reconduction conventionnelle. R23 et les autres points R23–R33 restent donc à confirmer sur des documents officiels applicables.
+
 ## 4. Fraîcheur des compteurs
 
 Les chiffres de la v1.2.1 sont historiques au 04/11/2026. La matrice PO v1.3.3 demeure la source courante :
