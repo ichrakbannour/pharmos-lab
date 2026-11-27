@@ -83,7 +83,7 @@ EXT03 a fait l'objet d'un accord de principe sur l'extension, mais cela ne vaut 
 ### 4.3 Amendements PO postérieurs à la matrice — réconciliation obligatoire
 
 Les échanges PO postérieurs contiennent des précisions qui doivent être comparées à la matrice v1.2.1 avant de réécrire les statuts ou les formulations :
-- D78 : la décision PO limite les données/notifications à **type d'opération, nom du client et date** ; les types de service sont définis par le pharmacien-administrateur. Cette consigne prévaut sur la proposition EXT06 de mesures structurées et observations.
+- D78 : les types de service et leurs champs éventuels sont configurés par le pharmacien-administrateur, sans catalogue tunisien imposé par APEX ; la notification est limitée au type d'opération/service, au nom du client et à la date. Les données éventuellement collectées restent soumises à R47 et aux contrôles de confidentialité.
 - D80 : le module comptable doit porter clairement la mention **« Comptabilité à titre indicatif »** ; PHARM'OS ne remplace pas la tenue des comptes officiels.
 - D83 : le PO a explicitement validé un modèle comptable standard préconfiguré, adaptable, sans validation préalable obligatoire d'un expert-comptable, avec mention « Comptabilité à titre indicatif ». La ligne EXT06 et la définition de `chart_of_accounts` ont été corrigées en conséquence. D84 reste l'arbitrage de classification thérapeutique, à traiter séparément.
 - D74 : toute réintégration corrective par un second collaborateur suppose que le pharmacien/admin lui ait explicitement accordé ce droit ; une décision immédiate par un second collaborateur sans contrôle d'habilitation est insuffisante.
@@ -154,7 +154,7 @@ Autres constats :
 
 Les corrections suivantes ont été appliquées au document EXT06 et vérifiées après commit :
 - **D74** : la décision immédiate simplifiée d'un second collaborateur exige une habilitation explicite accordée par le pharmacien-administrateur ; sans ce droit, pas de réintégration.
-- **D78** : données/notification limitées au type d'opération ou service défini par le pharmacien-administrateur, au nom du client et à la date ; aucune liste tunisienne de services n'est imposée par APEX ; pas de mesures ou observations cliniques.
+- **D78** : types de service et champs éventuels configurés par le pharmacien-administrateur, sans catalogue tunisien imposé par APEX ; notification limitée au type d'opération/service, au nom du client et à la date ; les données éventuellement collectées restent soumises à R47 et aux contrôles de confidentialité.
 - **D80** : ajout de l'exigence de mention « Comptabilité à titre indicatif » pour les écrans, états et exports comptables.
 - **D83** : correction du modèle de comptes : modèle standard APEX préconfiguré et adaptable, sans validation préalable obligatoire d'un expert-comptable ; il reste indicatif et ne remplace pas les comptes officiels.
 
