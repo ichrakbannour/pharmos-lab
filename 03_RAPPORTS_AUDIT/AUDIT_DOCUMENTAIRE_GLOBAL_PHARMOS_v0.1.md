@@ -85,7 +85,7 @@ EXT03 a fait l'objet d'un accord de principe sur l'extension, mais cela ne vaut 
 Les échanges PO postérieurs contiennent des précisions qui doivent être comparées à la matrice v1.2.1 avant de réécrire les statuts ou les formulations :
 - D78 : la décision PO limite les données/notifications à **type d'opération, nom du client et date** ; les types de service sont définis par le pharmacien-administrateur. Cette consigne prévaut sur la proposition EXT06 de mesures structurées et observations.
 - D80 : le module comptable doit porter clairement la mention **« Comptabilité à titre indicatif »** ; PHARM'OS ne remplace pas la tenue des comptes officiels.
-- D83/D84 : la numérotation et la formulation PO doivent être rapprochées de la matrice maître avant correction du statut du plan comptable et de la classification. Ne pas transposer une validation de D84 à D83 par simple proximité numérique.
+- D83 : le PO a explicitement validé un modèle comptable standard préconfiguré, adaptable, sans validation préalable obligatoire d'un expert-comptable, avec mention « Comptabilité à titre indicatif ». La ligne EXT06 et la définition de `chart_of_accounts` ont été corrigées en conséquence. D84 reste l'arbitrage de classification thérapeutique, à traiter séparément.
 - D74 : toute réintégration corrective par un second collaborateur suppose que le pharmacien/admin lui ait explicitement accordé ce droit ; une décision immédiate par un second collaborateur sans contrôle d'habilitation est insuffisante.
 
 Les D72–D86 étaient marquées ARBITRÉES dans la matrice v1.2.1. Les amendements postérieurs précisent ou corrigent certains contenus ; ils ne doivent pas être traités comme une annulation implicite de leur statut sans décision PO explicite.
@@ -156,6 +156,7 @@ Les corrections suivantes ont été appliquées au document EXT06 et vérifiées
 - **D74** : la décision immédiate simplifiée d'un second collaborateur exige une habilitation explicite accordée par le pharmacien-administrateur ; sans ce droit, pas de réintégration.
 - **D78** : données/notification limitées au type d'opération ou service défini par le pharmacien-administrateur, au nom du client et à la date ; aucune liste tunisienne de services n'est imposée par APEX ; pas de mesures ou observations cliniques.
 - **D80** : ajout de l'exigence de mention « Comptabilité à titre indicatif » pour les écrans, états et exports comptables.
+- **D83** : correction du modèle de comptes : modèle standard APEX préconfiguré et adaptable, sans validation préalable obligatoire d'un expert-comptable ; il reste indicatif et ne remplace pas les comptes officiels.
 
 Les documents EXT02 à EXT06 ont également reçu un rappel de leur statut PO réel. EXT05 marque D61 et D66 caduques. EXT06 ne présente plus D66 comme une décision arbitrée.
 
@@ -179,7 +180,7 @@ Le dossier principal v1.1 proposait encore en §6.4 l'option A (base partagée) 
 
 La recherche dans le dossier principal, EXT02 et EXT06 ne retrouve aucune entité ni section décrivant le **SUPERADMIN APEX global**. EXT06 définit seulement `tenant_administrators`, c'est-à-dire l'administrateur pharmacien propre à chaque officine. Ce modèle ne couvre pas le besoin PO d'un superadmin global immuable et d'un centre de contrôle couvrant SaaS et On-Premises, les pharmacies, comptes administrateurs, licences/abonnements, supervision et paramètres globaux, sans accès métier indu aux bases des pharmacies.
 
-Il manque au minimum un modèle de contrôle global séparé de la base métier de chaque pharmacie, avec identité superadmin, authentification renforcée, cycle de vie des tenants, gestion des licences/abonnements, journal d'administration global et limites explicites d'accès aux données. **Aucune table ou permission ne doit être ajoutée par supposition** : l'architecture doit être conçue à partir des décisions PO déjà confirmées.
+Le PO a pourtant confirmé une exigence de SUPERADMIN APEX immuable (identifiant `apexproib@gmail.com`) avec contrôle global des pharmacies, comptes administrateurs, licences/abonnements, supervision et paramètres globaux. Cette exigence doit être modélisée séparément du pharmacien administrateur de chaque officine. Il manque au minimum un modèle de contrôle global séparé de la base métier de chaque pharmacie, avec identité superadmin, authentification renforcée, cycle de vie des tenants, gestion des licences/abonnements, journal d'administration global et limites explicites d'accès aux données. **Aucune table ou permission ne doit être ajoutée par supposition** : l'architecture doit être conçue à partir des décisions PO déjà confirmées.
 
 ### SaaS et On-Premises — couverture documentaire insuffisante
 
@@ -193,6 +194,9 @@ Le dossier principal décrit surtout une pile SaaS Cloudflare (D1, Workers, R2) 
 | AUD-022 | Critique | Le dossier principal proposait une base SaaS partagée, en contradiction avec D3 arbitrée. | Corrigé dans §6.4 et le tableau D3 du dossier principal. |
 | AUD-023 | Élevée | Architecture On-Premises absente : le dossier est centré sur Cloudflare SaaS. | Définir l'architecture de déploiement local et sa parité fonctionnelle avant développement commercial. |
 | AUD-024 | Élevée | Aucun schéma de base « plateforme » ni registre des opérations globales n'est décrit malgré D3 et le besoin de superadministration. | Documenter le plan de contrôle, ses tables, ses API et les limites de séparation des données. |
+| AUD-025 | Critique | Le PO a confirmé un SUPERADMIN APEX immuable (`apexproib@gmail.com`) et un centre de contrôle global, mais aucun modèle de données/API/permission correspondant n'existe dans les documents audités. | À intégrer dans l'architecture de contrôle global. |
+| AUD-026 | Élevée | Collision de numérotation D72 : EXT06 D72 décrit le secours du pharmacien administrateur, alors que l'arbitrage PO D72 retrouvé décrit le SUPERADMIN APEX immuable. | Comparer la matrice maître et l'addendum PO ; ne pas fusionner les deux formulations sans source. |
+| AUD-027 | Élevée | EXT06 D83 exigeait une validation préalable de l'expert-comptable, contrairement à la décision PO confirmée. | Corrigé : modèle comptable standard APEX préconfiguré, adaptable, sans validation préalable obligatoire ; mention indicative conservée. |
 
 ## 6. Blocages transverses avant développement
 
