@@ -198,6 +198,44 @@ Le dossier principal décrit surtout une pile SaaS Cloudflare (D1, Workers, R2) 
 | AUD-026 | Élevée | Collision de numérotation D72 : EXT06 D72 décrit le secours du pharmacien administrateur, alors que l'arbitrage PO D72 retrouvé décrit le SUPERADMIN APEX immuable. | Comparer la matrice maître et l'addendum PO ; ne pas fusionner les deux formulations sans source. |
 | AUD-027 | Élevée | EXT06 D83 exigeait une validation préalable de l'expert-comptable, contrairement à la décision PO confirmée. | Corrigé : modèle comptable standard APEX préconfiguré, adaptable, sans validation préalable obligatoire ; mention indicative conservée. |
 
+## 5.3 Réconciliation du stock — décisions DP-1 à DP-6
+
+Les décisions PO DP-1 à DP-6, confirmées le 25/11/2026, sont plus récentes que les modèles stock des extensions. Elles sont désormais traitées comme référence prioritaire.
+
+| Décision | Règle PO connue | État de propagation |
+|---|---|---|
+| DP-1 | Quatre états physiques : `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE` ; quantités par état calculées à partir des mouvements. | Propagée dans le modèle de données principal et EXT05/EXT06. |
+| DP-2 | Lot obligatoire pour les médicaments. | Propagée dans la table `lots` du dossier principal. |
+| DP-3 | Réservations logiques au niveau produit ; FEFO à l'allocation/vente. | Propagée dans le dossier principal et EXT06. |
+| DP-4 | Réservations bloquantes ; dérogation ADMIN tracée ; écarts FEFO tracés. | Propagée dans le dossier principal et EXT06. |
+| DP-5 | Quatre opérations d'entrée autorisées ; les régularisations exigent des justificatifs. | Principe connu, mais les quatre opérations exactes ne sont pas disponibles dans les fichiers du dépôt. Ne pas les reconstituer. |
+| DP-6 | Préparation et essais de la migration 0022 uniquement sur des copies isolées, sous huit conditions. Aucune migration DEMO ni base réelle autorisée. | Aucune migration lancée ; les huit conditions exactes sont absentes du dépôt. Source P81 à récupérer. |
+
+Précisions PO associées :
+- Archivage interdit tant qu'une quantité physique subsiste, y compris en QUARANTAINE ou PERTE.
+- PERTE doit rester visible dans un indicateur « en attente de destruction » avec quantité et ancienneté ; aucune destruction automatique.
+- Toute correction conserve l'état physique réel et ne peut masquer une destruction.
+- La contre-passation doit tenir compte de l'état physique actuel.
+- Le passage en PERTE par API reste interdit tant que le parcours utilisateur complet, la confirmation explicite de la quantité et l'acceptation des conséquences irréversibles ne sont pas disponibles ; le droit n'est pas accordé par défaut.
+
+### Source PO manquante
+
+Le PO a identifié le fichier source officiel `docs/P81_REGISTRE_DECISIONS_PO_STOCK.md`, qui contient DP-1 à DP-6, 37 décisions numérotées, CAT-10/CAT-11 et les huit conditions DP-6. Ce fichier n'est pas présent dans le dépôt GitHub examiné. Il est indispensable pour rétablir les formulations exactes de DP-5, DP-6, CAT-10/CAT-11 et les précautions complémentaires ; aucun détail ne sera inventé.
+
+### Corrections propagées
+
+- Dossier principal : états physiques, projection de stock calculée par mouvements, réservations produit, FEFO, lot obligatoire médicament, règles d'archivage et indicateur PERTE.
+- EXT05 : suppression de `DISPONIBLE_DIRECT` et `PERTE_DIRECTE`, fin de l'exception 15 minutes, passage en `EN_CONTROLE`, contrôle D74 et confirmation utilisateur obligatoire avant PERTE ; suppression du bucket `RESERVE`.
+- EXT06 : réservation logique au niveau produit, bucket `RESERVE` absent, FEFO et dérogations tracées.
+
+Ces modifications sont documentaires uniquement. Aucune migration, aucun code applicatif, aucune base DEMO et aucune donnée réelle n'ont été touchés.
+
+### Anomalie additionnelle
+
+| ID | Gravité | Constat | Action |
+|---|---|---|---|
+| AUD-028 | Critique | Le registre source `docs/P81_REGISTRE_DECISIONS_PO_STOCK.md` manque dans GitHub ; les quatre entrées DP-5 et les huit conditions DP-6 ne sont donc pas vérifiables mot pour mot. | Récupérer le document source avant de déclarer le registre stock complet ou de préparer la migration 0022. |
+
 ## 6. Blocages transverses avant développement
 
 1. Absence de registre maître PO et de lien de traçabilité décision → règle → table/API/écran/test.
