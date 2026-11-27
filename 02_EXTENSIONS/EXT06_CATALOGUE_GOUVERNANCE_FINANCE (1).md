@@ -135,7 +135,7 @@
 | G10 | Axes de classification | `/settings/classification` | 3 | Arbres par axe (familles commerciale et thérapeutique, univers) |
 | G11 | Catégories fiscales | `/settings/tax` | 3, 7 | Catégories et taux historisés, avec leur source |
 | G12 | **Catalogue des services** | `/services` | 4 | Prestations, tarifs, durée, habilitations, activation réglementaire |
-| G13 | Registre des prestations | `/services/acts` | 4 | Prestations réalisées (date, heure, collaborateur, patient facultatif, facturation) |
+| G13 | Registre des prestations | `/services/acts` | 4 | Enregistrement simple : type de service/opération, nom du client et date ; champs opérationnels facultatifs configurés par l'administrateur ; aucune donnée clinique ni mesure structurée |
 | G14 | Charges | `/finance/charges` | 7 | Saisie, pièces, échéances, statut de paiement, catégories |
 | G15 | Emprunts et crédits | `/finance/loans` | 7 | Contrats, tableaux d'amortissement, échéances |
 | G16 | Banque et rapprochement | `/finance/bank` | 7 | Import des relevés, rapprochement proposé puis confirmé |
@@ -287,15 +287,15 @@ Les « équivalents » non substituables (même DCI, autre forme ou dosage) sont
 ### 3.8 W8 — Réalisation et facturation d'une prestation
 
 ```
-Collaborateur ouvre le catalogue des services (G12) ou ajoute une prestation au panier de caisse
-  → contrôles : service ACTIF (autorisation réglementaire valide à la date), collaborateur habilité
+Collaborateur ouvre les services configurés par sa pharmacie (G12) ou ajoute une prestation au panier de caisse
+  → contrôles : service ACTIF selon les conditions réglementaires applicables et documentées ; collaborateur habilité
     (habilitation liée au service, EXT02), présence pointée si exigée
-  → saisie : date et heure (horodatage serveur par défaut), patient facultatif ou obligatoire selon le service,
-   → type de service et champs éventuels définis/configurés par le pharmacien-administrateur ; aucune liste de services
-     tunisienne n'est imposée par APEX ; les données éventuellement collectées restent limitées au service configuré,
-     soumises à R47 et protégées selon leur sensibilité
-   → notification : uniquement type d'opération/service, nom du client et date
-  → produits consommés éventuels (seringue, coton, pansement) : sortie de stock liée à la prestation
+  → saisie minimale : type de service/opération, nom du client et date/heure (horodatage serveur par défaut)
+  → champs facultatifs : uniquement des champs opérationnels non cliniques définis par le pharmacien-administrateur ;
+    aucune fiche patient/clinique, observation médicale, mesure de santé structurée ou donnée clinique n'est créée
+  → aucune liste universelle ou liste tunisienne de services n'est imposée ou préchargée par APEX
+  → notification : liste blanche limitée au type d'opération/service, au nom du client et à la date
+  → consommables éventuels : sortie de stock liée à la prestation, sans enrichir le registre d'informations cliniques
   → facturation : prestation gratuite (registre seul) ou ligne de vente au tarif (même caisse nominative)
   → enregistrement dans `service_acts` (immuable ; correction par acte d'annulation lié)
 ```
@@ -447,8 +447,8 @@ La recherche par facettes les combine tous.
 
 | Table | N/C/R | Colonnes principales | Contraintes / index |
 |---|---|---|---|
-| `service_definitions` | **N** | product_id (PK, `product_type = SERVICE`), description, duree_indicative_min, tarif_par_defaut (via `product_prices`), gratuit (bool), habilitation_requise_code (EXT02), patient_requis (bool), consentement_requis (bool), donnees_saisies (JSON : liste des champs), consommables_par_defaut (JSON), **autorisation_reglementaire** (`NON_REQUISE`, `REQUISE`), autorisation_ref, autorisation_valid_from, autorisation_valid_to, source_document_id, **actif** | Activation possible seulement si l'autorisation est valide à la date (§5.5) |
-| `service_acts` | **N** (immuable) | id, tenant_id, numero (`SRV-…`), product_id (service), customer_id (facultatif selon le service), performed_by_employee_id, performed_at, duree_reelle_min, sale_line_id (si facturé), observations (chiffrées si sensibles), mesures (JSON chiffré, ex. tension mesurée si le service le prévoit), consent_id, statut (`REALISE`, `ANNULE`), reverses_id | INDEX(tenant_id, performed_at) ; INDEX(product_id) ; lecture des données patient journalisée (`sensitive_access_log`, EXT03) |
+| `service_definitions` | **N** | product_id (PK, `product_type = SERVICE`), description, tarif_par_defaut (via `product_prices`), gratuit (bool), habilitation_requise_code (EXT02), champs_operationnels_facultatifs (JSON, configurés par l'administrateur et limités à des informations non cliniques), consommables_par_defaut (JSON), **autorisation_reglementaire** (`NON_REQUISE`, `REQUISE`), autorisation_ref, autorisation_valid_from, autorisation_valid_to, source_document_id, **actif** | Aucun catalogue universel préchargé ; activation soumise aux conditions réglementaires applicables et documentées (§5.5) |
+| `service_acts` | **N** (immuable) | id, tenant_id, numero (`SRV-…`), product_id (type de service/opération), customer_name (nom du client), performed_by_employee_id, performed_at, champs_operationnels (JSON facultatif, non clinique), sale_line_id (si facturé), statut (`REALISE`, `ANNULE`), reverses_id | INDEX(tenant_id, performed_at) ; INDEX(product_id) ; le registre ne contient ni dossier patient/clinique, ni observations médicales, ni mesures de santé structurées |
 | `service_act_consumables` | **N** | act_id, product_id, lot_id, quantite, stock_movement_id | Sortie de stock des consommables |
 
 ### 4.8 Finance (Partie 7 A–D) — M08 complété
@@ -632,10 +632,10 @@ Règles :
 |---|---|
 | SV1 | Un service est un produit de type `SERVICE`, non stocké (`stock_tracked = faux`), vendu par les mêmes lignes de vente et la même caisse nominative |
 | SV2 | Un service n'est **activable** que si son autorisation réglementaire est `NON_REQUISE` ou valide à la date ; à l'échéance de l'autorisation, il est désactivé automatiquement (traitement paresseux) et n'est plus proposé |
-| SV3 | **Aucun service n'est livré actif.** Les exemples (prise de tension, injections, premiers soins, conseil) sont des modèles désactivés, à activer par l'administrateur après vérification de leur cadre réglementaire **[À VALIDER R47]** |
+| SV3 | Aucun catalogue universel ni modèle de service préchargé n'est imposé par APEX ; chaque pharmacie définit ses propres services. L'administrateur ne peut activer un service que dans le respect des conditions réglementaires applicables et documentées **[À VALIDER R47]** |
 | SV4 | Seul un collaborateur détenant l'habilitation liée au service peut le réaliser (EXT02) ; la présence peut être exigée |
-| SV5 | Un acte réalisé est enregistré dans `service_acts` (immuable) avec date, heure, durée, collaborateur, patient si requis ; une erreur se corrige par un acte d'annulation lié |
-| SV6 | Les données de santé éventuellement saisies (mesures, observations) sont chiffrées, accessibles selon les droits et journalisées ; elles ne sont jamais transmises à l'IA externe |
+| SV5 | Un acte est enregistré de façon simple et immuable avec le type de service/opération, le nom du client et la date ; seuls des champs opérationnels facultatifs non cliniques configurés par l'administrateur peuvent s'y ajouter ; une erreur se corrige par un acte d'annulation lié |
+| SV6 | Aucun dossier clinique, observation médicale ou mesure de santé structurée n'est collecté dans le registre des prestations ; les champs facultatifs configurables restent strictement non cliniques |
 | SV7 | Les consommables (seringue, coton, pansement) sortent du stock par lot, liés à l'acte |
 | SV8 | Un service gratuit est enregistré au registre sans ligne de vente ; un service facturé crée une ligne de vente au tarif en vigueur (TVA selon sa catégorie fiscale, **[À VALIDER R44]**) |
 | SV9 | Les annulations de services facturés suivent EXT05 (sans mouvement de stock pour le service, mouvement inverse pour les consommables non utilisés) |
