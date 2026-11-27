@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION SOUMISE À VALIDATION**. Aucun code. Les modules existants ne sont pas modifiés :
+**Statut** : **PROPOSITION TECHNIQUE — AUCUN CODE**. Les arbitrages D27–D40 ne sont pas globalement approuvés ; D37 est à réexaminer selon la matrice maître D1–D86 v1.2.1. Les exigences réglementaires restent à valider. Les modules existants ne sont pas modifiés :
 les changements qu'ils nécessitent sont listés au §3 et ne seront reportés dans le dossier principal
 qu'après validation des arbitrages du §13.
 **Module créé** : **M17 Ordonnances & prescripteurs**
