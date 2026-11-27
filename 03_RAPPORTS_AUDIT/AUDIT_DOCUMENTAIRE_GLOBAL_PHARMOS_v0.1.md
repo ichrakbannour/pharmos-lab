@@ -169,6 +169,31 @@ Les documents EXT02 à EXT06 ont également reçu un rappel de leur statut PO r�
 | AUD-019 | Élevée | EXT05 conservait D61 (15 minutes) dans son tableau et ses prérequis malgré son statut caduque et la règle D75. | Corrigé : D61 marqué caduque ; retiré des prérequis du lot 5d. |
 | AUD-020 | Élevée | Plusieurs extensions présentent leurs recommandations comme choix retenus sans refléter le statut maître. | Corrigé dans les en-têtes EXT02–EXT06 ; le détail des décisions reste à consolider. |
 
+## 5.2 Audit d'architecture et de gouvernance globale
+
+### Isolation des pharmacies — D3
+
+Le dossier principal v1.1 proposait encore en §6.4 l'option A (base partagée) et en §11.2 D3 une base partagée au départ. Cette formulation contredisait l'arbitrage PO D3 (base physiquement distincte par pharmacie). **Correction appliquée** : §6.4 et la ligne D3 du tableau des décisions attendues indiquent maintenant l'option B arbitrée, avec bases multiples possibles sur un même serveur, base plateforme distincte, sauvegardes/restaurations indépendantes et `tenant_id` conservé en défense en profondeur.
+
+### Superadministration APEX — exigence absente du modèle
+
+La recherche dans le dossier principal, EXT02 et EXT06 ne retrouve aucune entité ni section décrivant le **SUPERADMIN APEX global**. EXT06 définit seulement `tenant_administrators`, c'est-à-dire l'administrateur pharmacien propre à chaque officine. Ce modèle ne couvre pas le besoin PO d'un superadmin global immuable et d'un centre de contrôle couvrant SaaS et On-Premises, les pharmacies, comptes administrateurs, licences/abonnements, supervision et paramètres globaux, sans accès métier indu aux bases des pharmacies.
+
+Il manque au minimum un modèle de contrôle global séparé de la base métier de chaque pharmacie, avec identité superadmin, authentification renforcée, cycle de vie des tenants, gestion des licences/abonnements, journal d'administration global et limites explicites d'accès aux données. **Aucune table ou permission ne doit être ajoutée par supposition** : l'architecture doit être conçue à partir des décisions PO déjà confirmées.
+
+### SaaS et On-Premises — couverture documentaire insuffisante
+
+Le dossier principal décrit surtout une pile SaaS Cloudflare (D1, Workers, R2) et ne formalise pas un mode de déploiement On-Premises équivalent. Les documents ne définissent pas les variantes de packaging, base locale, sauvegardes/restaurations, mises à jour, licences, supervision et fonctionnement hors connexion pour une installation chez le client. La présence de mentions « local » ou « hors ligne » ne constitue pas une architecture On-Premises.
+
+### Anomalies d'architecture supplémentaires
+
+| ID | Gravité | Constat | Action |
+|---|---|---|---|
+| AUD-021 | Critique | Aucune définition du SUPERADMIN APEX global ni de son centre de contrôle dans les documents de conception consultés ; seul l'administrateur pharmacien par officine est décrit. | Créer une architecture de contrôle global séparée, en respectant l'isolation des bases pharmacies. |
+| AUD-022 | Critique | Le dossier principal proposait une base SaaS partagée, en contradiction avec D3 arbitrée. | Corrigé dans §6.4 et le tableau D3 du dossier principal. |
+| AUD-023 | Élevée | Architecture On-Premises absente : le dossier est centré sur Cloudflare SaaS. | Définir l'architecture de déploiement local et sa parité fonctionnelle avant développement commercial. |
+| AUD-024 | Élevée | Aucun schéma de base « plateforme » ni registre des opérations globales n'est décrit malgré D3 et le besoin de superadministration. | Documenter le plan de contrôle, ses tables, ses API et les limites de séparation des données. |
+
 ## 6. Blocages transverses avant développement
 
 1. Absence de registre maître PO et de lien de traçabilité décision → règle → table/API/écran/test.
