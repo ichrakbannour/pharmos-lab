@@ -772,7 +772,7 @@ le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques dé
 | `tax.manage` (catégories, taux) | SETTINGS / SPECIFIC | **Non** | Administrateur (quatre yeux avec le comptable si présent) |
 | `services.manage` (définitions, activation) | SERVICES / UPDATE, VALIDATE | **Non** pour l'activation | Administrateur |
 | `services.perform` | SERVICES / CREATE | Selon l'habilitation du service | Collaborateurs habilités |
-| `services.acts.read` (avec données patient) | SERVICES / READ | Non | Titulaire, adjoint, auteur de l'acte |
+| `services.acts.read` (données minimales D78 et champs opérationnels non cliniques autorisés) | SERVICES / READ | Non | Titulaire, adjoint, auteur de l'acte |
 | `finance.charges.create` / `.validate` | FINANCE | Oui (plafond) | Comptable, administrateur |
 | `finance.payments.execute` | FINANCE / SPECIFIC | Oui (plafond) | Comptable, administrateur |
 | `finance.loans.manage`, `finance.assets.manage` | FINANCE | Non | Administrateur, comptable |
