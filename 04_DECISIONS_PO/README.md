@@ -31,3 +31,6 @@ L'archive jointe `EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip` a été contrôlée
 - Les décisions opérationnelles P81–P91 sont distinctes des décisions D1–D86 de la matrice.
 
 Voir le [rapport d'audit global v0.6](../03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.6.md) pour les conclusions détaillées.
+## Inventaire vérifiable des originaux
+
+- [Manifeste SHA-256 des 42 sources exportées](../07_SOURCES_ORIGINALES/MANIFESTE_SHA256_EXPORT_20261127.md) — tailles et empreintes recalculées sur le ZIP joint ; le manifeste distingue les sources vérifiées dans l'archive de celles effectivement publiées dans GitHub.
