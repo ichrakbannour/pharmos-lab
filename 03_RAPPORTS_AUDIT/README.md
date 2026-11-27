@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.14](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.14.md)** — 27/11/2026 ; clôture documentaire de la traçabilité de la matrice PO : v1.3.3 publiée au niveau canonique, Git blob SHA identique au miroir ; AUD-058 et AUD-061 clos pour leur périmètre.
+- **[Audit documentaire global v0.15](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.15.md)** — 27/11/2026 ; EXT04 / tiers payant : clarification du conflit D37–D44, INC-06 maintenu ouvert ; AUD-055 précisé et AUD-056 confirmé.
+- [Audit documentaire global v0.14](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.14.md) — 27/11/2026 ; clôture documentaire de la traçabilité de la matrice PO : v1.3.3 publiée au niveau canonique, Git blob SHA identique au miroir ; AUD-058 et AUD-061 clos pour leur périmètre.
 - [Audit documentaire global v0.13](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.13.md) — 27/11/2026 ; distinction GO P0 / GO conditionnel STOCK P88, arrêt P88/P90 et préparation P91.
 - [Audit documentaire global v0.12](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.12.md) — 27/11/2026 ; fraîcheur de la matrice PO : D40 arbitrée après conception v1.2.1, compteurs 16/63 devenus 17/62.
 - [Audit documentaire global v0.11](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.11.md) — 27/11/2026 ; contrôle croisé de la conception v1.2.1 : cible D74/D75 déjà consolidée, propagation incomplète vers EXT05/EXT06 et contradiction interne sur le statut INC-06.
