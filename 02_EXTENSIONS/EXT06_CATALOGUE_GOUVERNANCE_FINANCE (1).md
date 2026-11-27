@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Le registre D72–D86 du §11 conserve l'historique de la proposition du 03/11/2026. La matrice PO D1–D86 v1.3.4 (12/11/2026) a désormais été relue : ses statuts et arbitrages courants sont repris dans le §11.1 de la présente extension. En cas d'écart, la matrice PO v1.3.4 prévaut ; le tableau historique §11 ne vaut pas état courant. La clarification PO TVA du 27/11/2026 est consignée au §4.5 et dans `../04_DECISIONS_PO/CLARIFICATION_PO_TVA_20261127.md`, sans création de D87. Les exigences réglementaires R42–R51 sont partiellement documentées par les sources listées au §9, mais restent à confirmer et valider juridiquement/comptablement, indépendamment des arbitrages fonctionnels. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
+**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Le registre D72–D86 du §11 conserve l'historique de la proposition du 03/11/2026. La matrice PO D1–D86 v1.3.5 (12/11/2026) a désormais été relue : ses statuts et arbitrages courants sont repris dans le §11.1 de la présente extension. En cas d'écart, la matrice PO v1.3.5 prévaut ; le tableau historique §11 ne vaut pas état courant. La clarification PO TVA du 27/11/2026 est consignée au §4.5 et dans `../04_DECISIONS_PO/CLARIFICATION_PO_TVA_20261127.md`, sans création de D87. Les exigences réglementaires R42–R51 sont partiellement documentées par les sources listées au §9, mais restent à confirmer et valider juridiquement/comptablement, indépendamment des arbitrages fonctionnels. Le dossier principal (`../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` v1.1) n'est pas modifié.
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), EXT03 v1.1 (dossier d'audit), EXT04 et EXT05 (propositions).
 
 > **Règle de ce document : aucun doublon.** EXT06 crée un seul module nouveau (**M20 Comptabilité**, partie de
@@ -1004,7 +1004,7 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 
 ## 11. Décisions arbitrées — registre historique PO
 
-Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conservé comme trace historique de la proposition EXT06 du 03/11/2026 et de sa référence à la matrice v1.2.1. La matrice PO v1.3.4 a depuis été relue ; les statuts et contenus courants sont réconciliés au §11.1. Le tableau historique §11 ne doit pas être utilisé isolément comme état courant.
+Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conservé comme trace historique de la proposition EXT06 du 03/11/2026 et de sa référence à la matrice v1.2.1. La matrice PO v1.3.5 a depuis été relue ; les statuts et contenus courants sont réconciliés au §11.1. Le tableau historique §11 ne doit pas être utilisé isolément comme état courant.
 
 **Réserve de traçabilité D72 :** le tableau EXT06 décrit D72 comme la procédure de secours en cas de perte d'accès du pharmacien administrateur. Les échanges PO identifient également D72 comme l'arbitrage relatif au SUPERADMIN APEX immuable (`apexproib@gmail.com`). Ces deux formulations ne doivent pas être fusionnées ni implémentées sous un même identifiant avant comparaison avec la matrice maître et ses éventuels addenda. La règle de secours APEX reste à rattacher à un identifiant non ambigu.
 
@@ -1028,11 +1028,11 @@ Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conser
 
 ---
 
-## 11.1 Réconciliation avec la matrice PO v1.3.4 — état courant au 27/11/2026
+## 11.1 Réconciliation avec la matrice PO v1.3.5 — état courant au 27/11/2026
 
-**Référence normative :** `04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.4.md`. Cette section complète le registre historique §11 sans le réécrire. Les statuts de la matrice PO prévalent.
+**Référence normative :** `04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.5.md`. Cette section complète le registre historique §11 sans le réécrire. Les statuts de la matrice PO prévalent.
 
-| Décision | Statut PO v1.3.4 | Confrontation à EXT06 v1.0 | Traitement requis dans une prochaine consolidation |
+| Décision | Statut PO v1.3.5 | Confrontation à EXT06 v1.0 | Traitement requis dans une prochaine consolidation |
 |---|---|---|---|
 | D72 | **ARBITRÉE** — SUPERADMIN APEX immuable ; gouvernance globale SaaS/On-Prem ; comptes administrateurs des pharmacies ; isolation et conservation des données ; récupération sécurisée du Super Admin | **Consolidé** dans W0 et §1.2 : compte plateforme immuable, gestion et journalisation des comptes pharmacies, code initial généré, changement au premier accès, séparation des bases, accès supprimé ≠ données supprimées, récupération renforcée. La procédure locale historique est dissociée. | Contrôle applicatif et preuve de conformité hors périmètre de cet audit documentaire. |
 | D73 | **ARBITRÉE** — validation à distance par l'administrateur seul, MFA au moment de la décision, confirmation, motif, opération identifiée, usage unique, journalisation ; réglementés exclus | **Consolidé** dans W4 et `permission_exceptions` : appareil enrôlé, MFA step-up, confirmation, motif, opération unique, journalisation, non-substitution, mode B On-Premises et exclusion des réglementés. | Le mode distant, l'enrôlement et les refus réglementaires devront être testés lors d'une phase de réalisation autorisée. |
@@ -1052,9 +1052,9 @@ Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conser
 
 ### 11.1.1 Réserves et portée
 
-- Les statuts ci-dessus proviennent de la matrice PO v1.3.4 ; aucune décision n'est créée ou réouverte par cette extension.
+- Les statuts ci-dessus proviennent de la matrice PO v1.3.5 ; aucune décision n'est créée ou réouverte par cette extension.
 - **Contrôle croisé D74/D75 (27/11/2026)** : D74 est cohérente avec EXT05 §§2.3, 2.4, 5.1–5.3 : aucun droit `stock.return.decide` par défaut, octroi individuel explicite par le pharmacien-administrateur, contrôle et traçabilité conservés. D75 est cohérente avec EXT05 qui renvoie à EXT06 : jour calendaire par défaut ; modes GARDES/PERMANENTE seulement sur activation explicite, motif, MFA, versionnement, non-rétroactivité et journalisation. Les détails de calcul restent à prouver lors d'une réalisation autorisée.
-- Les versions antérieures EXT06 v1.1 (`EXT06_CATALOGUE_GOUVERNANCE_FINANCE_v1.1.md`) et le registre historique §11 sont conservés comme traces historiques ; ils ne prévalent pas sur la présente consolidation ni sur la matrice PO v1.3.4.
+- Les versions antérieures EXT06 v1.1 (`EXT06_CATALOGUE_GOUVERNANCE_FINANCE_v1.1.md`) et le registre historique §11 sont conservés comme traces historiques ; ils ne prévalent pas sur la présente consolidation ni sur la matrice PO v1.3.5.
 - Les contenus D72, D73, D75, D77, D78, D79, D80, D83 et D84 ont été consolidés dans les sections fonctionnelles indiquées au tableau §11.1 ; le registre historique §11 est conservé à des fins de traçabilité.
 - Cette consolidation est documentaire : elle ne démontre ni l'implémentation ni le fonctionnement effectif des contrôles ; les tests et preuves techniques restent à produire dans un périmètre autorisé.
 - Les autres décisions indiquées « alignées en substance » ne sont pas déclarées conformes dans le code ni validées par des tests.
