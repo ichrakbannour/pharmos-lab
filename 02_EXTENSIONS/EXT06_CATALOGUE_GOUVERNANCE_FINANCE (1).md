@@ -534,10 +534,10 @@ payroll_imports 1─n payroll_import_lines n─1 employees
 | AN7 | Toutes les corrections passent par des mouvements inverses liés à l'opération initiale (`reverses_id`, `correlation_id`) — inchangé | — |
 | AN8 | Une session de caisse clôturée n'est jamais modifiée : si l'annulation du même jour intervient après la clôture de la session d'origine, la restitution se fait dans la session ouverte de l'exécutant (inchangé) | — |
 
-**Point à arbitrer (D74)** : EXT05 prévoyait une réintégration directe pour un produit resté au comptoir (annulation dans
-les 15 minutes). La consigne d'EXT06 exige un contrôle systématique. Proposition : supprimer `DISPONIBLE_DIRECT` et utiliser
-une **décision immédiate simplifiée** : le contrôle peut être décidé tout de suite par un second collaborateur habilité
-(check-list réduite : produit présent, scellé, péremption lue). Cela reste un contrôle tracé, mais sans délai.
+**Application de D74 (arbitrage confirmé)** : `DISPONIBLE_DIRECT` est supprimé. Une décision immédiate simplifiée par un
+second collaborateur est possible uniquement si le pharmacien-administrateur lui a explicitement accordé le droit de
+réintégration corrective. Le contrôle reste tracé et utilise la check-list réduite (produit présent, scellé, péremption lue).
+Sans habilitation explicite, aucune réintégration par le second collaborateur n'est autorisée.
 
 **Jour calendaire** : déterminé par l'horodatage serveur converti dans le fuseau de l'officine (`tenants.fuseau`), jamais par
 l'horloge du poste. Une vente validée à 23 h 58 n'est annulable sans dérogation que jusqu'à 23 h 59 59 le même jour
@@ -963,13 +963,13 @@ Numérotation à la suite d'EXT05 (D59 à D71).
 |---|---|---|---|
 | **D72** | Perte d'accès du pharmacien administrateur | Procédure de secours APEX sur justificatifs · Second administrateur de secours | **Procédure de secours APEX** (double contrôle, sans accès aux données) ; un administrateur suppléant affaiblirait la règle « un seul responsable » |
 | **D73** | Dérogations en l'absence de l'administrateur | Aucune · Validation à distance (smartphone, MFA) | **Validation à distance** autorisée ; sinon l'opération attend |
-| **D74** | Réintégration directe d'EXT05 (`DISPONIBLE_DIRECT`) | Supprimer · Remplacer par une décision immédiate par un second collaborateur | **Remplacer** par une décision immédiate tracée, avec check-list réduite |
+| **D74** | Réintégration directe d'EXT05 (`DISPONIBLE_DIRECT`) | Supprimer · Remplacer par une décision immédiate par un second collaborateur | **Remplacer** par une décision immédiate tracée, avec check-list réduite ; le second collaborateur doit disposer d'un droit de réintégration corrective explicitement accordé par le pharmacien-administrateur |
 | **D75** | Définition du « jour » d'annulation | Jour calendaire (minuit) · Jour d'exploitation (heure de bascule paramétrable, ex. 6 h) | Jour calendaire par défaut ; jour d'exploitation en option pour les officines de nuit |
 | **D76** | Bucket `RESERVE` d'EXT05 | Conserver · Retirer (réservation = engagement) | **Retirer** |
 | **D77** | Page affichée après connexion | Accueil · Tableau de bord · Selon le rôle | **Selon le rôle**, modifiable par l'utilisateur dans les limites de ses droits |
-| **D78** | Données saisies lors des services (mesures, observations) | Aucune · Mesures structurées chiffrées | Mesures structurées et facultatives, chiffrées, selon le service et après R47 |
+| **D78** | Données et notifications liées aux services | Mesures/observations structurées · Données minimales | Notification limitée au type d'opération/service défini par le pharmacien-administrateur, au nom du client et à la date ; aucune liste de services prédéfinie imposée par APEX |
 | **D79** | Visibilité des marges | Tous les rôles du module · Permission dédiée | **Permission dédiée** `analytics.margin.read` |
-| **D80** | Profondeur du module comptable | A. Exports seulement (journaux) · B. Pré-comptabilité en partie double (M20) · C. Comptabilité générale complète | **B** : écritures générées et exportées, le comptable tient les comptes officiels |
+| **D80** | Profondeur du module comptable | A. Exports seulement (journaux) · B. Pré-comptabilité en partie double (M20) · C. Comptabilité générale complète | **B** : écritures générées et exportées ; le comptable tient les comptes officiels ; affichage et exports portent explicitement la mention « Comptabilité à titre indicatif » |
 | **D81** | Moteur de paie | Import des montants · Moteur intégré | **Import des montants** (sans moteur) tant que les règles ne sont pas validées |
 | **D82** | Réouverture d'une période comptable | Interdite · Administrateur avant export définitif | Administrateur avec motif, **interdite après export définitif** |
 | **D83** | Plan de comptes livré | Aucun · Modèle indicatif à valider | Modèle indicatif, **inactif tant que l'expert-comptable ne l'a pas validé** |
