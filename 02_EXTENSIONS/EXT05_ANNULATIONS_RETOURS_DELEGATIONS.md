@@ -180,7 +180,7 @@ effectif existe (sinon « Demander »). L'affichage n'est qu'une aide : les gard
 5. DEMANDE : file X6, notification aux valideurs habilités ; expiration paramétrable (défaut : fin de journée) ;
    validation ou refus motivé ; le valideur peut modifier le sort du stock, pas le périmètre
 6. EXÉCUTION — transaction atomique (§4.5) :
-     document ANN-… ; statut de la vente → ANNULEE ; écritures inverses : stock (vers EN_CONTROLE ou EN_CONTROLE,
+     document ANN-… ; statut de la vente → ANNULEE ; écritures inverses : stock (vers EN_CONTROLE,
      cf. §4.6), délivrances (EXT03 : annulation = droit restitué), registre réglementé (rectification), créances
      d'organismes (EXT04), paiements et caisse (workflow C), points de fidélité, audit, événements
 7. Impression : bon d'annulation (et reçu de remboursement si restitution) ; ticket d'origine marqué « annulé »
@@ -257,7 +257,7 @@ Check-list obligatoire (paramétrable par catégorie de produit) :
 Décision par un collaborateur habilité `stock.return.decide` (≠ celui qui a reçu le retour, au-delà du seuil) :
   → RÉINTÉGRÉ   : mouvement EN_CONTROLE → DISPONIBLE (même lot)
   → QUARANTAINE : mouvement EN_CONTROLE → QUARANTAINE (avis pharmacien, retour fournisseur, rappel de lot)
-  → PERTE       : mouvement EN_CONTROLE → PERTE, création d'un loss_record (M10), destruction ultérieure (PV)
+  → PERTE       : uniquement après parcours utilisateur complet avec confirmation explicite de la quantité et des conséquences irréversibles (P86) ; création du loss_record (M10), destruction ultérieure (PV)
 Délai de décision dépassé (défaut 48 h) → alerte ; aucune réintégration automatique, jamais
 Produit réglementé : décision réservée au pharmacien habilité, quatre yeux, écriture au registre ; RÉINTÉGRÉ interdit
   par défaut [À VALIDER R35]
@@ -298,7 +298,7 @@ n'acceptent que des insertions (déclencheurs SQLite bloquant `UPDATE`/`DELETE`,
 | Table | Colonnes principales | Contraintes / index |
 |---|---|---|
 | `corrective_operations` (immuable après exécution) | id, tenant_id, **numero** (`ANN-…` / `AVR-…` / `RMB-…`), type (`ANNULATION`, `RETOUR`, `REMBOURSEMENT_AUTONOME`), **original_sale_id**, constat_remise (`NON_REMIS`, `REMIS_RETOURNE`, `REMIS_NON_RETOURNE`), motif_code, motif_texte, **requested_by_employee_id**, **executed_by_employee_id**, **approved_by_employee_id** (nullable), approval_method (`AUCUNE`, `PIN_PRESENT`, `DEMANDE_A_DISTANCE`, `QUATRE_YEUX`), delegation_id (si exécution sous délégation), cash_session_id (session de l'exécutant si sortie d'espèces), montant_ttc_total, montant_patient, montant_organismes, statut (`EXECUTEE`, `PARTIELLE_A_CONFIRMER`), **idempotency_key**, **correlation_id**, validation_batch_id, executed_at (horodatage serveur), device_id | UNIQUE(tenant_id, numero) ; UNIQUE(tenant_id, idempotency_key) ; INDEX(tenant_id, original_sale_id) ; INDEX(tenant_id, executed_at) ; CHECK(approved_by ≠ requested_by) lorsque approval_method ≠ `AUCUNE` |
-| `corrective_operation_lines` (immuable) | id, operation_id, **original_sale_line_id**, product_id, lot_id, quantite_unites (> 0), montant_ttc, part_patient, part_organismes (JSON par payeur), prescription_line_id (nullable), droit_delivrance (`RESTITUE`, `NEUTRALISE`, `SANS_OBJET`), etat_constate (`SCELLE`, `OUVERT`, `ENDOMMAGE`, `NON_RECUPERE`), destination_initiale (`EN_CONTROLE`, `EN_CONTROLE`, `EN_CONTROLE`), stock_movement_id, dispensation_reversal_id, adjustment_id (neutralisation EXT03), controlled_register_id (nullable) | INDEX(original_sale_line_id) |
+| `corrective_operation_lines` (immuable) | id, operation_id, **original_sale_line_id**, product_id, lot_id, quantite_unites (> 0), montant_ttc, part_patient, part_organismes (JSON par payeur), prescription_line_id (nullable), droit_delivrance (`RESTITUE`, `NEUTRALISE`, `SANS_OBJET`), etat_constate (`SCELLE`, `OUVERT`, `ENDOMMAGE`, `NON_RECUPERE`), destination_initiale (`EN_CONTROLE`, `QUARANTAINE`), stock_movement_id, dispensation_reversal_id, adjustment_id (neutralisation EXT03), controlled_register_id (nullable) | INDEX(original_sale_line_id) |
 | `sale_line_correction_totals` (projection) | sale_line_id, qte_vendue, qte_annulee, qte_retournee, **qte_corrigeable**, montant_patient_restitue, montants_organismes_regularises (JSON) | Recalculable depuis `corrective_operation_lines` ; jamais utilisée seule pour décider (§4.4) |
 | `correction_reasons` | id, tenant_id, code, libelle_fr, libelle_ar, applicable_a (types), exige_texte (bool), exige_validation (bool), categorie (`ERREUR_SAISIE`, `CLIENT`, `PRODUIT`, `PRIX`, `PAIEMENT`, `REGLEMENTAIRE`, `AUTRE`) | Référentiel paramétrable ; sert aux statistiques et à l'antifraude |
 
@@ -377,7 +377,7 @@ delegations 1─n delegation_usage n─1 corrective_operations ; employees 1─n
 | Situation | Opération | Stock | Ordonnance (EXT03) | Registre M09 | Finance patient | Organisme (EXT04) |
 |---|---|---|---|---|---|---|
 | Vente non validée | Abandon | Libération des réservations | Rien | Rien | Rien (aucun paiement) | Rien |
-| Validée, non remise, même session, délai court | A avant remise | `EN_CONTROLE` (attestation) | Contre-délivrance, droit restitué | Rectification « annulation » | Remboursement intégral (même moyen) | Lignes de créance annulées |
+| Validée, non remise, dans le jour calendaire D75 | A avant remise | `EN_CONTROLE` | Contrôle ; décision immédiate simplifiée uniquement avec droit explicite D74 | Rectification « annulation » | Remboursement intégral (même moyen) | Lignes de créance annulées |
 | Validée, non remise, hors conditions ci-dessus | A avant remise | `EN_CONTROLE` | Idem | Idem | Idem | Idem |
 | Remise puis rapportée | A après remise **ou** B total | `EN_CONTROLE` | A : droit restitué · B : neutralisé (défaut D42) | Rectification / entrée quarantaine | Remboursement | Annulation ou régularisation selon l'état de la créance |
 | Remise, non rapportée | A sans retour (exceptionnel, D63) | Aucun mouvement (produit sorti) | Délivrance maintenue (le produit a été délivré) **ou** contre-délivrance selon motif, pharmacien | Aucun mouvement physique ; mention au registre si réglementé | Remboursement | Régularisation |
@@ -405,7 +405,7 @@ delegations 1─n delegation_usage n─1 corrective_operations ; employees 1─n
 
 | Paramètre | Défaut proposé |
 |---|---|
-| Auto-correction par l'auteur de la vente sans validation | Annulation avant remise dans les 15 min, même session ; au-delà : validation |
+| Auto-correction par l'auteur de la vente sans validation | Annulation avant remise dans le jour calendaire D75 ; au-delà : autorisation de l'administrateur |
 | Montant maximal par opération sans validation (par rôle) | Caissier 0 (demande) · préparateur : retour ≤ montant paramétrable · adjoint : plafond élevé · titulaire : illimité |
 | Cumul journalier par collaborateur | Paramétrable ; au-delà, validation obligatoire |
 | Délai maximal d'un retour | Paramétrable par catégorie de produit ; au-delà, refus ou validation du titulaire |
@@ -483,7 +483,7 @@ Séquence obligatoire, non désactivable (cohérente avec EXT03 v1.1 §16) :
 1. Toute annulation ou retour d'une ligne réglementée exige l'habilitation CONTROLLED_DISPENSE (ou dédiée) et un
    pharmacien pointé ; la validation est en quatre yeux au-delà du seuil (défaut : toujours)
 2. Annulation avant remise (produit au comptoir) : rectification du registre (annulation de la sortie) ; produit en
-   EN_CONTROLE (jamais EN_CONTROLE) ; réintégration possible uniquement par décision pharmacien [À VALIDER R35]
+   EN_CONTROLE (aucune réintégration directe) ; réintégration possible uniquement par décision selon habilitation et règle PO applicable [À VALIDER R35]
 3. Retour après remise : entrée au registre en QUARANTAINE ; RÉINTÉGRATION INTERDITE par défaut ; décision :
    destruction (PV, registre) ou retour fournisseur selon la réglementation [À VALIDER R34, R35]
 4. Retour sans ticket : interdit pour un réglementé
@@ -531,7 +531,7 @@ Les alertes sont réservées au titulaire (audience restreinte, EXT02 §9.3) et 
 | `refund.confirm_card` | Confirmer ou annuler une part carte `A_CONFIRMER` | Oui | — |
 | `correction.history.read` | Consulter le journal des opérations correctives (portée : soi / équipe / tout) | — | — |
 | `correction.controlled.execute` | Annulation ou retour d'une ligne réglementée | **Non** | — |
-| `delegation.manage` | Créer, modifier, révoquer des délégations | **Non** (titulaire, ou délégant désigné D66) | — |
+| `delegation.manage` | Créer, modifier, révoquer des délégations | **Règle à confirmer** ; D66 est caduque, aucun délégant désigné n'est autorisé par défaut | — |
 | `delegation.report.read` | Consulter les rapports d'utilisation des délégations | — | — |
 
 Les huit opérations demandées par le cahier des charges (consulter, demander une annulation, annuler dans les limites,
@@ -545,7 +545,7 @@ respectivement à `sale.read`, `sale.void.request`, `sale.void.execute`, `sale.v
 |---|---|---|---|---|---|---|---|
 | `sale.read` | tout | tout | sa session + ses ventes | sa session | — | tout | tout |
 | `sale.void.request`, `sale.return.request` | ✔ | ✔ | ✔ | ✔ | — | — | — |
-| `sale.void.execute` | ✔ illimité | ✔ plafond élevé | auto-correction avant remise (15 min) | auto-correction avant remise (15 min) | — | — | — |
+| `sale.void.execute` | ✔ illimité | ✔ plafond élevé | annulation avant remise dans le jour calendaire D75, selon droits et plafonds | annulation avant remise dans le jour calendaire D75, selon droits et plafonds | — | — | — |
 | `sale.return.execute` | ✔ | ✔ | ✔ plafond bas | — | — | — | — |
 | `sale.void.approve`, `sale.return.approve` | ✔ | ✔ | — | — | — | — | — |
 | `sale.return.without_receipt` | ✔ | ✔ | — | — | — | — | — |
@@ -661,7 +661,7 @@ Méthodes de validation : **PIN présent** (le valideur saisit son PIN sur le po
 
 | Cas | CA | Caisse / banque | Créance organisme | Créance / avoir client | Stock | Perte |
 |---|---|---|---|---|---|---|
-| Annulation avant remise, créance non transmise | −100 (écriture d'annulation) | −30 espèces (session de l'exécutant) | −70 (lignes annulées) | — | + qté vers `EN_CONTROLE` ou `EN_CONTROLE` | — |
+| Annulation avant remise, créance non transmise | −100 (écriture d'annulation) | −30 espèces (session de l'exécutant) | −70 (lignes annulées) | — | + qté vers `EN_CONTROLE` | — |
 | Retour total, créance transmise non réglée | −100 (avoir) | −30 | −70 via régularisation au bordereau suivant | — | + qté `EN_CONTROLE` | — |
 | Retour partiel (40 TTC : 12 patient, 28 organisme) | −40 | −12 | −28 | — | + qté retournée `EN_CONTROLE` | — |
 | Retour, restitution en avoir | −100 | 0 | −70 | + 30 (avoir) | + qté `EN_CONTROLE` | — |
