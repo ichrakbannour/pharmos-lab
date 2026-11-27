@@ -1,3 +1,7 @@
+## Précontrôle technique STOCK
+
+- **[R0 — autorisation reçue, lancement bloqué](PRECONTROLE_TECHNIQUE_STOCK_R0_AUTORISATION_20261127.md)** — 27/11/2026 ; PR-0 non franchie ; aucun code ni test modifié/exécuté.
+
 Rapports d'audit et de suivi PHARM'OS.
 
 - **[Audit documentaire global v0.38](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.38.md)** — 27/11/2026 ; matrice de traçabilité P92 RES-1/RES-2 publiée ; aucun test ni travail technique exécuté.
