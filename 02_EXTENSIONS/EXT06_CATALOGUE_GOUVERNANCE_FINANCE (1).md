@@ -16,7 +16,7 @@
 
 | Demande EXT06 | Existant | Traitement EXT06 |
 |---|---|---|
-| Délégations nominatives, dates, plafonds, révocation, historique, pas de redélégation, réglementés exclus | EXT05 §5.3 (`delegations`, `delegation_usage`, `delegable_permissions`, règles G1–G10) | **Réutilisé.** EXT06 ajoute : (1) le **pharmacien administrateur** unique comme seul gestionnaire (tranche D66 et le durcit) ; (2) la date de début devient obligatoire, elle l'était déjà en fin ; (3) les dépassements de plafond réservés à l'administrateur |
+| Délégations nominatives, dates, plafonds, révocation, historique, pas de redélégation, réglementés exclus | EXT05 §5.3 (`delegations`, `delegation_usage`, `delegable_permissions`, règles G1–G10) | **Réutilisé.** EXT06 ajoute : (1) le **pharmacien administrateur** unique comme seul gestionnaire (proposition de gouvernance ; D66 est caduque dans la matrice maître et ne vaut pas arbitrage PO) ; (2) la date de début devient obligatoire, elle l'était déjà en fin ; (3) les dépassements de plafond réservés à l'administrateur |
 | Modules accessibles par employé, matrice accès / consultation / création / … | EXT02 §2.2 catalogue `permissions` (module, sensibilité, habilitation, présence) ; `role_permissions` ; EXT05 `permission_overrides` | **Complété.** Ajout des colonnes `module_code` et `action` au catalogue `permissions`, plus un référentiel `app_modules`. **Aucune** table de matrice parallèle |
 | Annulation le jour calendaire, dérogation par l'administrateur | EXT05 §2.3, §4.3, D61 (15 min) | **Remplace** D61 et la destination `DISPONIBLE_DIRECT` d'EXT05 (§5.2) |
 | Statuts de stock contrôle / quarantaine / perte, mouvements inverses | EXT05 §3.3 (`stock_buckets`), §4.4, §7.3 | **Réutilisé.** Une correction : le bucket `RESERVE` d'EXT05 est supprimé, la réservation reste un engagement sur le stock disponible (`stock_reservations` du dossier principal) |
@@ -530,7 +530,7 @@ payroll_imports 1─n payroll_import_lines n─1 employees
 | # | Règle | Remplace dans EXT05 |
 |---|---|---|
 | AN1 | Vente non validée : abandon, sans écriture corrective (inchangé) | — |
-| AN2 | Vente validée, produit non sensible : annulation possible par un collaborateur habilité **jusqu'à la fin du jour calendaire de la vente** (minuit, fuseau de l'officine), dans ses plafonds | D61 (15 minutes) et §4.3 « auto-correction » |
+| AN2 | Vente validée, produit non sensible : annulation possible par un collaborateur habilité **jusqu'à la fin du jour calendaire de la vente** (minuit, fuseau de l'officine), dans ses plafonds | ancienne proposition D61 (15 minutes, caduque) et §4.3 « auto-correction » |
 | AN3 | Au-delà du jour calendaire, **seul l'administrateur** peut autoriser l'annulation (dérogation W4), quel que soit le rôle du demandeur | EXT05 §4.2 C5 (validation par un pharmacien) |
 | AN4 | Les droits d'annulation (`sale.void.execute`, `sale.void.approve`) ne s'accordent que par l'administrateur (rôle, réglage individuel ou délégation) | EXT05 D66 |
 | AN5 | Produits sensibles (`sensitivity_flags` non vide) ou réglementés : circuit spécifique obligatoire (EXT05 §4.7) ; la règle du jour calendaire ne les rend jamais annulables par un non-pharmacien | — |
@@ -828,7 +828,7 @@ Toutes les modifications ci-dessous sont **proposées et non appliquées**.
 | **EXT02** (intégrée) | Catalogue `permissions` complété (`module_code`, `action`) ; le titulaire devient « pharmacien administrateur » unique ; aucune autre modification |
 | **EXT03 v1.1** | `products.substitution_group_id` et `ref_products.generic_group_code` remplacés par `substitution_groups` ; liste initiale des spécialités ; accès direct depuis l'accueil |
 | **EXT04** | Accès direct depuis l'accueil ; listes de référence (`reference_list_items`) rapprochées du catalogue enrichi ; écritures de créances générées par M20 ; aucune table modifiée |
-| **EXT05** | **Amendements** : D61 (15 min) remplacé par la règle du jour calendaire ; `DISPONIBLE_DIRECT` supprimé ou remplacé (D74) ; bucket `RESERVE` retiré ; `delegation.manage` remplacé par `governance.delegations.manage` (administrateur seul, D66 tranché) ; `delegations.valid_from` obligatoire ; liste d'opérations structurée |
+| **EXT05** | **Amendements** : D61 (15 min) remplacé par la règle du jour calendaire ; `DISPONIBLE_DIRECT` supprimé ou remplacé (D74) ; bucket `RESERVE` retiré ; `delegation.manage` remplacé par `governance.delegations.manage` (D66 caduque ; règle de délégation à confirmer dans le registre PO) ; `delegations.valid_from` obligatoire ; liste d'opérations structurée |
 
 ### 8.3 Points de compatibilité
 
