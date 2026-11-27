@@ -2,8 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 (proposition) — 2026-11-03
-**Statut** : **PROPOSITION SOUMISE À VALIDATION**. Aucun code. Le dossier principal (`CONCEPTION_PHARMOS_v1.md` v1.1)
-n'est pas modifié. Les changements sont listés au §8 et ne seront reportés dans la v1.2 qu'après validation.
+**Statut** : **CONCEPTION TECHNIQUE — AUCUN CODE**. Les décisions D72–D86 sont arbitrées dans la matrice maître D1–D86 v1.2.1, mais les exigences réglementaires R42–R51 et les amendements PO postérieurs doivent encore être réconciliés. Le dossier principal (`CONCEPTION_PHARMOS_v1.md` v1.1) n'est pas modifié.
 **Base de conception** : dossier principal v1.1, EXT02 (intégrée), EXT03 v1.1 (dossier d'audit), EXT04 et EXT05 (propositions).
 
 > **Règle de ce document : aucun doublon.** EXT06 crée un seul module nouveau (**M20 Comptabilité**, partie de
@@ -960,9 +959,9 @@ Numérotation à la suite d'EXT05 (R34 à R41). Tant qu'un point n'est pas confi
 
 ---
 
-## 11. Décisions à arbitrer
+## 11. Décisions arbitrées — registre historique PO
 
-Numérotation à la suite d'EXT05 (D59 à D71).
+Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 sont marquées ARBITRÉES dans la matrice maître D1–D86 v1.2.1 ; les lignes ci-dessous sont conservées comme historique des choix et ne constituent pas de nouvelles demandes d'arbitrage.
 
 | # | Question | Options | Recommandation |
 |---|---|---|---|
