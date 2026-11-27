@@ -99,8 +99,10 @@
    décaissements, trésorerie, résultats. Chacune a une définition, une source et une formule uniques (§5.6).
 6. **La pré-comptabilité est dérivée, jamais saisie en double** : les écritures sont générées depuis les événements métier par
    des règles de passation paramétrables. L'expert-comptable reste responsable des comptes officiels.
-7. **Aucune valeur réglementaire ou fiscale n'est présumée** : les taux de TVA, durées d'amortissement, autorisations de services
-   et substitutions exigent leurs sources et validations propres. **Exception fonctionnelle D83 :** M20 fournit dès l'origine un
+7. **Aucune valeur réglementaire ou fiscale n'est présumée** : les taux de TVA, durées d'amortissement et substitutions
+   exigent leurs sources et validations propres. Pour les services, D78 ne prévoit aucun verrou d'autorisation réglementaire
+   dans l'application : une référence éventuelle est facultative et informative ; la validation juridique R47 reste externe
+   et ouverte. **Exception fonctionnelle D83 :** M20 fournit dès l'origine un
    plan comptable standard indicatif, utilisable sans validation préalable obligatoire d'un expert-comptable et adaptable par
    l'administrateur ; il ne constitue pas une validation des comptes officiels.
 
