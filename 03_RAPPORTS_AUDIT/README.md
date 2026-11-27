@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.32](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.32.md)** — 27/11/2026 ; correction de l'incohérence du §9 de la matrice PO : 20 décisions arbitrées, 61 proposées, 3 à réexaminer, 2 caduques ; index principaux actualisés ; aucun statut D1–D86 modifié.
+
 - **[Audit documentaire global v0.31](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.31.md)** — 27/11/2026 ; clarification PO TVA : champ présent dès l'origine, 7 % prérempli, modification par produit par l'ADMIN-PHARMACIEN titulaire y compris à 0 %, historisation et taux figé sur chaque vente ; R44 réglementaire maintenue ouverte ; aucune intervention technique.
 
 - **[Audit documentaire global v0.30](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.30.md)** — 27/11/2026 ; correction R44 après recoupement des lois de finances 2018, 2020 et 2021 : ventes de médicaments/pharmaceutiques exclues du gros/détail ; taux PO 7 % à réconcilier.
