@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.17](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.17.md)** — 27/11/2026 ; correction vérifiée d'EXT05 selon D74 ; D75 contrôlée ; EXT06 v1.1 historique à consolider.
+
 - **[Audit documentaire global v0.16](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.16.md)** — 27/11/2026 ; EXT05/EXT06 : contradiction D74 sur l'attribution par défaut de `stock.return.decide`, propagation D75 et statut documentaire obsolète dans EXT06.
 
 - **[Audit documentaire global v0.15](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.15.md)** — 27/11/2026 ; EXT04 / tiers payant : clarification du conflit D37–D44, INC-06 maintenu ouvert ; AUD-055 précisé et AUD-056 confirmé.
