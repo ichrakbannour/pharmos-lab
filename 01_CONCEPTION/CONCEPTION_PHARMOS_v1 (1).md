@@ -474,8 +474,11 @@ blocage optionnel du crédit client, suivi de régularisation.
 ### 5.5 Flux « Péremption »
 
 Analyse quotidienne des lots → alertes aux seuils → recommandations IA (promotion, retour fournisseur,
-transfert, priorisation FEFO) → à échéance : lot `périmé` (bloqué) → retrait (`LOSS`) → regroupement
-pour destruction (PV) ou retour fournisseur (avoir attendu).
+transfert, priorisation FEFO) → à échéance : lot `périmé` (bloqué). Une sortie manuelle de quantité encore en
+`DISPONIBLE` peut être effectuée uniquement pour retrait ou destruction, avec motif normalisé et traçabilité.
+Une quantité déjà passée en `PERTE` reste physiquement détenue, visible « en attente de destruction » avec
+quantité et ancienneté ; aucune sortie ni destruction depuis `PERTE` n'est effectuée avant le lot ultérieur
+prévu par DP1-R7. Le PV de destruction ne doit donc pas être interprété comme une autorisation de vider `PERTE`.
 
 ### 5.6 Flux « Inventaire »
 
