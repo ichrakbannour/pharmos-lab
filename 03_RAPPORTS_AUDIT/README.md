@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.33](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.33.md)** — 27/11/2026 ; références PO v1.3.5 alignées dans EXT02–EXT06 et le référentiel de conception ; inventaire des lacunes d'architecture et de prompts ; aucune intervention technique.
+
 - **[Audit documentaire global v0.32](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.32.md)** — 27/11/2026 ; correction de l'incohérence du §9 de la matrice PO : 20 décisions arbitrées, 61 proposées, 3 à réexaminer, 2 caduques ; index principaux actualisés ; aucun statut D1–D86 modifié.
 
 - **[Audit documentaire global v0.31](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.31.md)** — 27/11/2026 ; clarification PO TVA : champ présent dès l'origine, 7 % prérempli, modification par produit par l'ADMIN-PHARMACIEN titulaire y compris à 0 %, historisation et taux figé sur chaque vente ; R44 réglementaire maintenue ouverte ; aucune intervention technique.
