@@ -1,6 +1,6 @@
 # PHARM'OS — Audit documentaire global
-**Version :** 0.1 — état initial / phase de cadrage et de réconciliation  
-**Date :** 2026-11-25  
+**Version :** 0.2 — réconciliation PO, architecture et stock (audit en cours)  
+**Date de mise à jour :** 2026-11-27  
 **Dépôt de référence :** https://github.com/ichrakbannour/pharmos-lab  
 **Branche examinée :** `main`  
 **Statut :** audit en cours — ne constitue pas une autorisation de développement.
@@ -267,4 +267,4 @@ Ces modifications sont documentaires uniquement. Aucune migration, aucun code ap
 - Le rapport final devra distinguer : conforme, non conforme, ambigu, source manquante, décision PO requise, validation réglementaire requise et hors périmètre.
 
 ---
-**Fin de la version 0.1 — audit en cours.**
+**Fin de la version 0.2 — audit en cours.**
