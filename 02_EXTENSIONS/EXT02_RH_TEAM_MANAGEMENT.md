@@ -2,7 +2,7 @@
 
 **Produit** : PHARM'OS — APEX AI DEV
 **Version** : 1.0 — 2026-11-03
-**Statut** : conception intégrée au dossier principal `CONCEPTION_PHARMOS_v1.md` (v1.1). Aucun développement.
+**Statut** : conception intégrée au dossier principal `../01_CONCEPTION/CONCEPTION_PHARMOS_v1 (1).md` (v1.1). Aucun développement.
 **Statut PO des décisions** : D17–D26 restent des propositions non arbitrées dans la matrice maître D1–D86 v1.2.1 ; les valeurs réglementaires et paramètres marqués [À VALIDER] restent bloquants avant mise en production.
 **Modules créés** : **M15 RH & équipes** · **M16 Laboratoire** (nécessaire à la traçabilité exigée par l'extension)
 **Modules modifiés** : M00 Plateforme (permissions), M02/M02b Vente & caisse, M03 Achats, M05 Stock, M09 Réglementés, M11 Commandes, M12 Rapports, M13 IA
