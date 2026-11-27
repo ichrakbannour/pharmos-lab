@@ -4,8 +4,9 @@ Ce dossier centralise les décisions métier confirmées, les arbitrages en atte
 
 ## Sources actuellement présentes dans le dossier canonique
 
-- [P81 — Registre officiel des décisions PO STOCK](P81_REGISTRE_DECISIONS_PO_STOCK.md) — source originale publiée depuis l'archive ; empreinte Git blob identique à l'original (17 719 octets).
+- [Matrice D1–D86 v1.3.3](MATRICE_DECISIONS_D1_D86_v1.3.3.md) — référence PO courante vérifiée, copie canonique identique au miroir original (Git blob SHA identique).
 - [Matrice D1–D86 v1.2](MATRICE_DECISIONS_D1_D86_v1.2.md) — historique du 03/11/2026 ; ne remplace pas la v1.3.3.
+- [P81 — Registre officiel des décisions PO STOCK](P81_REGISTRE_DECISIONS_PO_STOCK.md) — source originale publiée depuis l'archive ; empreinte Git blob identique à l'original (17 719 octets).
 - [P82 — Spécifications finales STOCK](P82_SPECIFICATIONS_FINALES_STOCK.md) — propositions sources, confirmées seulement dans la mesure consignée par P83.
 - [P86 — Arbitrage consolidé des 13 points](P86_ARBITRAGE_CONSOLIDE_13_POINTS.md) — propositions techniques ; la réponse PO est consignée dans P87.
 
@@ -21,7 +22,7 @@ L'archive jointe EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip a été contrôlée :
 - P87 : référence officielle des arbitrages PO P86-1 à P86-13 et précautions A/B. V-3 reste NON APPROUVÉ.
 - P82, P84, P86, P88, P89 et P91 : plans, propositions et rapports d'exécution/diagnostic/préparation. Lire leur statut exact ; ne pas transformer une proposition en décision ou une préparation en exécution.
 
-**Publication des sources :** les 42 fichiers originaux sont publiés individuellement et contrôlés dans le miroir d'archive [07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/). Ils ne sont pas tous recopiés individuellement dans le dossier canonique 04_DECISIONS_PO. La matrice v1.3.3 demeure dans le miroir et n'est pas encore publiée comme fichier canonique dans ce dossier. Ne pas confondre miroir d'archive et documents canoniques.
+**Publication des sources :** les 42 fichiers originaux sont publiés individuellement et contrôlés dans le miroir d'archive [07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/). La matrice v1.3.3 est désormais également copiée dans le dossier canonique ; son Git blob SHA est identique à celui du fichier source dans le miroir. Les autres sources originales ne sont pas toutes recopiées individuellement dans le dossier canonique 04_DECISIONS_PO. Ne pas confondre miroir d'archive et documents canoniques.
 
 ## Lacunes et précautions
 
