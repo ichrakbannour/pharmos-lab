@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.28](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.28.md)** — 27/11/2026 ; rapprochement des constats AUD-052 à AUD-064 ; doublons historiques clos/supersédés ; O-5/O-6/O-9/O-10 et autres verrous explicitement maintenus.
+- **[Audit documentaire global v0.29](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.29.md)** — 27/11/2026 ; sources R42–R51 ; écart fiscal 7 % PO / 6 % FAQ ministérielle à arbitrer ; R42–R51 restent ouverts ou partiellement documentés.
+- [Audit documentaire global v0.28](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.28.md) — 27/11/2026 ; rapprochement des constats AUD-052 à AUD-064 ; doublons historiques clos/supersédés ; O-5/O-6/O-9/O-10 et autres verrous explicitement maintenus.
 - [Audit documentaire global v0.27](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.27.md) — 27/11/2026 ; actualisation GO P0 ; distinction avec STOCK P88 ; AUD-059/AUD-060 clos pour leur périmètre documentaire.
 - [Addendum de suivi GO P0](ADDENDUM_SUIVI_GO_P0_20261127.md) — statut contrôlé au 27/11/2026 : C-01 à C-08 non remplies ; P0 non autorisé.
 - [Audit documentaire global v0.26](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.26.md) — 27/11/2026 ; revue des sources officielles R23–R33 ; repères R25/R26 et garde-fous INPDP R29 ; aucun statut réglementaire CNAM 2026 confirmé.
