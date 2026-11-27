@@ -1,8 +1,9 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.24](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.24.md)** — 27/11/2026 ; arbitrage PO de l'option B sur INC-06 : D6, D37, D44 arbitrées ; CNAM désactivée jusqu'à vérification officielle et validation PO distincte.
+- **[Audit documentaire global v0.25](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.25.md)** — 27/11/2026 ; propagation option B dans EXT02–EXT06 et la conception ; D74/D75 recroisées ; AUD-055/056/063/064 clos dans leur périmètre documentaire.
+- [Audit documentaire global v0.24](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.24.md) — 27/11/2026 ; arbitrage PO de l'option B sur INC-06 : D6, D37, D44 arbitrées ; CNAM/mutuelles exclues de la v1.
 
-- **[Audit documentaire global v0.23](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.23.md)** — 27/11/2026 ; addendum de réconciliation conception v1.2.1 / matrice PO v1.3.3 : D40 actualisée, compteurs courants et D37/D44 clarifiés ; INC-06 reste ouvert.
+- **[Audit documentaire global v0.23](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.23.md)** — 27/11/2026 ; addendum de réconciliation conception v1.2.1 / matrice PO v1.3.3 : D40 actualisée, compteurs courants et D37/D44 clarifiés ; INC-06 reste ouvert à cette date (historique, avant arbitrage PO du 27/11/2026).
 - [Audit documentaire global v0.22](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.22.md) — 27/11/2026 ; EXT06 : correction D78 (suppression des données patient/cliniques et mesures structurées, notification en liste blanche) ; contrôle D81–D86 ; preuves applicatives restantes.
 - [Audit documentaire global v0.21](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.21.md) — 27/11/2026 ; EXT06 : consolidation fonctionnelle D72/D77/D84 et contrôle des garanties D73/D75/D79/D80 ; preuves applicatives restantes explicitement recensées.
 
