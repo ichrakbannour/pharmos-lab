@@ -4,6 +4,8 @@ Ce dossier centralise les décisions métier confirmées, les arbitrages en atte
 
 ## Sources actuellement présentes dans GitHub
 
+- [P81 — Registre officiel des décisions PO STOCK](P81_REGISTRE_DECISIONS_PO_STOCK.md) — source originale publiée depuis l'archive ; empreinte Git blob identique à l'original (17 719 octets).
+
 - [Matrice D1–D86 v1.2](MATRICE_DECISIONS_D1_D86_v1.2.md) — historique du 03/11/2026 ; ne remplace pas la v1.3.3.
 - [P82 — Spécifications finales STOCK](P82_SPECIFICATIONS_FINALES_STOCK.md) — propositions sources, confirmées seulement dans la mesure consignée par P83.
 - [P86 — Arbitrage consolidé des 13 points](P86_ARBITRAGE_CONSOLIDE_13_POINTS.md) — propositions techniques ; la réponse PO est consignée dans P87.
@@ -13,7 +15,7 @@ Ce dossier centralise les décisions métier confirmées, les arbitrages en atte
 L'archive jointe `EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip` a été contrôlée : 42 entrées, 498 326 octets, SHA-256 `b3a4d228927300c6c12b18b5082fb4c797599fc762102a9e08a97fd47d0f9fa5`, aucune erreur au test ZIP.
 
 - Matrice D1–D86 : 14 versions, jusqu'à v1.3.3 (12/11/2026). Le différentiel est consigné dans le rapport v0.6 ; la v1.3.3 ne modifie aucun statut D1–D86.
-- P81 : registre officiel original, 17 719 octets, SHA-256 `dec4d6420c5e5ecf54d4e31410c4776a45b3f63e160dae7193a958cd41c2232c`. Son archivage individuel exact dans GitHub reste à faire.
+- P81 : registre officiel original, 17 719 octets, SHA-256 `dec4d6420c5e5ecf54d4e31410c4776a45b3f63e160dae7193a958cd41c2232c`. Il est désormais publié individuellement dans GitHub ; taille et Git blob SHA contrôlés contre l'original.
 - EXT03 v1.1 : document et six pièces d'audit d'origine retrouvés. `LISEZMOI.md` est un ajout effectué lors de la copie. EXT03 v1.1 demeure une proposition en attente de validation ; R1–R22 sont des questions réglementaires à confirmer.
 - P83 : addendum PO confirmant Q-1 à Q-12, H-1 à H-6 et C-P82-1 à C-P82-3. Q-12 traite O-11 pour la forme (table de référence) ; O-5, O-6, O-9 et O-10 restent ouverts.
 - P85 : addendum PO confirmant A-T1, A-T2 et A-T3 ; phase 2 suspendue.
