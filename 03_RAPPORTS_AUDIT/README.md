@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.34](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.34.md)** — 27/11/2026 ; chaînage P87–P91 : GO conditionnel borné, préflight bloqué, tentative P90 interrompue sans verdict, P91 préparatoire sans palier exécuté ; 0022 non créée, G6 non proposée, phase 2 suspendue.
+
 - **[Audit documentaire global v0.33](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.33.md)** — 27/11/2026 ; références PO v1.3.5 alignées dans EXT02–EXT06 et le référentiel de conception ; inventaire des lacunes d'architecture et de prompts ; aucune intervention technique.
 
 - **[Audit documentaire global v0.32](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.32.md)** — 27/11/2026 ; correction de l'incohérence du §9 de la matrice PO : 20 décisions arbitrées, 61 proposées, 3 à réexaminer, 2 caduques ; index principaux actualisés ; aucun statut D1–D86 modifié.
