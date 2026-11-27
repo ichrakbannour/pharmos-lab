@@ -180,19 +180,18 @@ effectif existe (sinon « Demander »). L'affichage n'est qu'une aide : les gard
 5. DEMANDE : file X6, notification aux valideurs habilités ; expiration paramétrable (défaut : fin de journée) ;
    validation ou refus motivé ; le valideur peut modifier le sort du stock, pas le périmètre
 6. EXÉCUTION — transaction atomique (§4.5) :
-     document ANN-… ; statut de la vente → ANNULEE ; écritures inverses : stock (vers EN_CONTROLE ou DISPONIBLE_DIRECT,
+     document ANN-… ; statut de la vente → ANNULEE ; écritures inverses : stock (vers EN_CONTROLE ou EN_CONTROLE,
      cf. §4.6), délivrances (EXT03 : annulation = droit restitué), registre réglementé (rectification), créances
      d'organismes (EXT04), paiements et caisse (workflow C), points de fidélité, audit, événements
 7. Impression : bon d'annulation (et reçu de remboursement si restitution) ; ticket d'origine marqué « annulé »
    lors de toute réimpression
 ```
 
-**Annulation avant remise : sort du stock.** Le produit n'a jamais quitté le comptoir. Par défaut, l'exécutant
-**atteste** sa présence et son intégrité et le produit revient directement en stock disponible (`DISPONIBLE_DIRECT`)
-si **toutes** les conditions suivantes sont réunies : annulation dans la même session de caisse que la vente, dans un
-délai court paramétrable (défaut 15 min **[ARBITRAGE D61]**), produit non réglementé, non soumis à la chaîne du froid,
-non fractionné. Sinon, il passe en `EN_CONTROLE`. Cette exception est la seule réintégration sans contrôle séparé ;
-elle reste tracée (attestant, horodatage).
+**Annulation avant remise : sort du stock.** Même si le produit n'a jamais quitté le comptoir, aucune annulation ne le
+réintègre automatiquement en stock vendable. Le produit passe en `EN_CONTROLE`. Une décision immédiate simplifiée par un
+second collaborateur n'est possible que si le pharmacien-administrateur lui a explicitement accordé le droit de
+réintégration corrective (D74) ; sinon, le workflow normal de contrôle s'applique. La règle de délai est celle du jour
+calendaire (D75), et non l'ancienne fenêtre de 15 minutes (D61, caduque).
 
 ### 2.4 Workflow B — Retour partiel ou total après vente
 
@@ -299,7 +298,7 @@ n'acceptent que des insertions (déclencheurs SQLite bloquant `UPDATE`/`DELETE`,
 | Table | Colonnes principales | Contraintes / index |
 |---|---|---|
 | `corrective_operations` (immuable après exécution) | id, tenant_id, **numero** (`ANN-…` / `AVR-…` / `RMB-…`), type (`ANNULATION`, `RETOUR`, `REMBOURSEMENT_AUTONOME`), **original_sale_id**, constat_remise (`NON_REMIS`, `REMIS_RETOURNE`, `REMIS_NON_RETOURNE`), motif_code, motif_texte, **requested_by_employee_id**, **executed_by_employee_id**, **approved_by_employee_id** (nullable), approval_method (`AUCUNE`, `PIN_PRESENT`, `DEMANDE_A_DISTANCE`, `QUATRE_YEUX`), delegation_id (si exécution sous délégation), cash_session_id (session de l'exécutant si sortie d'espèces), montant_ttc_total, montant_patient, montant_organismes, statut (`EXECUTEE`, `PARTIELLE_A_CONFIRMER`), **idempotency_key**, **correlation_id**, validation_batch_id, executed_at (horodatage serveur), device_id | UNIQUE(tenant_id, numero) ; UNIQUE(tenant_id, idempotency_key) ; INDEX(tenant_id, original_sale_id) ; INDEX(tenant_id, executed_at) ; CHECK(approved_by ≠ requested_by) lorsque approval_method ≠ `AUCUNE` |
-| `corrective_operation_lines` (immuable) | id, operation_id, **original_sale_line_id**, product_id, lot_id, quantite_unites (> 0), montant_ttc, part_patient, part_organismes (JSON par payeur), prescription_line_id (nullable), droit_delivrance (`RESTITUE`, `NEUTRALISE`, `SANS_OBJET`), etat_constate (`SCELLE`, `OUVERT`, `ENDOMMAGE`, `NON_RECUPERE`), destination_initiale (`DISPONIBLE_DIRECT`, `EN_CONTROLE`, `PERTE_DIRECTE`), stock_movement_id, dispensation_reversal_id, adjustment_id (neutralisation EXT03), controlled_register_id (nullable) | INDEX(original_sale_line_id) |
+| `corrective_operation_lines` (immuable) | id, operation_id, **original_sale_line_id**, product_id, lot_id, quantite_unites (> 0), montant_ttc, part_patient, part_organismes (JSON par payeur), prescription_line_id (nullable), droit_delivrance (`RESTITUE`, `NEUTRALISE`, `SANS_OBJET`), etat_constate (`SCELLE`, `OUVERT`, `ENDOMMAGE`, `NON_RECUPERE`), destination_initiale (`EN_CONTROLE`, `EN_CONTROLE`, `EN_CONTROLE`), stock_movement_id, dispensation_reversal_id, adjustment_id (neutralisation EXT03), controlled_register_id (nullable) | INDEX(original_sale_line_id) |
 | `sale_line_correction_totals` (projection) | sale_line_id, qte_vendue, qte_annulee, qte_retournee, **qte_corrigeable**, montant_patient_restitue, montants_organismes_regularises (JSON) | Recalculable depuis `corrective_operation_lines` ; jamais utilisée seule pour décider (§4.4) |
 | `correction_reasons` | id, tenant_id, code, libelle_fr, libelle_ar, applicable_a (types), exige_texte (bool), exige_validation (bool), categorie (`ERREUR_SAISIE`, `CLIENT`, `PRODUIT`, `PRIX`, `PAIEMENT`, `REGLEMENTAIRE`, `AUTRE`) | Référentiel paramétrable ; sert aux statistiques et à l'antifraude |
 
@@ -314,7 +313,7 @@ n'acceptent que des insertions (déclencheurs SQLite bloquant `UPDATE`/`DELETE`,
 
 | Table | Colonnes principales | Contraintes / index |
 |---|---|---|
-| `stock_buckets` (référentiel) | code (`DISPONIBLE`, `RESERVE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE`), vendable (bool), valorise (bool) | Seul `DISPONIBLE` est vendable et alloué par FEFO |
+| `stock_buckets` (référentiel) | code (`DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE`), vendable (bool), valorise (bool) | Seul `DISPONIBLE` est vendable et alloué par FEFO |
 | `return_control_items` | id, tenant_id, operation_line_id, product_id, lot_id, quantite_unites, statut (`EN_CONTROLE`, `QUARANTAINE`, `REINTEGRE`, `PERTE`), entre_le, decision_attendue_avant, checklist (JSON : point, réponse, auteur), decision, decide_par_employee_id, decide_le, second_valideur_employee_id (réglementés, seuils), stock_movement_id (décision), loss_record_id (si perte), motif | INDEX(tenant_id, statut) ; une décision est définitive (une erreur se corrige par un nouveau mouvement motivé) |
 | `return_control_checklists` | id, tenant_id, categorie_produit, points (JSON), seuil_peremption_jours, version | Check-lists paramétrables par catégorie (froid, réglementé, dispositif…) |
 
@@ -378,7 +377,7 @@ delegations 1─n delegation_usage n─1 corrective_operations ; employees 1─n
 | Situation | Opération | Stock | Ordonnance (EXT03) | Registre M09 | Finance patient | Organisme (EXT04) |
 |---|---|---|---|---|---|---|
 | Vente non validée | Abandon | Libération des réservations | Rien | Rien | Rien (aucun paiement) | Rien |
-| Validée, non remise, même session, délai court | A avant remise | `DISPONIBLE_DIRECT` (attestation) | Contre-délivrance, droit restitué | Rectification « annulation » | Remboursement intégral (même moyen) | Lignes de créance annulées |
+| Validée, non remise, même session, délai court | A avant remise | `EN_CONTROLE` (attestation) | Contre-délivrance, droit restitué | Rectification « annulation » | Remboursement intégral (même moyen) | Lignes de créance annulées |
 | Validée, non remise, hors conditions ci-dessus | A avant remise | `EN_CONTROLE` | Idem | Idem | Idem | Idem |
 | Remise puis rapportée | A après remise **ou** B total | `EN_CONTROLE` | A : droit restitué · B : neutralisé (défaut D42) | Rectification / entrée quarantaine | Remboursement | Annulation ou régularisation selon l'état de la créance |
 | Remise, non rapportée | A sans retour (exceptionnel, D63) | Aucun mouvement (produit sorti) | Délivrance maintenue (le produit a été délivré) **ou** contre-délivrance selon motif, pharmacien | Aucun mouvement physique ; mention au registre si réglementé | Remboursement | Régularisation |
@@ -397,7 +396,7 @@ delegations 1─n delegation_usage n─1 corrective_operations ; employees 1─n
 | C6 | Droit effectif de l'exécutant (rôle ∩ habilitation ∩ présence ∩ overrides ∩ délégation active) et plafonds non dépassés | Bascule en demande |
 | C7 | Séparation des tâches : exécutant ≠ vendeur d'origine au-delà du seuil d'auto-correction ; valideur ≠ demandeur | Validation par un tiers |
 | C8 | Produit réglementé : séquence §4.7 | Blocage ou circuit spécifique |
-| C9 | Produit non retournable par nature (préparation magistrale, produit au froid sans garantie, fractionné, dispositif ouvert) : retour possible **sans réintégration** (destination `PERTE_DIRECTE` ou `QUARANTAINE`) | Destination imposée |
+| C9 | Produit non retournable par nature (préparation magistrale, produit au froid sans garantie, fractionné, dispositif ouvert) : retour possible sans réintégration vendable ; entrée en `EN_CONTROLE` ou `QUARANTAINE`, puis décision selon le parcours autorisé | Aucune perte directe ; la décision PERTE suit le parcours utilisateur complet et la confirmation explicite de quantité et d'irréversibilité (P86) |
 | C10 | Créance d'organisme en litige ou bordereau en cours de clôture | Validation du responsable tiers payant |
 | C11 | Session de caisse de l'exécutant ouverte si une sortie d'espèces est nécessaire | Proposer un autre moyen (crédit, avoir) ou ouvrir une session |
 | C12 | Période close (inventaire validé, journal exporté) : la correction est datée du jour, jamais rétroactive | Information |
@@ -460,16 +459,15 @@ batch, puis confirmée (référence du terminal) ou annulée par une action trac
 
 | Destination initiale | Conditions | Suite |
 |---|---|---|
-| `DISPONIBLE_DIRECT` | Annulation avant remise, même session, délai ≤ seuil, produit non réglementé / non froid / non fractionné, attestation de l'exécutant | Aucun contrôle séparé ; trace de l'attestation |
-| `EN_CONTROLE` | Tous les autres retours et annulations avec retour physique | Workflow D (check-list + décision) |
-| `PERTE_DIRECTE` | Produit non retournable par nature, ou constat d'état `ENDOMMAGE` évident | `loss_record` créé ; validation selon seuil |
+| `EN_CONTROLE` | Toute annulation ou tout retour avec quantité physique à contrôler, y compris avant remise | Contrôle tracé ; décision de réintégration selon D74 (droit explicite) ou workflow normal |
+| `PERTE` | Après passage en `EN_CONTROLE`/`QUARANTAINE`, uniquement via le parcours utilisateur complet avec confirmation explicite de la quantité et des conséquences irréversibles (P86) | Aucun passage direct par API ; droit non accordé par défaut ; création du `loss_record` après confirmation |
 | — (aucun mouvement) | Produit non rapporté | Rien n'entre en stock |
 
 Statuts finaux demandés par le cahier des charges, et leur correspondance :
 
 | Statut demandé | État technique |
 |---|---|
-| Réintégré au stock disponible | bucket `DISPONIBLE` (via `DISPONIBLE_DIRECT` ou décision `REINTEGRE`) |
+| Réintégré au stock disponible | bucket `DISPONIBLE` (via `EN_CONTROLE` ou décision `REINTEGRE`) |
 | En attente de contrôle | bucket `EN_CONTROLE` |
 | En quarantaine | bucket `QUARANTAINE` |
 | Déclaré non réutilisable / perte | bucket `PERTE` + `loss_record` (M10) |
@@ -485,7 +483,7 @@ Séquence obligatoire, non désactivable (cohérente avec EXT03 v1.1 §16) :
 1. Toute annulation ou retour d'une ligne réglementée exige l'habilitation CONTROLLED_DISPENSE (ou dédiée) et un
    pharmacien pointé ; la validation est en quatre yeux au-delà du seuil (défaut : toujours)
 2. Annulation avant remise (produit au comptoir) : rectification du registre (annulation de la sortie) ; produit en
-   EN_CONTROLE (jamais DISPONIBLE_DIRECT) ; réintégration possible uniquement par décision pharmacien [À VALIDER R35]
+   EN_CONTROLE (jamais EN_CONTROLE) ; réintégration possible uniquement par décision pharmacien [À VALIDER R35]
 3. Retour après remise : entrée au registre en QUARANTAINE ; RÉINTÉGRATION INTERDITE par défaut ; décision :
    destruction (PV, registre) ou retour fournisseur selon la réglementation [À VALIDER R34, R35]
 4. Retour sans ticket : interdit pour un réglementé
@@ -663,7 +661,7 @@ Méthodes de validation : **PIN présent** (le valideur saisit son PIN sur le po
 
 | Cas | CA | Caisse / banque | Créance organisme | Créance / avoir client | Stock | Perte |
 |---|---|---|---|---|---|---|
-| Annulation avant remise, créance non transmise | −100 (écriture d'annulation) | −30 espèces (session de l'exécutant) | −70 (lignes annulées) | — | + qté vers `DISPONIBLE_DIRECT` ou `EN_CONTROLE` | — |
+| Annulation avant remise, créance non transmise | −100 (écriture d'annulation) | −30 espèces (session de l'exécutant) | −70 (lignes annulées) | — | + qté vers `EN_CONTROLE` ou `EN_CONTROLE` | — |
 | Retour total, créance transmise non réglée | −100 (avoir) | −30 | −70 via régularisation au bordereau suivant | — | + qté `EN_CONTROLE` | — |
 | Retour partiel (40 TTC : 12 patient, 28 organisme) | −40 | −12 | −28 | — | + qté retournée `EN_CONTROLE` | — |
 | Retour, restitution en avoir | −100 | 0 | −70 | + 30 (avoir) | + qté `EN_CONTROLE` | — |
@@ -715,11 +713,11 @@ Numérotation à la suite d'EXT04 (R23 à R33). Tant qu'un point n'est pas confi
 | ID | Scénario demandé | Préconditions | Résultat attendu |
 |---|---|---|---|
 | AN-01 | **Annulation avant délivrance** (vente non validée) | Vente en brouillon / en attente | Statut `ABANDONNEE`, réservations libérées, aucun mouvement, aucun document correctif, journalisé |
-| AN-02 | **Annulation avant remise** (vente validée, produit au comptoir) | Même session, < 15 min, non réglementé | Document ANN, statut `ANNULEE`, stock `DISPONIBLE_DIRECT` avec attestation, délivrance contre-écrite (droit restitué), espèces rendues dans la session |
+| AN-02 | **Annulation avant remise** (vente validée, produit au comptoir) | Produit non remis, dans les droits et le jour calendaire D75 | Document ANN, statut `ANNULEE`, stock `EN_CONTROLE` ; réintégration uniquement après contrôle, avec droit explicite D74 pour la décision immédiate simplifiée ; délivrance contre-écrite, restitution tracée |
 | AN-03 | **Annulation après délivrance** (produit remis puis rapporté) | Vente de la veille, session clôturée | Validation pharmacien ; stock `EN_CONTROLE` ; remboursement dans la session **courante** de l'exécutant ; session d'origine inchangée |
 | RE-01 | **Retour partiel** | 2 lignes, retour d'1 unité sur la ligne 1 | Avoir sur 1 unité ; statut `PARTIELLEMENT_RETOURNEE` ; quantité corrigeable restante exacte ; prorata patient / organisme exact |
 | RE-02 | **Retour total** | Toutes les lignes | Statut `RETOURNEE` ; somme des avoirs = total de la vente ; aucune quantité corrigeable restante |
-| RE-03 | **Produit non réintégrable** | Conditionnement ouvert / produit froid sans garantie | Destination `PERTE_DIRECTE` ou `QUARANTAINE` imposée ; `loss_record` créé ; remboursement possible selon la politique |
+| RE-03 | **Produit non réintégrable** | Conditionnement ouvert / produit froid sans garantie | Entrée `EN_CONTROLE` ou `QUARANTAINE` ; aucun passage direct en PERTE ; parcours utilisateur complet et confirmation quantité/conséquences avant PERTE (P86) ; remboursement selon la politique |
 | RE-04 | **Produit réglementé** | Ligne réglementée, retour après remise | Habilitation et quatre yeux exigés ; écriture au registre dans le même batch ; quarantaine ; réintégration refusée |
 | PA-01 | **Vente payée en espèces** | Paiement espèces | Remboursement espèces dans la session ouverte de l'exécutant ; théorique de caisse diminué ; session fermée impossible |
 | PA-02 | **Vente payée par carte** | Paiement carte | Part carte `A_CONFIRMER` puis confirmée avec référence ; remboursement en espèces refusé sauf droit titulaire |
@@ -795,7 +793,7 @@ Numérotation à la suite d'EXT04 (D44 à D58).
 | Lot | Contenu EXT05 | Justification |
 |---|---|---|
 | **1. Plateforme** (ajout) | `permission_overrides`, `delegations`, `delegable_permissions`, intégration au calcul des droits effectifs | Le moteur de droits doit naître complet |
-| **3. Stock & lots** (ajout) | Buckets `DISPONIBLE`, `RESERVE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE` ; types de mouvements correctifs ; `reverses_id` | Structure de stock définitive dès le départ (D71) |
+| **3. Stock & lots** (ajout) | États physiques `DISPONIBLE`, `EN_CONTROLE`, `QUARANTAINE`, `PERTE` ; réservations logiques hors buckets ; types de mouvements correctifs ; `reverses_id` | Structure de stock définitive dès le départ (D71), sans bucket `RESERVE` (D76) |
 | **5. Caisse & ventes** (ajout) | Statuts de vente, idempotence, abandon, annulation avant remise (le minimum vital pour exploiter une caisse) | Une caisse ne peut pas être livrée sans annulation |
 | **5d. Opérations correctives** (nouveau, après 5b et 7) | Moteur M19 complet : workflows A, B, C, D, demandes et validations, contrôle de réintégration, avoirs, journal, états | Dépend des ordonnances (EXT03), de la finance et des buckets |
 | **7b. Tiers payant** (EXT04) | Régularisation des créances appelée par M19 | Après 5d, ou 5d complété au lot 7b |
