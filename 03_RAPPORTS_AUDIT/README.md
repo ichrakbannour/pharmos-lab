@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.36](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.36.md)** — 27/11/2026 ; P92 : RES-1/RES-2 confirmées, lot R3b avant R4a ; aucune autorisation de réalisation.
+
 - **[Audit documentaire global v0.35](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.35.md)** — 27/11/2026 ; réconciliation P81–P87 : aucune contradiction entre décisions PO, mais RES-1 (PERTE/API) et RES-2 (suivi par lot à la création/adoption) imposent une révision du plan P86 avant toute réalisation ; aucune autorisation technique nouvelle.
 
 - **[Audit documentaire global v0.34](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.34.md)** — 27/11/2026 ; chaînage P87–P91 : GO conditionnel borné, préflight bloqué, tentative P90 interrompue sans verdict, P91 préparatoire sans palier exécuté ; 0022 non créée, G6 non proposée, phase 2 suspendue.
