@@ -523,7 +523,7 @@ Les alertes sont réservées au titulaire (audience restreinte, EXT02 §9.3) et 
 | `sale.return.approve` | Valider un retour demandé | Oui (pharmacien) | Oui |
 | `sale.return.without_receipt` | Retour sans ticket (D62) | Oui | Oui |
 | `sale.return.restore_right` | Restituer le droit à délivrance sur l'ordonnance (D42) | Pharmacien uniquement | — |
-| `stock.return.decide` | Décider de la réintégration, de la quarantaine ou de la perte (workflow D) | Oui | Oui (valeur) |
+| `stock.return.decide` | Décider de la réintégration, de la quarantaine ou de la perte (workflow D) ; droit individuel accordé explicitement par le pharmacien-administrateur (D74) | **Non par défaut ; octroi individuel explicite ADMIN uniquement** | Oui (valeur) |
 | `stock.return.decide.controlled` | Même décision pour un produit réglementé | **Non** | — |
 | `refund.execute` | Effectuer un remboursement financier (espèces, carte, crédit, avoir) | Oui | Oui |
 | `refund.autonomous` | Remboursement sans retour de produit (erreur de prix, double encaissement) | Oui | Oui |
@@ -550,7 +550,7 @@ respectivement à `sale.read`, `sale.void.request`, `sale.void.execute`, `sale.v
 | `sale.void.approve`, `sale.return.approve` | ✔ | ✔ | — | — | — | — | — |
 | `sale.return.without_receipt` | ✔ | ✔ | — | — | — | — | — |
 | `sale.return.restore_right` | ✔ | ✔ | — | — | — | — | — |
-| `stock.return.decide` | ✔ | ✔ | — | — | ✔ (non réglementé) | — | — |
+| `stock.return.decide` | — | — | — | — | — | — | — |
 | `stock.return.decide.controlled`, `correction.controlled.execute` | ✔ | ✔ (si habilité) | — | — | — | — | — |
 | `refund.execute` | ✔ | ✔ | ✔ (dans le plafond du retour) | ✔ (exécution d'une opération validée) | — | — | — |
 | `refund.autonomous` | ✔ | ✔ | — | — | — | — | — |
@@ -563,9 +563,9 @@ respectivement à `sale.read`, `sale.void.request`, `sale.void.execute`, `sale.v
 
 **Trois niveaux de configuration, du plus général au plus particulier** :
 
-1. **Rôle** (`role_permissions`, EXT02) : permissions et plafonds par défaut.
-2. **Réglage individuel permanent** (`permission_overrides`) : le titulaire accorde ou retire durablement un droit ou un
-   plafond à un collaborateur nommé (par pharmacie). Tracé, motivé.
+1. **Rôle** (`role_permissions`, EXT02) : permissions et plafonds par défaut. `stock.return.decide` est exclue de toute attribution par défaut, y compris pour le rôle Titulaire, Adjoint ou Achats/stock (D74).
+2. **Réglage individuel permanent** (`permission_overrides`) : le pharmacien-administrateur accorde ou retire explicitement un droit ou un
+   plafond à un collaborateur nommé (par pharmacie). Pour `stock.return.decide`, cet octroi individuel explicite est obligatoire ; il ne peut être déduit du rôle, d'une habilitation métier ou d'une délégation générique (D74). L'opération est motivée et tracée.
 3. **Délégation temporaire** (`delegations`) : le titulaire confie pour une période **bornée** (date de fin obligatoire)
    un droit qu'il détient, avec plafonds et périmètre. Cas typiques : absence du titulaire, garde, remplacement.
 
