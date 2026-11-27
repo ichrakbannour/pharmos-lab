@@ -28,18 +28,22 @@ L'archive jointe EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip a été contrôlée :
 
 **Publication des sources :** les 42 fichiers originaux sont publiés individuellement et contrôlés dans le miroir d'archive [07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/). La matrice v1.3.3 est désormais également copiée dans le dossier canonique ; son Git blob SHA est identique à celui du fichier source dans le miroir. Les autres sources originales ne sont pas toutes recopiées individuellement dans le dossier canonique 04_DECISIONS_PO. Ne pas confondre miroir d'archive et documents canoniques.
 
-## Chaînage STOCK P81–P91 — sources originales
+## Addenda PO STOCK — décisions courantes
+
+- **[P92 — Addendum PO de réconciliation technique STOCK](P92_ADDENDUM_RECONCILIATION_TECHNIQUE_STOCK.md)** — RES-1 et RES-2 confirmées ; lot R3b V1/V3 et parcours PERTE positionné avant R4a ; aucune autorisation de réalisation.
+
+## Chaînage STOCK P81–P92 — sources originales
 
 Les documents suivants sont accessibles dans le miroir des sources originales. Ils restent des rapports et addenda datés : leur présence ne vaut pas autorisation d'exécution.
 
 - [P83 — Addendum des décisions PO STOCK](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P83_ADDENDUM_DECISIONS_PO_STOCK.md) — Q-1 à Q-12, H-1 à H-6 et C-P82-1 à C-P82-3.
 - [P85 — Addendum des arbitrages PO AT1/AT2/AT3](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P85_ADDENDUM_ARBITRAGES_PO_AT1_AT2_AT3.md) — phase 2 suspendue ; autorisations futures bornées.
-- [P87 — Addendum officiel des arbitrages PO P86](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P87_ADDENDUM_DECISIONS_PO_P86.md) — P86-1 à P86-13 et précautions A/B ; RES-1 et RES-2 restent à résoudre ; ne vaut pas autorisation de réalisation.
+- [P87 — Addendum officiel des arbitrages PO P86](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P87_ADDENDUM_DECISIONS_PO_P86.md) — P86-1 à P86-13 et précautions A/B ; RES-1 et RES-2 ont été tranchées par P92 ; P87 reste l'enregistrement historique des décisions initiales.
 - [P88 — Rapport d'exécution consolidé](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P88_RAPPORT_EXECUTION.md) — préflight bloqué PRQ-3 ; mise à jour P90 intégrée.
 - [P89 — Diagnostic mémoire et tmpfs](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P89_RAPPORT_DIAGNOSTIC_MEMOIRE.md) — diagnostic en lecture seule ; options proposées, aucune action corrective.
 - [P91 — Préparation contrôlée de l'Option B](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P91_RAPPORT_PREPARATION_OPTION_B.md) — préparation uniquement ; aucun palier exécuté.
 
-Voir le [rapport d'audit global v0.35](../03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.35.md) pour la réconciliation P81–P87, les réserves RES-1/RES-2 et les autorisations encore absentes.
+Voir le [rapport d'audit global v0.36](../03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.36.md) pour l'intégration de P92 et les limites d'autorisation.
 
 ## Lacunes et précautions
 
