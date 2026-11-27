@@ -10,10 +10,10 @@
 
 ## 2. Règle métier retenue
 
-1. PHARM'OS doit préparer le périmètre fonctionnel complet de gestion des organismes payeurs, conventions et remboursements, comprenant notamment les conventions versionnées et suspendables, les règles de prise en charge sourcées et les pièces justificatives.
+1. PHARM'OS doit livrer le modèle complet de gestion des organismes et conventions, avec conventions versionnées et suspendables, règles de prise en charge sourcées et pièces justificatives ; toutefois, le périmètre v1 est limité au remboursement par l'assuré et aux conventions privées.
 2. Le mode **remboursement par l'assuré** est inclus dans ce périmètre : l'assuré paie la totalité et reçoit les justificatifs nécessaires à ses démarches auprès de son organisme ; ce mode ne crée pas de créance de tiers payant pour la pharmacie.
 3. **Aucune convention ni aucun organisme payeur n'est actif par défaut.**
-4. **Le tiers payant CNAM reste désactivé.** La présente décision ne permet ni son utilisation ni son activation.
+4. **Le tiers payant CNAM et le tiers payant mutuelles sont exclus du périmètre v1.** Le tiers payant CNAM reste désactivé ; la présente décision ne permet ni son utilisation ni son activation.
 5. Une activation CNAM ultérieure exige cumulativement :
    - la vérification des textes, conventions, avenants et modalités officielles réellement applicables à la date envisagée ;
    - une validation explicite et distincte du PO après cette vérification.
@@ -22,8 +22,8 @@
 ## 3. Effet sur les décisions D1–D86
 
 - **D6 — ARBITRÉE :** préparation du module ; tiers payant CNAM non activé par défaut et soumis aux deux conditions cumulatives ci-dessus.
-- **D37 — ARBITRÉE :** compatibilité future et préparation du périmètre ; aucun flux CNAM sans vérification officielle et validation PO distincte.
-- **D44 — ARBITRÉE, option B :** modèle complet organismes/conventions/remboursements préparé ; aucune convention active par défaut ; remboursement par l'assuré inclus ; CNAM désactivée.
+- **D37 — ARBITRÉE :** tiers payant CNAM/mutuelles reporté hors v1, compatibilité future préservée ; le périmètre v1 B couvre le remboursement par l'assuré et les conventions privées, sans convention active par défaut.
+- **D44 — ARBITRÉE, option B :** modèle complet livré, périmètre v1 limité au remboursement par l'assuré et aux conventions privées ; aucune convention active par défaut ; tiers payant CNAM/mutuelles exclu en v1.
 - **D45 à D58 restent PROPOSÉES.** Le choix de l'option B ne vaut pas validation globale de toutes les règles détaillées d'EXT04.
 - **INC-06 est clos au niveau de l'arbitrage de périmètre.** Les vérifications réglementaires, conventionnelles et les exigences restant ouvertes ne sont pas clôturées par cette décision.
 
