@@ -113,3 +113,17 @@ Les décisions métier, les autorisations futures conditionnelles et l’autoris
 
 ---
 **Fin du rapport v0.7 — audit documentaire en cours.**
+
+
+## Addendum de clôture documentaire — publication des sources (27/11/2026)
+
+Après réception du push GitHub par le PO, l'archive `EXPORT_SOURCES_AUDIT_PHARMOS_20261127.zip` a été intégrée au dépôt sous `07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/`, en conservant l'arborescence interne des quatre ensembles.
+
+Contrôles effectués :
+- archive source : 42 entrées, ZIP valide, SHA-256 `b3a4d228927300c6c12b18b5082fb4c797599fc762102a9e08a97fd47d0f9fa5` ;
+- dépôt GitHub : 42 fichiers présents dans le répertoire miroir ;
+- comparaison des objets Git : 42/42 empreintes blob identiques aux octets sources ; aucun fichier manquant ;
+- les 42 fichiers ont été rangés sous le répertoire d'archive sans réécriture de leur contenu ; les documents canoniques préexistants ont été conservés ;
+- manifeste SHA-256 et README de navigation mis à jour.
+
+Cette clôture porte exclusivement sur l'intégrité et le classement de la publication documentaire. Elle ne modifie aucune conclusion métier de v0.7, ne valide pas les propositions en attente et n'autorise aucune opération technique PHARM'OS.
