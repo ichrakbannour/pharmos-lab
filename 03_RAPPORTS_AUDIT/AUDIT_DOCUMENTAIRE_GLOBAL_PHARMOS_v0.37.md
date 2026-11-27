@@ -28,7 +28,7 @@ Phase 2 reste suspendue ; PC-1 non exécuté ; C7b non vérifié ; O-5/O-6/O-9/O
 
 ## 4. État de vérification
 
-Les deux documents P92 et les index sont publiés par GitHub. La vérification finale par relecture des quatre chemins canoniques et des index est à effectuer après leur mise à jour.
+Les deux documents P92, l'audit v0.37 et les trois index ont été relus après publication. Les six chemins contrôlés (deux documents P92, rapport v0.37, index PO, index audits, README racine) sont accessibles ; les contrôles de contenu ciblés sont OK.
 
 **Conclusion :** le plan STOCK est désormais réconcilié au niveau documentaire pour RES-1/RES-2. Il reste à obtenir une autorisation de réalisation distincte avant tout travail technique.
 
