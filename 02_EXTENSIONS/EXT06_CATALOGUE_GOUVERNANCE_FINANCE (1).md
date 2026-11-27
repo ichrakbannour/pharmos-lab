@@ -417,7 +417,7 @@ Axes demandés et leur source :
 | Critère demandé | Implémentation |
 |---|---|
 | Famille commerciale | Axe `FAMILLE_COMMERCIALE` (arbre : Médicaments, Dispositifs, Parapharmacie & beauté, Accessoires… puis sous-familles des Parties 3C et 3D) |
-| Famille thérapeutique | Axe `FAMILLE_THERAPEUTIQUE` doté d'une classification thérapeutique standard initiale (D84), modifiable par l'administrateur ; cette classification de gestion est distincte des champs et référentiels réglementaires officiels. Les sources officielles éventuelles restent identifiées séparément et soumises à R43. |
+| Famille thérapeutique | Axe `FAMILLE_THERAPEUTIQUE` doté d'une classification thérapeutique standard initiale de source `MODELE_STANDARD` (D84), modifiable par l'administrateur ; cette classification de gestion est distincte des champs et référentiels réglementaires officiels. Aucune nomenclature officielle ou ATC n'est présumée ; les sources officielles éventuelles restent identifiées séparément et soumises à R43. |
 | Forme pharmaceutique | `ref_forms` existant, exposé comme axe de recherche (pas de duplication) |
 | Laboratoire | `products.manufacturer_id` (référentiel `ref_laboratories`) |
 | Marque | `products.brand_id` (`brands`) |
