@@ -63,12 +63,34 @@ Les confirmations PO retrouvées dans les échanges indiquent notamment :
 
 **Collision de numérotation à traiter :** le D72 de l'EXT06 décrit une procédure de secours APEX, alors que les échanges PO antérieurs associent aussi D72 à la gouvernance/super-administration et au compte superadmin immuable. De même, D83 de l'EXT06 décrit le plan comptable, et les échanges PO le valident comme modèle standard adaptable sans validation préalable d'expert-comptable. L'audit conserve les décisions PO explicites et signale le besoin d'un registre maître qui attribue un identifiant stable à chaque décision et indique son document d'origine.
 
-### 4.2 Décisions D17–D71
-L'historique retrouvé au 4 novembre indique que D17–D71 n'étaient pas globalement arbitrées à cette date : D17–D26 (EXT02), D27–D43 (EXT03), D44–D58 (EXT04) et D59–D71 (EXT05) restaient principalement des propositions. D37 devait être réexaminée ; D61 et D66 étaient signalées comme caduques dans une analyse antérieure. Toute évolution ultérieure devra être rapprochée d'une confirmation PO datée avant de mettre à jour les statuts.
+### 4.2 État maître des décisions D1–D86 (matrice v1.2.1 retrouvée dans l'historique PO)
 
-EXT03 a reçu un accord de principe, mais cela ne vaut pas validation intégrale de tous ses arbitrages ni de ses exigences réglementaires.
+Le PO a précédemment désigné `MATRICE_DECISIONS_D1_D86_v1.2.1.md` comme document maître de statut des décisions D1–D86. Cette matrice n'est pas présente dans le dépôt GitHub actuellement audité ; son état connu doit être restauré dans `04_DECISIONS_PO` à partir de la source Genspark ou du fichier original, sans reconstitution approximative.
 
-### 4.3 Décisions opérationnelles récentes — 2026-11-25
+État consolidé confirmé au 4 novembre 2026 :
+- **16 arbitrées :** D3 et D72 à D86 inclusivement.
+- **63 proposées.**
+- **5 à réexaminer :** D2, D6, D10, D15 et D37.
+- **2 caduques :** D61 et D66.
+- La matrice v1.2.1 n'avait pas été validée globalement ; son existence ne signifie donc pas que les 86 décisions sont toutes approuvées.
+
+D3 est arbitrée : une base de données physiquement distincte par pharmacie ; plusieurs bases peuvent résider sur un même serveur ; séparation des bases ne signifie pas séparation obligatoire des serveurs. La trace antérieure v1.1 (base partagée) doit être conservée comme historique, et ARB-02 est fermé/rattaché à D3.
+
+Les décisions D17–D71 provenant d'EXT02 à EXT05 ne sont donc pas globalement approuvées. D37 est à réexaminer ; D61 et D66 sont caduques. Les autres restent proposées selon la matrice, même lorsque les documents affichent une valeur recommandée dans leur tableau final. Les formulations de ces tableaux ne doivent pas être présentées comme des décisions PO.
+
+EXT03 a fait l'objet d'un accord de principe sur l'extension, mais cela ne vaut pas validation individuelle des arbitrages D27–D40 ni validation des exigences réglementaires R1–R22.
+
+### 4.3 Amendements PO postérieurs à la matrice — réconciliation obligatoire
+
+Les échanges PO postérieurs contiennent des précisions qui doivent être comparées à la matrice v1.2.1 avant de réécrire les statuts ou les formulations :
+- D78 : la décision PO limite les données/notifications à **type d'opération, nom du client et date** ; les types de service sont définis par le pharmacien-administrateur. Cette consigne prévaut sur la proposition EXT06 de mesures structurées et observations.
+- D80 : le module comptable doit porter clairement la mention **« Comptabilité à titre indicatif »** ; PHARM'OS ne remplace pas la tenue des comptes officiels.
+- D83/D84 : la numérotation et la formulation PO doivent être rapprochées de la matrice maître avant correction du statut du plan comptable et de la classification. Ne pas transposer une validation de D84 à D83 par simple proximité numérique.
+- D74 : toute réintégration corrective par un second collaborateur suppose que le pharmacien/admin lui ait explicitement accordé ce droit ; une décision immédiate par un second collaborateur sans contrôle d'habilitation est insuffisante.
+
+Les D72–D86 étaient marquées ARBITRÉES dans la matrice v1.2.1. Les amendements postérieurs précisent ou corrigent certains contenus ; ils ne doivent pas être traités comme une annulation implicite de leur statut sans décision PO explicite.
+
+### 4.4 Décisions opérationnelles récentes — 2026-11-25
 Ces décisions sont distinctes de la numérotation Dxx des extensions :
 - **DP-1 à DP-6 confirmées :** états de stock DISPONIBLE / EN_CONTROLE / QUARANTAINE / PERTE ; stock calculé à partir des mouvements ; lot obligatoire pour les médicaments ; réservations logiques produit ou lot avec FEFO ; sorties manuelles encadrées et dérogations ADMIN tracées ; entrées de stock limitées aux événements admis et justificatifs requis ; validation de migration uniquement sur copies isolées selon les conditions définies.
 - Précisions PO complémentaires : archivage interdit tant qu'une quantité physique subsiste, y compris en QUARANTAINE ou PERTE ; indicateur « en attente de destruction » avec quantité et ancienneté, sans destruction automatique ; les corrections ne doivent pas masquer une destruction ni altérer l'état physique réel.
