@@ -5,7 +5,7 @@ Dépôt documentaire de référence du projet PHARM'OS.
 ## Navigation
 - [Conception](01_CONCEPTION/README.md)
 - [Extensions](02_EXTENSIONS/README.md)
-- [Rapports d'audit](03_RAPPORTS_AUDIT/README.md) — dernier rapport : [audit global v0.33](03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.33.md)
+- [Rapports d'audit](03_RAPPORTS_AUDIT/README.md) — dernier rapport : [audit global v0.34](03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.34.md)
 - [Décisions PO](04_DECISIONS_PO/README.md) — matrice courante : [D1–D86 v1.3.5](04_DECISIONS_PO/MATRICE_DECISIONS_D1_D86_v1.3.5.md)
 - [Architecture](05_ARCHITECTURE/README.md)
 - [Prompts Genspark](06_PROMPTS_GENSPARK/README.md)
