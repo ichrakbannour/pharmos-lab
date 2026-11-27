@@ -1,5 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
+- **[Audit documentaire global v0.21](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.21.md)** — 27/11/2026 ; EXT06 : consolidation fonctionnelle D72/D77/D84 et contrôle des garanties D73/D75/D79/D80 ; preuves applicatives restantes explicitement recensées.
+
 - **[Audit documentaire global v0.20](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.20.md)** — 27/11/2026 ; EXT06 v1.0 : réconciliation D72–D86 avec la matrice PO v1.3.3 ; écarts historiques D72, D77 et D84 explicités.
 
 - **[Audit documentaire global v0.19](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.19.md)** — 27/11/2026 ; EXT03 : D40 arbitrée intégrée, D37 maintenue à réexaminer ; EXT04 : D44 explicitement non arbitrée et tiers payant CNAM verrouillé jusqu'à arbitrage D37.
