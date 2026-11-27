@@ -1,6 +1,7 @@
 Rapports d'audit et de suivi PHARM'OS.
 
-- **[Audit documentaire global v0.8](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.8.md)** — 27/11/2026 ; revue approfondie EXT03 v1.1, réconciliation D27–D43, prérequis réglementaires R1–R22 et statut des tests (spécification sans preuve d’exécution).\n- [Audit documentaire global v0.7](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.7.md) — 27/11/2026 ; contrôle direct de l’archive et approfondissement des réserves P87-RES-1/RES-2, de P90 intégré à P88 et des limites P91.
+- **[Audit documentaire global v0.8](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.8.md)** — 27/11/2026 ; revue approfondie EXT03 v1.1, réconciliation D27–D43, prérequis réglementaires R1–R22 et statut des tests (spécification sans preuve d’exécution).
+- [Audit documentaire global v0.7](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.7.md) — 27/11/2026 ; contrôle direct de l’archive et approfondissement des réserves P87-RES-1/RES-2, de P90 intégré à P88 et des limites P91.
 - [Audit documentaire global v0.6](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.6.md) — 27/11/2026 ; différentiel des 14 versions D1–D86, revue EXT03 v1.1 et consolidation P81–P91.
 - [Audit documentaire global v0.5](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.5.md) — contrôle de l'export des sources, première réconciliation P81–P91.
 - [Audit documentaire global v0.4](AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.4.md) — version précédente, conservée comme historique.
