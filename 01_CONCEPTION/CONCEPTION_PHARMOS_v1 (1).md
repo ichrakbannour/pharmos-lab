@@ -561,10 +561,15 @@ filtré par `tenant_id`). Seuls les services publient des événements.
 | A. Base partagée + `tenant_id` | Une base D1, filtrage systématique | Simple, migrations uniques | Isolation logique seulement ; limite de taille D1 (10 Go) à surveiller |
 | B. **Une base D1 par pharmacie** + base « plateforme » | Routage par tenant | Isolation physique, sauvegarde/restauration/suppression par client, pas de fuite inter-tenant possible | Migrations à appliquer sur N bases, outillage nécessaire ; binding dynamique à étudier selon le mode d'hébergement |
 
-**Recommandation** : démarrer en **A** avec une couche d'accès qui **impose** le `tenant_id`
-(aucune requête possible sans contexte tenant, tests automatisés d'isolation), en conservant une
-abstraction permettant de basculer en **B** pour les clients exigeants ou au-delà d'un seuil de
-volumétrie. **[À DÉCIDER]**
+**Décision PO D3 — option B arbitrée** : chaque pharmacie dispose de sa **propre base de données physiquement distincte**,
+avec une base « plateforme » séparée pour les fonctions globales. Plusieurs bases de pharmacies peuvent résider sur un
+même serveur : l'isolation physique des bases n'impose pas un serveur physique par pharmacie. Les sauvegardes,
+restaurations et opérations de cycle de vie doivent pouvoir être conduites indépendamment par pharmacie.
+
+Le `tenant_id` reste exigé dans les données métier et les contrôles d'accès comme défense en profondeur, mais ne remplace
+pas la séparation physique des bases. Cette décision s'applique au modèle SaaS et doit être respectée dans le déploiement
+On-Premises. L'option A (base métier partagée entre pharmacies) est conservée uniquement comme trace historique, pas comme
+architecture autorisée. La couche d'accès doit router vers la base correspondant au tenant authentifié.
 
 ### 6.5 Tâches périodiques
 
@@ -870,7 +875,7 @@ lot par lot avant développement.
 |---|---|---|---|
 | D1 | Marché et devise de lancement | Tunisie (TND, 3 décimales) / multi-pays | Tunisie, devise paramétrable |
 | D2 | Mode d'hébergement | Hébergement géré Genspark / compte Cloudflare d'APEX AI DEV | Compte propre pour un produit commercial (cron, maîtrise, contrats) |
-| D3 | Isolation SaaS | Base partagée + tenant_id / base par pharmacie | Partagée au départ, base dédiée en option (§6.4) |
+| D3 | Isolation SaaS | Base partagée + tenant_id / base par pharmacie | **ARBITRÉE : base physiquement distincte par pharmacie ; plusieurs bases peuvent résider sur un même serveur.** L'ancienne option partagée est conservée comme trace historique uniquement. |
 | D4 | Source du référentiel médicaments | Fichier officiel, base commerciale, saisie progressive, import du parc existant | À identifier : source officielle des AMM et prix en Tunisie |
 | D5 | Statut juridique des registres électroniques et facturation électronique | — | Consultation juridique avant Lot 10 |
 | D6 | Tiers payant CNAM | Dans la v1 / plus tard | Plus tard, modèle prévu |
