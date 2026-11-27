@@ -134,7 +134,7 @@
 | G9 | Groupes de substitution | `/catalog/substitution-groups` | 3 | Groupes, membres, source, validation pharmacien |
 | G10 | Axes de classification | `/settings/classification` | 3 | Arbres par axe (familles commerciale et thérapeutique, univers) |
 | G11 | Catégories fiscales | `/settings/tax` | 3, 7 | Catégories et taux historisés, avec leur source |
-| G12 | **Catalogue des services** | `/services` | 4 | Prestations, tarifs, durée, habilitations, activation réglementaire |
+| G12 | **Catalogue des services** | `/services` | 4 | Services définis par la pharmacie, tarifs, champs opérationnels facultatifs, référence d'autorisation informative facultative, activation/désactivation par l'administrateur |
 | G13 | Registre des prestations | `/services/acts` | 4 | Enregistrement simple : type de service/opération, nom du client et date ; champs opérationnels facultatifs configurés par l'administrateur ; aucune donnée clinique ni mesure structurée |
 | G14 | Charges | `/finance/charges` | 7 | Saisie, pièces, échéances, statut de paiement, catégories |
 | G15 | Emprunts et crédits | `/finance/loans` | 7 | Contrats, tableaux d'amortissement, échéances |
@@ -288,8 +288,8 @@ Les « équivalents » non substituables (même DCI, autre forme ou dosage) sont
 
 ```
 Collaborateur ouvre les services configurés par sa pharmacie (G12) ou ajoute une prestation au panier de caisse
-  → contrôles : service ACTIF selon les conditions réglementaires applicables et documentées ; collaborateur habilité
-    (habilitation liée au service, EXT02), présence pointée si exigée
+  → contrôles : service ACTIF et permission effective `services.perform` pour le collaborateur ; aucune habilitation
+    obligatoire attachée au service ni autorisation réglementaire bloquante dans le modèle D78
   → saisie minimale : type de service/opération, nom du client et date/heure (horodatage serveur par défaut)
   → champs facultatifs : uniquement des champs opérationnels non cliniques définis par le pharmacien-administrateur ;
     aucune fiche patient/clinique, observation médicale, mesure de santé structurée ou donnée clinique n'est créée
@@ -447,7 +447,7 @@ La recherche par facettes les combine tous.
 
 | Table | N/C/R | Colonnes principales | Contraintes / index |
 |---|---|---|---|
-| `service_definitions` | **N** | product_id (PK, `product_type = SERVICE`), description, tarif_par_defaut (via `product_prices`), gratuit (bool), habilitation_requise_code (EXT02), champs_operationnels_facultatifs (JSON, configurés par l'administrateur et limités à des informations non cliniques), consommables_par_defaut (JSON), **autorisation_reglementaire** (`NON_REQUISE`, `REQUISE`), autorisation_ref, autorisation_valid_from, autorisation_valid_to, source_document_id, **actif** | Aucun catalogue universel préchargé ; activation soumise aux conditions réglementaires applicables et documentées (§5.5) |
+| `service_definitions` | **N** | product_id (PK, `product_type = SERVICE`), description, tarif_par_defaut (via `product_prices`), gratuit (bool), champs_operationnels_facultatifs (JSON, configurés par l'administrateur et limités à des informations non cliniques), consommables_par_defaut (JSON), reference_autorisation (facultative, informative), **actif** | Aucun catalogue universel préchargé ; aucune autorisation réglementaire bloquante ni habilitation obligatoire par service n'est imposée par D78 ; R47 reste à valider séparément |
 | `service_acts` | **N** (immuable) | id, tenant_id, numero (`SRV-…`), product_id (type de service/opération), customer_name (nom du client), performed_by_employee_id, performed_at, champs_operationnels (JSON facultatif, non clinique), sale_line_id (si facturé), statut (`REALISE`, `ANNULE`), reverses_id | INDEX(tenant_id, performed_at) ; INDEX(product_id) ; le registre ne contient ni dossier patient/clinique, ni observations médicales, ni mesures de santé structurées |
 | `service_act_consumables` | **N** | act_id, product_id, lot_id, quantite, stock_movement_id | Sortie de stock des consommables |
 
@@ -631,9 +631,9 @@ Règles :
 | # | Règle |
 |---|---|
 | SV1 | Un service est un produit de type `SERVICE`, non stocké (`stock_tracked = faux`), vendu par les mêmes lignes de vente et la même caisse nominative |
-| SV2 | Un service n'est **activable** que si son autorisation réglementaire est `NON_REQUISE` ou valide à la date ; à l'échéance de l'autorisation, il est désactivé automatiquement (traitement paresseux) et n'est plus proposé |
-| SV3 | Aucun catalogue universel ni modèle de service préchargé n'est imposé par APEX ; chaque pharmacie définit ses propres services. L'administrateur ne peut activer un service que dans le respect des conditions réglementaires applicables et documentées **[À VALIDER R47]** |
-| SV4 | Seul un collaborateur détenant l'habilitation liée au service peut le réaliser (EXT02) ; la présence peut être exigée |
+| SV2 | L'administrateur active ou désactive le service. La référence d'autorisation, si renseignée, est facultative et informative ; aucune autorisation réglementaire bloquante ni désactivation automatique liée à une échéance n'est imposée par D78. R47 reste une validation réglementaire distincte et ouverte |
+| SV3 | Aucun catalogue universel ni modèle de service préchargé n'est imposé par APEX ; chaque pharmacie définit ses propres services. L'activation par l'administrateur ne vaut pas validation réglementaire ni preuve de conformité ; R47 reste ouvert |
+| SV4 | La réalisation exige la permission effective `services.perform` ; aucune habilitation réglementaire obligatoire attachée à chaque service n'est imposée par le modèle D78 |
 | SV5 | Un acte est enregistré de façon simple et immuable avec le type de service/opération, le nom du client et la date ; seuls des champs opérationnels facultatifs non cliniques configurés par l'administrateur peuvent s'y ajouter ; une erreur se corrige par un acte d'annulation lié |
 | SV6 | Aucun dossier clinique, observation médicale ou mesure de santé structurée n'est collecté dans le registre des prestations ; les champs facultatifs configurables restent strictement non cliniques |
 | SV7 | Les consommables (seringue, coton, pansement) sortent du stock par lot, liés à l'acte |
@@ -771,7 +771,7 @@ le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques dé
 | `catalog.classification.manage` | CATALOG / SPECIFIC | Oui | Titulaire, adjoint |
 | `tax.manage` (catégories, taux) | SETTINGS / SPECIFIC | **Non** | Administrateur (quatre yeux avec le comptable si présent) |
 | `services.manage` (définitions, activation) | SERVICES / UPDATE, VALIDATE | **Non** pour l'activation | Administrateur |
-| `services.perform` | SERVICES / CREATE | Selon l'habilitation du service | Collaborateurs habilités |
+| `services.perform` | SERVICES / CREATE | Selon les permissions effectives du collaborateur ; aucune habilitation obligatoire par service (D78) | Collaborateurs autorisés par la matrice des droits |
 | `services.acts.read` (données minimales D78 et champs opérationnels non cliniques autorisés) | SERVICES / READ | Non | Titulaire, adjoint, auteur de l'acte |
 | `finance.charges.create` / `.validate` | FINANCE | Oui (plafond) | Comptable, administrateur |
 | `finance.payments.execute` | FINANCE / SPECIFIC | Oui (plafond) | Comptable, administrateur |
@@ -1025,7 +1025,7 @@ Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conser
 | D75 | **ARBITRÉE** — jour calendaire par défaut ; option GARDES/PERMANENTE activée explicitement, motif, MFA, versionnement, non-rétroactivité, journalisation | **Consolidé** au §5.2 : modes GARDES/PERMANENTE, activation et changement explicites par l'administrateur, motif, MFA, versionnement, prise d'effet non rétroactive et journalisation. | Le comportement réel du paramétrage et le calcul temporel restent à tester en réalisation autorisée. |
 | D76 | **ARBITRÉE** — compartiment physique RESERVE supprimé ; réservation logique | Conforme au principe de retrait du bucket RESERVE dans EXT06. | Maintenir la distinction réservation logique / stock physique. |
 | D77 | **ARBITRÉE** — accueil adapté au rôle **et aux permissions effectives** | **Consolidé** dans NV6 et §6.3 : accueil, menus, tuiles et raccourcis calculés sur les droits effectifs ; préférences utilisateur limitées à l'organisation des éléments autorisés ; contrôle serveur maintenu. | Le rendu réel et le refus serveur doivent être testés en réalisation autorisée. |
-| D78 | **ARBITRÉE** — services définis par la pharmacie ; aucun catalogue universel ; notification limitée au type de service/opération, nom du client et date ; pas de dossier clinique ni mesures structurées | **Consolidé** dans G13, W8, §4.7 et §5.5 : suppression des champs patient/clinique, observations et mesures ; champs facultatifs limités aux données opérationnelles non cliniques configurées par l'administrateur ; notification en liste blanche. | Vérifier en réalisation autorisée que l'interface, les API, les exports et notifications ne créent ni ne divulguent de données cliniques ou de mesures structurées. |
+| D78 | **ARBITRÉE** — services définis par la pharmacie ; aucun catalogue universel ; notification limitée au type de service/opération, nom du client et date ; pas de dossier clinique ni mesures structurées | **Consolidé** dans G12/G13, W8, la permission `services.perform`, §4.7 et §5.5 : aucun modèle préchargé, aucun champ patient/clinique, aucune mesure/observation, aucune habilitation obligatoire par service ni autorisation réglementaire bloquante ; référence d'autorisation facultative et informative ; champs facultatifs non cliniques ; notification en liste blanche. | Vérifier en réalisation autorisée les droits effectifs, l'absence de données cliniques, de mesures structurées et de blocage réglementaire non arbitré. R47 reste une validation externe distincte. |
 | D79 | **ARBITRÉE** — permission dédiée de consultation des marges, y compris G25 | **Consolidé** au §5.8 : `analytics.margin.read` obligatoire pour toute donnée de marge, y compris G25, au niveau interface, API, exports et réponses serveur ; `ANALYTICS.READ` seul ne suffit pas. | Vérifier les droits effectifs et l'absence de fuite par agrégats, exports et API lors de tests autorisés. |
 | D80 | **ARBITRÉE** — partie double M20 ; libellé exact « Comptabilité à titre indicatif » ; écritures validées immuables ; corrections par contre-passation et nouvelle écriture | **Consolidé** dans W13 et les schémas M20 : libellé exact sur écrans/états/exports ; écriture validée et lignes immuables ; correction par contre-passation liée puis nouvelle écriture si nécessaire ; traitement atomique. | L'immutabilité et les contre-passations restent à démontrer par tests et contrôles techniques autorisés. |
 | D81 | **ARBITRÉE** — import des montants mensuels uniquement ; aucun moteur de paie | Aligné en substance. | Ne pas introduire de calculateur de paie. |
