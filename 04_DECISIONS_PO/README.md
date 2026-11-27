@@ -39,7 +39,7 @@ Les documents suivants sont accessibles dans le miroir des sources originales. I
 - [P89 — Diagnostic mémoire et tmpfs](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P89_RAPPORT_DIAGNOSTIC_MEMOIRE.md) — diagnostic en lecture seule ; options proposées, aucune action corrective.
 - [P91 — Préparation contrôlée de l'Option B](../07_SOURCES_ORIGINALES/EXPORT_SOURCES_AUDIT_PHARMOS_20261127/4_DECISIONS_STOCK_P82_P91/P91_RAPPORT_PREPARATION_OPTION_B.md) — préparation uniquement ; aucun palier exécuté.
 
-Voir aussi le [rapport d'audit global v0.34](../03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.34.md) pour la lecture consolidée des autorisations et de l'état réel.
+Voir le [rapport d'audit global v0.35](../03_RAPPORTS_AUDIT/AUDIT_DOCUMENTAIRE_GLOBAL_PHARMOS_v0.35.md) pour la réconciliation P81–P87, les réserves RES-1/RES-2 et les autorisations encore absentes.
 
 ## Lacunes et précautions
 
