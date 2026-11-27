@@ -63,6 +63,8 @@ La matrice v1.3.3 documente une décision PO explicite du 10/11/2026, issue de l
 
 La matrice précise que la clause historique « pharmacien pour les réglementés » n'est pas traitée par cette décision et reste historique. Elle ne doit donc pas être présentée comme une règle PO confirmée. Le comportement exact des réservations de reliquats réglementés demeure à clarifier dans le cadre d'une décision métier, sans réactiver la règle historique par défaut.
 
+Le même écart est présent dans EXT03 v1.1 elle-même : sa section 13.1 résume encore D40 comme « réservation courte (48 h par défaut), jamais pour réglementé sans pharmacien ». La grille D27–D40 reprend également cette proposition. Ces deux formulations sont antérieures à l'arbitrage D40 du 10/11/2026 et ne sont pas synchronisées avec lui. La référence courante est la matrice D1–D86 v1.3.3 ; les textes EXT03 v1.1 et la grille doivent rester identifiés comme historiques tant qu'une consolidation documentaire ultérieure n'est pas autorisée.
+
 **Action documentaire :** toute future consolidation EXT03 devra remplacer la proposition de 48 h par la formulation D40 arbitrée, conserver la distinction jours comptables / heures calendaires et signaler séparément le point réglementé non arbitré. Aucun document source historique n'est réécrit dans le cadre du présent audit.
 
 ### 3.2 D37 — dépendance au conflit D44
