@@ -87,8 +87,9 @@
 
 1. **Une seule source par donnée.** Un produit, un lot, un médecin, un organisme ou une permission n'existe qu'à un endroit.
    Les écrans d'accès direct (accueil, tuiles) sont des **vues** sur ces sources.
-2. **Le pharmacien administrateur est l'autorité de gouvernance de l'officine.** Il est seul à créer, modifier et révoquer les
+2. **Le pharmacien administrateur est l'autorité de gouvernance de son officine.** Il est seul à créer, modifier et révoquer les
    délégations, à accorder les réglages individuels et à autoriser un dépassement de plafond ou une dérogation de délai.
+   Cette gouvernance locale est distincte du compte SUPERADMIN APEX de plateforme, régi par D72 et le workflow W0.
 3. **Droits vérifiés côté serveur à chaque requête.** L'interface masque ce qui n'est pas autorisé, mais ce masquage n'est
    jamais la seule barrière. L'accès à un module n'implique aucune action dans ce module.
 4. **Le catalogue décrit, la configuration décide.** Les informations réglementaires (classe, statut de prescription,
@@ -98,8 +99,10 @@
    décaissements, trésorerie, résultats. Chacune a une définition, une source et une formule uniques (§5.6).
 6. **La pré-comptabilité est dérivée, jamais saisie en double** : les écritures sont générées depuis les événements métier par
    des règles de passation paramétrables. L'expert-comptable reste responsable des comptes officiels.
-7. **Aucune valeur réglementaire ou fiscale n'est fournie par défaut** : taux de TVA, plan de comptes, durées d'amortissement,
-   services autorisés et substitutions sont saisis à partir de sources, puis validés.
+7. **Aucune valeur réglementaire ou fiscale n'est présumée** : les taux de TVA, durées d'amortissement, autorisations de services
+   et substitutions exigent leurs sources et validations propres. **Exception fonctionnelle D83 :** M20 fournit dès l'origine un
+   plan comptable standard indicatif, utilisable sans validation préalable obligatoire d'un expert-comptable et adaptable par
+   l'administrateur ; il ne constitue pas une validation des comptes officiels.
 
 ### 1.3 Modules concernés
 
@@ -180,6 +183,12 @@ Les écrans existants restent la référence pour leur domaine : `/prescribers` 
 
 ## 3. Workflows
 
+### 3.0 W0 — Gouvernance globale APEX (D72)
+
+Le compte **SUPERADMIN APEX** (`apexproib@gmail.com`) est un compte de plateforme permanent et immuable : il ne peut être ni modifié, ni supprimé, ni remplacé par un compte de pharmacie. Il gouverne l'écosystème PHARM'OS SaaS et On-Premises et peut créer, bloquer, supprimer puis recréer les comptes d'administration propres à chaque pharmacie. Les identifiants d'administration sont propres à chaque pharmacie ; le code initial est généré automatiquement et le mot de passe doit être changé à la première connexion.
+
+Cette gouvernance porte sur les comptes, licences, abonnements, paramètres et informations de supervision de la plateforme. Elle ne fusionne jamais les bases : chaque pharmacie conserve sa base physiquement distincte (D3), et une suppression ou régénération d'accès ne supprime ni ne réinitialise les données métier ou l'historique de la pharmacie. La récupération du compte SUPERADMIN suit une procédure renforcée dédiée qui ne rend pas le compte modifiable ou supprimable. Aucun droit d'accès aux données métier d'une pharmacie ne découle du seul rôle SUPERADMIN.
+
 ### 3.1 W1 — Désignation et transfert du pharmacien administrateur
 
 ```
@@ -189,10 +198,11 @@ Transfert (vente de l'officine, changement de titulaire, intérim long) :
   administrateur sortant initie → désigne un collaborateur ayant la qualification de pharmacien vérifiée
   → l'entrant accepte (MFA) → effet à une date → toutes les délégations accordées par le sortant restent valides
     jusqu'à leur fin, mais l'entrant peut les révoquer
-Perte d'accès de l'administrateur (décès, incapacité, conflit) :
-  procédure de secours hors application : demande écrite au support APEX AI DEV avec justificatifs
-  (document officiel désignant le nouveau responsable) → double contrôle APEX → désignation tracée
-  [ARBITRAGE D72] — le support APEX n'obtient jamais d'accès aux données à cette occasion
+Perte d'accès de l'administrateur de pharmacie : le remplacement suit le processus de transfert/désignation du titulaire
+  et les contrôles d'identité et de qualification applicables. La procédure historique de « secours APEX » ci-dessus
+  n'est pas l'arbitrage D72 et n'autorise aucun accès APEX aux données métier ; toute procédure exceptionnelle locale
+  non couverte par le processus de transfert reste à spécifier séparément. Le compte SUPERADMIN APEX et sa récupération
+  relèvent exclusivement de W0.
 ```
 
 ### 3.2 W2 — Configuration des droits d'un collaborateur
@@ -223,8 +233,13 @@ Collaborateur atteint un plafond (montant, nombre, délai) → opération bloqu�
   → l'administrateur accorde (unitaire : cette opération seulement) ou refuse (motif)
   → si accordée : l'opération est exécutée par le demandeur ou par l'administrateur ; `permission_exceptions`
     enregistre la dérogation, liée à l'opération ; elle ne peut pas être réutilisée
-Dérogation présentielle : l'administrateur saisit son PIN et confirme sur le poste du collaborateur
-Absence de l'administrateur : aucune dérogation possible ; l'opération attend (ou est refusée) [ARBITRAGE D73]
+Dérogation présentielle : l'administrateur saisit son PIN et confirme sur le poste du collaborateur.
+Dérogation à distance (D73) : si l'administrateur n'est pas présent, il peut décider lui-même depuis un appareil enrôlé,
+  avec MFA renforcée au moment de la décision, confirmation explicite, motif obligatoire et référence non ambiguë à
+  l'opération concernée. La décision est unitaire, à usage unique, journalisée et ne peut être substituée ni déléguée.
+  Le mode distant doit fonctionner pour une pharmacie On-Premises par accès sécurisé au serveur local (mode B, INC-16).
+  Cette voie est interdite pour toute opération portant sur un produit réglementé/sensible exclu par D73.
+Si l'administrateur n'est ni présent ni joignable par le mode distant autorisé, l'opération reste bloquée ou est refusée.
 ```
 
 ### 3.5 W5 — Annulation d'une vente (EXT05 workflow A, amendé)
@@ -335,11 +350,14 @@ Données individuelles de paie : niveau N4 d'EXT02 (titulaire seul par défaut),
 Contrôles automatiques : sessions de caisse clôturées et validées, bordereaux traités, rapprochements bancaires faits,
   écritures en attente, réconciliations (stock, créances, dettes, caisse) sans écart
   → génération des écritures manquantes → balance de contrôle (débit = crédit)
-  → validation de la période par l'administrateur (ou comptable habilité) → période VERROUILLEE
-   → export vers le logiciel comptable ; tous les écrans, états et exports comptables portent la mention
-     « Comptabilité à titre indicatif »
-  → correction après verrouillage : écriture de régularisation dans la période ouverte suivante ;
-    réouverture exceptionnelle par l'administrateur avec motif, interdite après export définitif [ARBITRAGE D82]
+  → validation de la période selon les droits applicables → période VERROUILLEE
+   → export vers le logiciel comptable ; tous les écrans, états et exports comptables portent exactement la mention
+     « Comptabilité à titre indicatif » (D80)
+  → après validation, une écriture et ses lignes sont immuables : aucune modification ni suppression ;
+    toute correction crée une contre-passation liée à l'écriture d'origine (`reverses_id`, `correlation_id`), puis,
+    si nécessaire, une nouvelle écriture corrigée dans la période ouverte. Les deux opérations sont tracées et atomiques.
+  → après verrouillage, la correction passe par la période ouverte suivante ; réouverture exceptionnelle par
+    l'administrateur avec motif, interdite après export définitif [D82].
 ```
 
 ---
@@ -353,7 +371,7 @@ Les tables **(immuable)** n'acceptent que des insertions (déclencheurs SQLite, 
 
 | Table | N/C/R | Colonnes principales (ajouts en gras pour C) | Contraintes / index |
 |---|---|---|---|
-| `tenant_administrators` | **N** (immuable) | id, tenant_id, employee_id, valid_from, valid_to, mode (`CREATION`, `TRANSFERT`, `SECOURS_APEX`), initie_par, accepte_le, justificatif_key, motif | Une seule désignation active par officine ; qualification « pharmacien » vérifiée exigée |
+| `tenant_administrators` | **N** (immuable) | id, tenant_id, employee_id, valid_from, valid_to, mode (`CREATION`, `TRANSFERT`), initie_par, accepte_le, justificatif_key, motif | Une seule désignation active par officine ; qualification « pharmacien » vérifiée exigée. La récupération du compte SUPERADMIN APEX ne constitue pas un mode de désignation d'un administrateur de pharmacie (D72) |
 | `app_modules` | **N** (référentiel APEX) | code (`POS`, `CATALOG`, `STOCK`, `PURCHASES`, `SUPPLIERS`, `CUSTOMERS`, `PRESCRIPTIONS`, `PAYERS`, `CONTROLLED`, `EXPIRY`, `ORDERS`, `LAB`, `SERVICES`, `HR`, `CASH`, `FINANCE`, `ACCOUNTING`, `REPORTS`, `ANALYTICS`, `AI`, `SETTINGS`, `AUDIT`), libelle_fr/ar, ordre, licence_requise | Licence : un module non souscrit est inaccessible à tous |
 | `permissions` (EXT02 §2.2) | **C** | **module_code**, **action** (`ACCESS`, `READ`, `CREATE`, `UPDATE`, `VALIDATE`, `CANCEL`, `EXPORT`, `ARCHIVE`, `SPECIFIC`), **scope_options** (`OWN`, `TEAM`, `ALL`), **plafonnable** | UNIQUE(code) ; les permissions spécifiques existantes (`rx.substitute`, `cash.drawer.open`…) gardent leur code, avec action `SPECIFIC` |
 | `role_permissions` (dossier §4.2) | inchangée | — | — |
@@ -390,7 +408,7 @@ Les tables **(immuable)** n'acceptent que des insertions (déclencheurs SQLite, 
 | Table | N/C/R | Colonnes principales | Contraintes / index |
 |---|---|---|---|
 | `classification_axes` | **N** | id, tenant_id (NULL = APEX), code (`UNIVERS`, `FAMILLE_COMMERCIALE`, `FAMILLE_THERAPEUTIQUE`, `FORME`, `USAGE`…), libelle_fr/ar, multi_valeurs (bool), obligatoire_pour (JSON des types de produits), source (`APEX`, `OFFICIEL`, `LOCAL`) | UNIQUE(COALESCE(tenant_id,''), code) |
-| `classification_nodes` | **N** | id, axis_id, parent_id, code, libelle_fr, libelle_ar, ordre, actif, source_ref (ex. code ATC si la source le permet **[À VALIDER R43]**) | Arbre par axe ; un nœud utilisé n'est jamais supprimé, seulement désactivé |
+| `classification_nodes` | **N** | id, axis_id, parent_id, code, libelle_fr, libelle_ar, ordre, actif, **source** (`APEX`, `LOCAL`, `OFFICIEL`), source_ref (code/source documentaire, ex. code ATC si la source le permet **[À VALIDER R43]**) | Arbre par axe ; classification thérapeutique standard initiale fournie pour l'usage de gestion (D84), modifiable par l'administrateur ; les données réglementaires officielles restent séparées ; un nœud utilisé n'est jamais supprimé, seulement désactivé |
 | `product_classifications` | **N** | product_id, axis_id, node_id, principal (bool) | UNIQUE(product_id, node_id) ; un seul `principal` par axe |
 | `categories` (dossier §4.3) | **R** | Supprimée ; son contenu correspond à l'axe `FAMILLE_COMMERCIALE` | — |
 
@@ -399,7 +417,7 @@ Axes demandés et leur source :
 | Critère demandé | Implémentation |
 |---|---|
 | Famille commerciale | Axe `FAMILLE_COMMERCIALE` (arbre : Médicaments, Dispositifs, Parapharmacie & beauté, Accessoires… puis sous-familles des Parties 3C et 3D) |
-| Famille thérapeutique | Axe `FAMILLE_THERAPEUTIQUE` (référentiel officiel ou ATC si utilisable) |
+| Famille thérapeutique | Axe `FAMILLE_THERAPEUTIQUE` doté d'une classification thérapeutique standard initiale (D84), modifiable par l'administrateur ; cette classification de gestion est distincte des champs et référentiels réglementaires officiels. Les sources officielles éventuelles restent identifiées séparément et soumises à R43. |
 | Forme pharmaceutique | `ref_forms` existant, exposé comme axe de recherche (pas de duplication) |
 | Laboratoire | `products.manufacturer_id` (référentiel `ref_laboratories`) |
 | Marque | `products.brand_id` (`brands`) |
@@ -457,12 +475,12 @@ La recherche par facettes les combine tous.
 
 | Table | Colonnes principales | Remarques |
 |---|---|---|
-| `chart_of_accounts` | id, tenant_id, code, libelle, classe, type (`BILAN`, `GESTION`), lettrable (bool), tiers_type, actif, source (`MODELE`, `LOCAL`) | Modèle comptable standard APEX préconfiguré et adaptable par la pharmacie ; disponible sans validation préalable obligatoire d'un expert-comptable (D83) ; usage indicatif uniquement, sans remplacer les comptes officiels |
+| `chart_of_accounts` | id, tenant_id, code, libelle, classe, type (`BILAN`, `GESTION`), lettrable (bool), tiers_type, actif, source (`MODELE`, `LOCAL`) | Modèle comptable standard préconfiguré fourni dès l'initialisation de la pharmacie et disponible pour l'usage indicatif de M20 sans validation préalable obligatoire d'un expert-comptable (D83). L'administrateur peut l'adapter ; chaque modification est historisée et contrôlée pour cohérence avec les règles de passation. Il ne remplace pas les comptes officiels. |
 | `journals` | id, tenant_id, code (`VT` ventes, `AC` achats, `CA` caisse, `BQ` banque, `OD` opérations diverses, `TP` tiers payant facultatif), libelle, compte_contrepartie | — |
 | `posting_rules` | id, tenant_id, evenement (`sale.completed`, `sale.voided`, `sale.returned`, `supplier_invoice.validated`, `payment.recorded`, `payer_remittance.allocated`, `claim.written_off`, `cash_session.closed`, `loss.recorded`, `payroll.validated`, `loan.instalment_paid`…), journal_id, lignes (JSON : compte ou règle de compte, sens, montant = expression sur l'événement), version, valid_from, valide_par | Paramétrable ; testé par jeu de référence ; versionné |
 | `accounting_periods` | id, tenant_id, exercice, mois, statut (`OUVERTE`, `EN_CLOTURE`, `VERROUILLEE`, `EXPORTEE`), verrouillee_par, verrouillee_le | — |
-| `journal_entries` (immuable) | id, tenant_id, journal_id, period_id, numero (séquence par journal et exercice), date, libelle, source_event_type, source_id, posting_rule_version, statut (`BROUILLON`, `VALIDEE`), reverses_id, correlation_id | CHECK(Σ débit = Σ crédit) vérifié à l'insertion des lignes ; aucune modification, contre-passation seulement |
-| `journal_entry_lines` (immuable) | id, entry_id, account_id, tiers_type, tiers_id, debit, credit, libelle, lettrage_code, analytique (JSON : famille, univers) | INDEX(account_id, date) |
+| `journal_entries` | id, tenant_id, journal_id, period_id, numero (séquence par journal et exercice), date, libelle, source_event_type, source_id, posting_rule_version, statut (`BROUILLON`, `VALIDEE`), reverses_id, correlation_id | Une écriture `BROUILLON` reste dans le circuit de préparation autorisé ; dès validation, l'écriture et ses lignes sont immuables (D80). Aucune modification ni suppression d'une écriture validée ; correction uniquement par une écriture de contre-passation liée (`reverses_id`, `correlation_id`), puis une nouvelle écriture si nécessaire. CHECK(Σ débit = Σ crédit) et cohérence des lignes contrôlés dans le même batch atomique. |
+| `journal_entry_lines` | id, entry_id, account_id, tiers_type, tiers_id, debit, credit, libelle, lettrage_code, analytique (JSON : famille, univers) | Les lignes d'une écriture validée sont immuables avec leur écriture parente ; toute correction passe par contre-passation et nouvelle écriture (D80). INDEX(account_id, date) |
 | `accounting_exports` | id, tenant_id, period_id, format (paramétrable : CSV, Excel, format du logiciel du comptable), fichier_key, sha256, exporte_par, exporte_le | Un export définitif fige la période |
 
 Le **grand livre** et la **balance** sont des **vues** calculées sur `journal_entry_lines` (aucune table de soldes saisie).
@@ -544,9 +562,14 @@ second collaborateur est possible uniquement si le pharmacien-administrateur lui
 réintégration corrective. Le contrôle reste tracé et utilise la check-list réduite (produit présent, scellé, péremption lue).
 Sans habilitation explicite, aucune réintégration par le second collaborateur n'est autorisée.
 
-**Jour calendaire** : déterminé par l'horodatage serveur converti dans le fuseau de l'officine (`tenants.fuseau`), jamais par
-l'horloge du poste. Une vente validée à 23 h 58 n'est annulable sans dérogation que jusqu'à 23 h 59 59 le même jour
-**[ARBITRAGE D75 : option « jour d'exploitation » pour les officines de garde de nuit]**.
+**D75 — période de référence des annulations.** Le mode par défaut est le **jour calendaire**, calculé à partir de l'horodatage
+serveur dans le fuseau de l'officine (`tenants.fuseau`), jamais à partir de l'horloge du poste. L'administrateur peut activer
+explicitement l'un des modes alternatifs **GARDES** ou **PERMANENTE** (« jour d'exploitation ») ; l'activation et chaque
+changement exigent une action explicite de l'administrateur, un motif obligatoire et une MFA. Le paramétrage est documenté,
+versionné et journalisé ; il prend effet sans rétroactivité et ne modifie jamais le calcul des ventes antérieures. Aucune
+activation, bascule ou modification silencieuse n'est admise. La configuration et ses versions sont conservées dans
+`settings` / `duty_periods` avec l'auteur, le motif, la date d'effet et la preuve de MFA. Tant qu'aucun mode alternatif n'a été
+explicitement activé, le jour calendaire reste la règle.
 
 ### 5.3 Catalogue : champs et contrôles par type (Partie 3)
 
@@ -679,8 +702,11 @@ Les périodes closes affichent les clichés figés (`financial_snapshots`) ; la 
 | Prévisions de réapprovisionnement | Suggestions de M11 (dossier analyseur D, EXT03 demande engagée) | `po_suggestions` |
 | Services réalisés | Nombre, CA services | `service_acts`, `metrics_daily` |
 
-Accès : selon la matrice (module `ANALYTICS`, action `READ`) ; les montants de marge peuvent être masqués à certains rôles
-(permission dédiée `analytics.margin.read`).
+Accès : selon la matrice (module `ANALYTICS`, action `READ`). La permission spécifique `analytics.margin.read` est un contrôle
+cumulatif et obligatoire pour tout montant, taux, agrégat ou classement fondé sur la marge, y compris dans **G25** ; le seul
+droit `ANALYTICS.READ` ne suffit jamais. Le contrôle s'applique à l'interface, aux exports, aux API et aux réponses agrégées
+côté serveur : sans cette permission, la valeur de marge n'est ni affichée ni retournée. Toute évolution de G25 doit conserver
+ce contrôle (D79).
 
 **Cohérence** : les tableaux de bord **ne calculent rien eux-mêmes**. Ils lisent la couche métriques (alimentée par les
 événements), `rx_facts` (EXT03) et les projections de créances (EXT04). Un contrôle quotidien vérifie que le CA du tableau
@@ -752,7 +778,7 @@ le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques dé
 | `finance.loans.manage`, `finance.assets.manage` | FINANCE | Non | Administrateur, comptable |
 | `finance.bank.reconcile` | FINANCE / VALIDATE | Oui | Comptable |
 | `finance.payroll.import` / `.validate` | FINANCE | **Non** | Administrateur (validation), comptable (import) |
-| `accounting.setup` (plan, journaux, règles de passation) | ACCOUNTING / SPECIFIC | **Non** | Administrateur + comptable (quatre yeux) |
+| `accounting.setup` (plan, journaux, règles de passation) | ACCOUNTING / SPECIFIC | **Non** | Administrateur ; avis du comptable possible mais non obligatoire pour rendre utilisable le plan standard indicatif (D83) |
 | `accounting.read`, `accounting.export` | ACCOUNTING | Oui | Comptable, administrateur, auditeur (lecture) |
 | `accounting.period.close` / `.reopen` | ACCOUNTING / VALIDATE | **Non** | Administrateur (réouverture : administrateur seul, motif) |
 | `analytics.finance.read` | ANALYTICS / READ | Oui | Administrateur, comptable |
@@ -760,6 +786,8 @@ le module (ex. pas d'`ARCHIVE` sur les ventes). Les permissions spécifiques dé
 | `analytics.margin.read` | ANALYTICS / SPECIFIC | Oui | Administrateur, adjoint, comptable |
 
 ### 6.3 Matrice par défaut des modules (accès et actions principales)
+
+**D77 — Accueil et navigation :** l'accueil, les tuiles, raccourcis, menus et actions visibles sont calculés à partir du **rôle et des permissions effectives** de l'utilisateur, après prise en compte des octrois/retraits individuels, délégations valides, habilitations, qualifications, présence, plafonds et séparations de tâches applicables. Une préférence d'accueil modifiable par l'utilisateur ne peut que réorganiser ou masquer des éléments déjà autorisés ; elle ne peut ni afficher un module interdit ni créer un droit. Les contrôles serveur restent obligatoires sur chaque route et action.
 
 | Module | Administrateur | Adjoint | Préparateur | Caissier | Achats / stock | Comptable | Auditeur |
 |---|---|---|---|---|---|---|---|
