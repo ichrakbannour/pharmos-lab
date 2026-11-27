@@ -456,7 +456,7 @@ La recherche par facettes les combine tous.
 
 | Table | Colonnes principales | Remarques |
 |---|---|---|
-| `chart_of_accounts` | id, tenant_id, code, libelle, classe, type (`BILAN`, `GESTION`), lettrable (bool), tiers_type, actif, source (`MODELE`, `LOCAL`) | Modèle importé et validé par l'expert-comptable **[À VALIDER R46]** ; aucun plan imposé |
+| `chart_of_accounts` | id, tenant_id, code, libelle, classe, type (`BILAN`, `GESTION`), lettrable (bool), tiers_type, actif, source (`MODELE`, `LOCAL`) | Modèle comptable standard APEX préconfiguré et adaptable par la pharmacie ; disponible sans validation préalable obligatoire d'un expert-comptable (D83) ; usage indicatif uniquement, sans remplacer les comptes officiels |
 | `journals` | id, tenant_id, code (`VT` ventes, `AC` achats, `CA` caisse, `BQ` banque, `OD` opérations diverses, `TP` tiers payant facultatif), libelle, compte_contrepartie | — |
 | `posting_rules` | id, tenant_id, evenement (`sale.completed`, `sale.voided`, `sale.returned`, `supplier_invoice.validated`, `payment.recorded`, `payer_remittance.allocated`, `claim.written_off`, `cash_session.closed`, `loss.recorded`, `payroll.validated`, `loan.instalment_paid`…), journal_id, lignes (JSON : compte ou règle de compte, sens, montant = expression sur l'événement), version, valid_from, valide_par | Paramétrable ; testé par jeu de référence ; versionné |
 | `accounting_periods` | id, tenant_id, exercice, mois, statut (`OUVERTE`, `EN_CLOTURE`, `VERROUILLEE`, `EXPORTEE`), verrouillee_par, verrouillee_le | — |
@@ -976,7 +976,7 @@ Numérotation à la suite d'EXT05 (D59 à D71). Les décisions D72 à D86 sont m
 | **D80** | Profondeur du module comptable | A. Exports seulement (journaux) · B. Pré-comptabilité en partie double (M20) · C. Comptabilité générale complète | **B** : écritures générées et exportées ; le comptable tient les comptes officiels ; affichage et exports portent explicitement la mention « Comptabilité à titre indicatif » |
 | **D81** | Moteur de paie | Import des montants · Moteur intégré | **Import des montants** (sans moteur) tant que les règles ne sont pas validées |
 | **D82** | Réouverture d'une période comptable | Interdite · Administrateur avant export définitif | Administrateur avec motif, **interdite après export définitif** |
-| **D83** | Plan de comptes livré | Aucun · Modèle indicatif à valider | Modèle indicatif, **inactif tant que l'expert-comptable ne l'a pas validé** |
+| **D83** | Plan de comptes livré | Aucun · Modèle standard préconfiguré et adaptable | Modèle comptable standard préconfiguré, adaptable, sans validation préalable obligatoire d'un expert-comptable ; mention « Comptabilité à titre indicatif » obligatoire |
 | **D84** | Référentiel de classification thérapeutique | ATC · Référentiel local · Classification APEX | Selon R43 ; à défaut, classification APEX maintenue et sourcée |
 | **D85** | Rapprochement bancaire automatique | Automatique · Proposé puis confirmé | **Proposé puis confirmé** (cohérent avec EXT04 D55) |
 | **D86** | Seuil de validation des charges par l'administrateur | Montant fixe · Toutes les charges | Montant paramétrable |
