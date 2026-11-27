@@ -306,7 +306,7 @@ Collaborateur ouvre les services configurés par sa pharmacie (G12) ou ajoute un
 Saisie (G14) : fournisseur ou tiers, catégorie de charge, date, montants HT / TVA / TTC, échéance, pièce justificative (scan)
   → nature MARCHANDISES : rapprochée d'une réception (Achats, dossier W §5.3), alimente le coût du stock
   → nature CHARGE : aucun effet sur le stock
-  → validation (seuil paramétrable, administrateur au-delà) → dette fournisseur (`party_ledger`) + échéance (`due_dates`)
+  → validation selon un seuil paramétré et modifiable par l'administrateur ; la validation au-delà du seuil relève de l'administrateur → dette fournisseur (`party_ledger`) + échéance (`due_dates`)
   → paiement (espèces depuis la caisse, chèque, virement, prélèvement) → lettrage → statut de paiement
   → génération des écritures de pré-comptabilité (M20) par les règles de passation
 Charges récurrentes (loyer, abonnements) : modèle mensuel qui génère des brouillons à valider (aucune charge validée automatiquement)
@@ -1025,7 +1025,7 @@ Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conser
 | D75 | **ARBITRÉE** — jour calendaire par défaut ; option GARDES/PERMANENTE activée explicitement, motif, MFA, versionnement, non-rétroactivité, journalisation | **Consolidé** au §5.2 : modes GARDES/PERMANENTE, activation et changement explicites par l'administrateur, motif, MFA, versionnement, prise d'effet non rétroactive et journalisation. | Le comportement réel du paramétrage et le calcul temporel restent à tester en réalisation autorisée. |
 | D76 | **ARBITRÉE** — compartiment physique RESERVE supprimé ; réservation logique | Conforme au principe de retrait du bucket RESERVE dans EXT06. | Maintenir la distinction réservation logique / stock physique. |
 | D77 | **ARBITRÉE** — accueil adapté au rôle **et aux permissions effectives** | **Consolidé** dans NV6 et §6.3 : accueil, menus, tuiles et raccourcis calculés sur les droits effectifs ; préférences utilisateur limitées à l'organisation des éléments autorisés ; contrôle serveur maintenu. | Le rendu réel et le refus serveur doivent être testés en réalisation autorisée. |
-| D78 | **ARBITRÉE** — services définis par la pharmacie ; aucun catalogue universel ; notification limitée au type de service/opération, nom du client et date ; pas de dossier clinique ni mesures structurées | Les passages D78 de la proposition reprennent globalement cette portée. | Préserver strictement les limites de données et l'absence de catalogue APEX imposé. |
+| D78 | **ARBITRÉE** — services définis par la pharmacie ; aucun catalogue universel ; notification limitée au type de service/opération, nom du client et date ; pas de dossier clinique ni mesures structurées | **Consolidé** dans G13, W8, §4.7 et §5.5 : suppression des champs patient/clinique, observations et mesures ; champs facultatifs limités aux données opérationnelles non cliniques configurées par l'administrateur ; notification en liste blanche. | Vérifier en réalisation autorisée que l'interface, les API, les exports et notifications ne créent ni ne divulguent de données cliniques ou de mesures structurées. |
 | D79 | **ARBITRÉE** — permission dédiée de consultation des marges, y compris G25 | **Consolidé** au §5.8 : `analytics.margin.read` obligatoire pour toute donnée de marge, y compris G25, au niveau interface, API, exports et réponses serveur ; `ANALYTICS.READ` seul ne suffit pas. | Vérifier les droits effectifs et l'absence de fuite par agrégats, exports et API lors de tests autorisés. |
 | D80 | **ARBITRÉE** — partie double M20 ; libellé exact « Comptabilité à titre indicatif » ; écritures validées immuables ; corrections par contre-passation et nouvelle écriture | **Consolidé** dans W13 et les schémas M20 : libellé exact sur écrans/états/exports ; écriture validée et lignes immuables ; correction par contre-passation liée puis nouvelle écriture si nécessaire ; traitement atomique. | L'immutabilité et les contre-passations restent à démontrer par tests et contrôles techniques autorisés. |
 | D81 | **ARBITRÉE** — import des montants mensuels uniquement ; aucun moteur de paie | Aligné en substance. | Ne pas introduire de calculateur de paie. |
@@ -1038,7 +1038,7 @@ Numérotation à la suite d'EXT05 (D59 à D71). Le tableau ci-dessous est conser
 ### 11.1.1 Réserves et portée
 
 - Les statuts ci-dessus proviennent de la matrice PO v1.3.3 ; aucune décision n'est créée ou réouverte par cette extension.
-- Les contenus D72, D73, D75, D77, D79, D80, D83 et D84 ont été consolidés dans les sections fonctionnelles indiquées au tableau §11.1 ; le registre historique §11 est conservé à des fins de traçabilité.
+- Les contenus D72, D73, D75, D77, D78, D79, D80, D83 et D84 ont été consolidés dans les sections fonctionnelles indiquées au tableau §11.1 ; le registre historique §11 est conservé à des fins de traçabilité.
 - Cette consolidation est documentaire : elle ne démontre ni l'implémentation ni le fonctionnement effectif des contrôles ; les tests et preuves techniques restent à produire dans un périmètre autorisé.
 - Les autres décisions indiquées « alignées en substance » ne sont pas déclarées conformes dans le code ni validées par des tests.
 - Les validations réglementaires R42–R51 restent indépendantes et ouvertes selon leur propre statut.
