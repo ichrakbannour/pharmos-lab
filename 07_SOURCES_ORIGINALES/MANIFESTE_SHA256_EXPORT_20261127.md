@@ -68,3 +68,11 @@ Pour chaque source publiée dans le dépôt :
 5. marquer « conforme » uniquement après égalité de l'empreinte.
 
 Le fichier `LISEZMOI.md` (ligne 23) est un ajout effectué lors de la copie du dossier EXT03 ; il n'appartient pas au lot initial de six pièces d'audit.
+
+## État de publication GitHub — mise à jour
+
+| Source | Destination GitHub | Taille GitHub | Vérification exacte |
+|---|---|---:|---|
+| P81 — registre officiel | `04_DECISIONS_PO/P81_REGISTRE_DECISIONS_PO_STOCK.md` | 17 719 octets | **CONFORME** : Git blob SHA-1 `901e4c6c41f31a98297c534070fccce5ff3d96e0` identique au blob calculé depuis les octets du ZIP ; SHA-256 source `dec4d6420c5e5ecf54d4e31410c4776a45b3f63e160dae7193a958cd41c2232c`.
+
+Les 41 autres entrées restent à publier individuellement et à vérifier. La présence de ce manifeste ne remplace pas les originaux.
