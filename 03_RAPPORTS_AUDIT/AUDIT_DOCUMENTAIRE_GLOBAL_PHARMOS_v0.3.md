@@ -264,6 +264,8 @@ La récupération confirme l'existence et l'intégrité des sources, mais ne vau
 | AUD-033 | Clos — correction documentaire | La formule CAT-11 d'EXT06 §5.4 et le scénario CAT-11 ont été alignés sur DP1-R9 : réceptions/régularisations dans « reçu », retours clients et contre-passations dans les mouvements nets. | Vérification effectuée après commit `ea6dd62`. |
 | AUD-034 | Partiellement corrigé | EXT06 §5.4 indique désormais que PERTE reste visible avec quantité et ancienneté « en attente de destruction » et distingue la destruction physique. EXT05 utilise `RETURN_LOSS` pour le transfert vers PERTE, mais le mouvement ultérieur de destruction et son autorisation restent à vérifier. | Poursuivre le contrôle du workflow M10/M19 et des scénarios de destruction ; aucune destruction réelle autorisée. |
 | AUD-035 | Moyenne — correction documentaire | La formulation DP-2 de la conception était trop générale et ne précisait pas les cas des dispositifs médicaux, des autres types et des médicaments déjà existants. | Corrigé dans la ligne `lots` et les précisions P81 de la conception : médicaments obligatoires à la création/adoption, dispositifs optionnels désactivés par défaut, autres types optionnels ; médicaments existants « à régulariser », sans conversion automatique de l'historique. |
+| AUD-036 | Élevée — règle de permission ambiguë | EXT06 AN4 attribuait les droits d'annulation exclusivement à l'administrateur en se référant à D66, alors que D66 est marqué caduque dans EXT05. | Corrigé dans EXT06 : AN4 est maintenant explicitement une proposition non arbitrée ; aucune autorité de délégation n'est déduite de D66. |
+| AUD-037 | Élevée — collision d'identifiant | EXT06 utilise D72 pour la procédure de secours en cas de perte d'accès du pharmacien administrateur ; les décisions PO antérieures associent également D72 à l'immutabilité du SUPERADMIN APEX. Le document signale la collision mais conserve encore la procédure sous D72. | Ne pas fusionner ni implémenter ces deux sens ; vérifier la matrice v1.3.3 et les addenda pour rattacher la procédure de secours à un identifiant non ambigu. |
 
 ## 6. Blocages transverses avant développement
 
@@ -273,7 +275,7 @@ La récupération confirme l'existence et l'intégrité des sources, mais ne vau
 4. Modèle de stock et parcours PERTE/destruction à réconcilier avec DP-1 à DP-6 et P86.
 5. Règles d'annulation/réintégration à unifier entre EXT05, EXT06 et les décisions PO.
 6. Architecture SaaS / On-Premises, superadministration et isolation physique des bases à consolider dans un document d'architecture versionné, puis à vérifier contre les décisions PO.
-7. Les documents portent des statuts et dépendances de versions différentes (v1.0, v1.1, EXT03 v1.1 non déposée, EXT06 v1.1 évoquée dans l'historique mais fichier importé nommé v1.0).
+7. Les documents portent des statuts et dépendances de versions différentes (v1.0, v1.1, EXT03 v1.1 non déposée, EXT06 v1.1 évoquée dans l'historique mais fichier importé nommé v1.0). Les en-têtes et références de statut de EXT05/EXT06 reposaient encore sur la matrice v1.2.1 ; ils ont été annotés pour signaler que la v1.3.3 est la dernière version retrouvée et que les statuts doivent être revalidés après lecture intégrale.
 
 ## 7. Plan de travail de l'audit
 
