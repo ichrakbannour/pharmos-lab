@@ -29,13 +29,13 @@ PR-0 reste toutefois **NON FRANCHIE** :
 |---|---|
 | Métadonnées Git / HEAD / état propre | **PASS — vérifié** |
 | Node.js ≥ 22.18.0 | **PASS — runtime local alternatif v24.11.1 vérifié** ; le Node par défaut reste 22.16.0 |
-| Dépendances du projet | **NON PRÉPARÉES** — aucun `node_modules` |
-| TMPDIR dédié conforme PRQ-2 | **NON VÉRIFIÉ** — non créé |
+| Dépendances du projet | **BLOQUÉES** — aucun `node_modules` ; cache npm vide et accès réseau npm indisponible dans cet environnement |
+| TMPDIR dédié conforme PRQ-2 | **PASS — créé après contrôle des seuils**, permissions 0700 |
 | DEMO `/health` PRQ-5 | **NON VÉRIFIÉ** — aucune requête effectuée |
 | Baseline chiffrée des tests | **NON EXÉCUTÉE** |
-| Journaux / limites d'exécution PRQ-6/7 | **NON PRÉPARÉS** |
+| Journaux / limites d'exécution PRQ-6/7 | **PARTIELLEMENT PASS** — dossier de journaux hors dépôt créé (0700) ; `ulimit -c 0` et `umask 077` vérifiés dans le shell de préparation |
 
-Runtime : le Node par défaut est v22.16.0, mais un runtime local déjà présent dans l'environnement (`/opt/pyvenv/lib/python3.13/site-packages/playwright/driver/node`) fournit **Node v24.11.1**. La contrainte `engines.node >=22.18.0` est satisfaite par ce runtime ; npm 10.9.2 fonctionne avec ce PATH. Aucun téléchargement ni changement système n'a été effectué. Ce runtime alternatif est local à cette session et doit être explicitement sélectionné pour les commandes projet.\n\nRelevé ponctuel actualisé : mémoire disponible 4 769 880 kB ; espace disque libre sur le volume de travail 29 460 236 kB. Ces mesures ne valent pas garantie par suite.
+Runtime : le Node par défaut est v22.16.0, mais un runtime local déjà présent dans l'environnement (`/opt/pyvenv/lib/python3.13/site-packages/playwright/driver/node`) fournit **Node v24.11.1**. La contrainte `engines.node >=22.18.0` est satisfaite par ce runtime ; npm 10.9.2 fonctionne avec ce PATH. Aucun téléchargement ni changement système n'a été effectué. Ce runtime alternatif est local à cette session et doit être explicitement sélectionné pour les commandes projet.\n\nRelevé ponctuel actualisé : mémoire disponible 4 769 880 kB ; espace disque libre sur le volume de travail 29 460 236 kB. Ces mesures dépassent les seuils de lancement P86 à ce relevé, mais doivent être contrôlées avant chaque suite.\n\nRépertoires isolés préparés hors du dépôt : `/mnt/data/PHARMOS_STOCK_MISSION_20261128/tmp` (TMPDIR) et `/mnt/data/PHARMOS_STOCK_MISSION_20261128/logs` (journaux), tous deux en permissions 0700. Aucun fichier existant n'a été supprimé ou déplacé. Le shell de préparation a vérifié `ulimit -c 0` et `umask 077`.\n\nDépendances : aucun cache npm disponible et l'accès DNS/réseau vers `nodejs.org` est indisponible dans cet environnement ; aucune installation n'a été tentée pour éviter une installation partielle non reproductible.
 
 Conformément à P86 §8.2, aucune suite n'est lancée tant que les prérequis applicables ne sont pas satisfaits.
 
