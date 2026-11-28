@@ -1,6 +1,6 @@
 ## Précontrôle technique STOCK
 
-- **[Complément R0 — restauration Git vérifiée (28/11/2026)](R0_COMPLEMENT_RESTAURATION_GIT_20261128.md)** — bundle complet restauré (341 commits) ; runtime Node 24.11.1 local identifié ; PR-0 reste bloquée par les autres prérequis P86.
+- **[Complément R0 — restauration Git vérifiée (28/11/2026)](R0_COMPLEMENT_RESTAURATION_GIT_20261128.md)** — bundle complet restauré (341 commits) ; runtime Node 24.11.1 local validé, TMPDIR/journaux isolés préparés ; PR-0 reste bloquée par l'accès DEMO en lecture seule et les dépendances npm indisponibles.
 
 - **[R0 — autorisation reçue, lancement bloqué](PRECONTROLE_TECHNIQUE_STOCK_R0_AUTORISATION_20261127.md)** — 27/11/2026 ; PR-0 non franchie ; aucun code ni test modifié/exécuté.
 
