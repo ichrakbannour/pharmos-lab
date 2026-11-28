@@ -1,5 +1,7 @@
 ## Précontrôle technique STOCK
 
+- **[Complément R0 — restauration Git vérifiée (28/11/2026)](R0_COMPLEMENT_RESTAURATION_GIT_20261128.md)** — bundle complet restauré, 341 commits vérifiés ; PR-0 reste bloquée par les prérequis d'environnement.
+
 - **[R0 — autorisation reçue, lancement bloqué](PRECONTROLE_TECHNIQUE_STOCK_R0_AUTORISATION_20261127.md)** — 27/11/2026 ; PR-0 non franchie ; aucun code ni test modifié/exécuté.
 
 Rapports d'audit et de suivi PHARM'OS.
