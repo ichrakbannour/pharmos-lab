@@ -28,14 +28,14 @@ PR-0 reste toutefois **NON FRANCHIE** :
 | Prérequis | État au 28/11 |
 |---|---|
 | Métadonnées Git / HEAD / état propre | **PASS — vérifié** |
-| Node.js ≥ 22.18.0 | **BLOQUÉ** — environnement disponible : 22.16.0 |
+| Node.js ≥ 22.18.0 | **PASS — runtime local alternatif v24.11.1 vérifié** ; le Node par défaut reste 22.16.0 |
 | Dépendances du projet | **NON PRÉPARÉES** — aucun `node_modules` |
 | TMPDIR dédié conforme PRQ-2 | **NON VÉRIFIÉ** — non créé |
 | DEMO `/health` PRQ-5 | **NON VÉRIFIÉ** — aucune requête effectuée |
 | Baseline chiffrée des tests | **NON EXÉCUTÉE** |
 | Journaux / limites d'exécution PRQ-6/7 | **NON PRÉPARÉS** |
 
-Relevé ponctuel : mémoire disponible 4 838 896 kB ; espace disque libre sur le volume de travail 29 460 692 kB. Ces mesures ne valent pas garantie par suite. Le téléchargement du binaire Node 22.18.0 depuis nodejs.org a échoué ; aucun changement système n'a été tenté.
+Runtime : le Node par défaut est v22.16.0, mais un runtime local déjà présent dans l'environnement (`/opt/pyvenv/lib/python3.13/site-packages/playwright/driver/node`) fournit **Node v24.11.1**. La contrainte `engines.node >=22.18.0` est satisfaite par ce runtime ; npm 10.9.2 fonctionne avec ce PATH. Aucun téléchargement ni changement système n'a été effectué. Ce runtime alternatif est local à cette session et doit être explicitement sélectionné pour les commandes projet.\n\nRelevé ponctuel actualisé : mémoire disponible 4 769 880 kB ; espace disque libre sur le volume de travail 29 460 236 kB. Ces mesures ne valent pas garantie par suite.
 
 Conformément à P86 §8.2, aucune suite n'est lancée tant que les prérequis applicables ne sont pas satisfaits.
 
