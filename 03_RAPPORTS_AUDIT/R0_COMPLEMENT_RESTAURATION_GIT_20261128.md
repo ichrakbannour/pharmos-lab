@@ -104,3 +104,45 @@ Ces empreintes sont des relevés de départ informatifs ; elles ne constituent p
 
 ---
 **Conclusion :** la mémoire Git complète est restaurée et vérifiée ; le diagnostic source est désormais fondé sur le véritable historique. Le blocage restant est environnemental et opérationnel, non une absence de code source ou de métadonnées Git.
+
+
+## 7. Résultat du précontrôle R0 dans l'environnement Genspark d'origine
+
+**Source :** relevé transmis par le PO, horodaté du 28/11/2026 de 08:55:19Z à 08:56:19Z. Cet environnement est distinct du bac à sable ChatGPT décrit aux sections précédentes.
+
+### 7.1 État de l'environnement Genspark
+
+- Dépôt : `/home/user/webapp`, branche `main` ; HEAD `f59b1e9dcf7ba752ad6dd4b3ed8f0ca96a054954`, état propre, 0 tag, 0 stash.
+- Node.js v22.23.4 et npm 10.9.9 ; dépendances racine présentes (47 entrées).
+- Mémoire disponible : 582 488 kB puis 548 696 kB.
+- Disque racine : 841 448 Ko puis 841 444 Ko libres (98 % utilisé).
+- `/tmp` : tmpfs d'environ 1 Go, plein à 100 % ; `TMPDIR` non défini.
+- DEMO `/health` : HTTP 200, `status: ok`, contrôlé deux fois en lecture seule.
+- Les sept fichiers de tests STOCK mentionnés dans le relevé existent.
+
+### 7.2 Décision PRQ / PR-0
+
+| Prérequis | Verdict Genspark |
+|---|---|
+| PRQ-1 | PASS avec réserve documentaire |
+| PRQ-2 — TMPDIR dédié | **FAIL** — pas de TMPDIR ; marge disque après plafond et seuil d'arrêt : −258 556 Ko ; `/tmp` est volatile et saturé |
+| PRQ-3 — mémoire | PASS ponctuel, marge faible et en baisse |
+| PRQ-4 — disque | **FAIL** — 841 444 Ko libres, inférieur au minimum de 1 000 000 Ko |
+| PRQ-5 — DEMO health | PASS ponctuel, deux réponses OK |
+| PRQ-6 — journaux | NON VÉRIFIÉ |
+| PRQ-7 — limites d'exécution | PASS selon le relevé |
+| PRQ-8 — absence de nettoyage/déplacement | PASS |
+
+Aucune suite n'a été exécutée : baseline P82 §9.5 = **0 test exécuté**. PR-0 est **NON FRANCHIE** conformément à P86 §8.2. Aucun code, test, build, migration, service, PM2/systemd, DEMO ou Git n'a été modifié.
+
+### 7.3 Point d'attention sur la capacité disque
+
+Le déficit immédiat pour atteindre le seuil de lancement PRQ-4 est de 158 556 Ko. Pour satisfaire également la marge nécessaire à la création d'un TMPDIR de 300 000 Ko tout en préservant le seuil d'arrêt à 800 000 Ko, le relevé calcule un besoin de 258 556 Ko supplémentaires. Ces seuils ne doivent pas être confondus.
+
+Le relevé Genspark cite comme candidats possibles des intermédiaires d'export, le bundle incrémental et des ZIP déjà livrés, mais ne calcule pas leur taille totale ni leur caractère supprimable. **Aucun nettoyage n'est autorisé par ce constat.** Toute suppression ou déplacement dans l'environnement Genspark exige une décision explicite du PO après inventaire exact des chemins, tailles, empreintes et statut de conservation. La suppression des 11 pièces du bundle dans la Bibliothèque ChatGPT ne libère pas l'espace disque de `/home/user/webapp` ni le tmpfs Genspark.
+
+### 7.4 Écart documentaire P92
+
+Le plan `P92_PLAN_REALISATION_STOCK_v2` n'a pas été retrouvé dans le dépôt Genspark ni dans `/home/user/work` lors de ce contrôle. La conformité directe au plan P92 v2 est donc **NON VÉRIFIÉE** dans cet environnement. Les références effectivement consultées sont P86, P87 et P82.
+
+**Conclusion consolidée :** le contrôle Genspark confirme que le blocage de PR-0 est matériel (disque et TMPDIR), pas lié à Node ni à l'état Git. Aucune réalisation STOCK ne doit démarrer avant levée documentée de PRQ-2 et PRQ-4 et vérification de tous les autres prérequis applicables.
